@@ -17,28 +17,30 @@ install.packages("remotes")
 remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
 
-## Implementation and example of use
-RadarOmics comes with three main options: dimensional reduction based on expression scaling and averaging (method = "scale"), Principal Component Analyses (PCAs) (method = "pca"), and a combination of PCA and Linear Discriminant Analyses (LDAs) (method = "lda").
+## Important notes
+RadarOmics comes with three main options:
+- dimensional reduction based on expression scaling and averaging (method = "scale") - best for cases with few genes per category or consistent, positively correlated expression patterns.
+- Principal Component Analyses (PCAs) (method = "pca") - unsupervised, unbiased dimensional reduction aiming to maximise the variance across all samples.
+- a combination of PCA and Linear Discriminant Analyses (LDAs) (method = "lda") - can be tailored to maximise the variance between sample groups/treatments of interest.
 
-While PCAs provide unsupervised, unbiased dimensional reduction aiming to maximise the variance across all samples, LDAs can be tailored to maximise the variance between sample groups/treatments of interest.
-As a first approach, we recommend using PCAs (method = "pca").
-In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
+As a first approach, we recommend using PCAs (method = "pca"). We provide an example of pipeline using a simple developmental timeseries with 7 developmental stages.
+In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles. We provide an example pipeline using a complex developmental timeseries with 3 developmental stages and an exposure to 4 different combinations of doses and chemicals.
 
 ---- three levels: choose how to derive distance between samples (eg. group), how to drive lda, what gets presented on final radar plot.
 
-Here we go through two examples of usage, one with "pca" and one with "lda".
+## Implementation and example of use
 
-
+### method = "pca"
 Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological processes, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
-### Load the package
+#### Load the package
 ```r
 # load the package
 library(RadarOmics)
 ```
 
-### Import the data
+#### Import the data
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
@@ -91,7 +93,7 @@ head(data_input$gene_meta)
 |XP_054861429.1 |vision   |
 |XP_023135802.2 |vision   |
 
-### Dimensional reduction
+#### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4).
 ```r
 dim_reduction_output = dim_reduction(
