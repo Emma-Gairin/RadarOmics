@@ -18,8 +18,18 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ```
 
 ## Implementation and example of use
+RadarOmics comes with three main options: dimensional reduction based on expression scaling and averaging (method = "scale"), Principal Component Analyses (PCAs) (method = "pca"), and a combination of PCA and Linear Discriminant Analyses (LDAs) (method = "lda").
 
-Here we go through an example pipeline based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological processes, of samples from different groups.
+While PCAs provide unsupervised, unbiased dimensional reduction aiming to maximise the variance across all samples, LDAs can be tailored to maximise the variance between sample groups/treatments of interest.
+As a first approach, we recommend using PCAs (method = "pca").
+In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
+
+---- three levels: choose how to derive distance between samples (eg. group), how to drive lda, what gets presented on final radar plot.
+
+Here we go through two examples of usage, one with "pca" and one with "lda".
+
+
+Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological processes, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
 ### Load the package
