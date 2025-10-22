@@ -44,7 +44,54 @@ library(RadarOmics)
 
 # import data
 data_input = import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
+```
+Here is how the data should look like.
+1) Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
+```r
+head(data_input$expr[,1:10])
+```
+|               | SRR7610156| SRR7610157| SRR7610162| SRR7610144| SRR7610145| SRR7610163| SRR7610146| SRR7610147| SRR7610148| SRR7610149|
+|:--------------|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
+|YP_001054867.1 |   13.99266|   14.36672|   14.34720|   14.11891|   14.44253|   14.08794|   14.27059|   14.18767|   14.59782|   15.71519|
+|YP_001054868.1 |   13.57260|   13.89591|   13.76110|   13.66079|   13.99851|   13.51833|   13.67022|   13.61725|   14.24787|   15.25302|
+|YP_001054869.1 |   18.23788|   18.97548|   18.62184|   18.31808|   18.79498|   18.51865|   18.40833|   18.70388|   18.56178|   19.28712|
+|YP_001054870.1 |   15.80561|   16.85047|   16.49806|   16.33397|   16.62497|   16.48044|   16.17988|   16.61900|   16.64477|   17.49150|
+|YP_001054871.1 |   10.60595|   11.21210|   11.32445|   11.69303|   11.67610|   11.26584|   11.17176|   11.72576|   11.77252|   12.31938|
+|YP_001054872.1 |   15.80708|   16.16411|   15.73523|   16.09713|   16.08820|   15.68903|   16.00612|   16.11608|   16.22958|   17.62626|
 
+```r
+head(data_input$sample_meta)
+```
+|sample     |group |
+|:----------|:-----|
+|SRR7610156 |s1    |
+|SRR7610157 |s1    |
+|SRR7610162 |s1    |
+|SRR7610144 |s2    |
+|SRR7610145 |s2    |
+|SRR7610163 |s2    |
+
+```r
+head(data_input$gene_meta)
+```
+|gene           |category |
+|:--------------|:--------|
+|XP_023142913.1 |appetite |
+|XP_023142914.1 |appetite |
+|XP_023134073.1 |appetite |
+|XP_023123278.2 |appetite |
+|XP_023123279.2 |appetite |
+|XP_023120868.1 |appetite |
+...
+|XP_054861428.1 |vision   |
+|XP_054861429.1 |vision   |
+|XP_023124334.1 |vision   |
+|XP_023124335.1 |vision   |
+|XP_023135803.2 |vision   |
+|XP_023135802.2 |vision   |
+
+
+```r
 # run PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4)
 
 dim_reduction_output = dim_reduction(
@@ -95,7 +142,7 @@ head(dim_reduction_output$pca_information
 |corticoids       |PCA    |       2| 0.2340784| 0.1794435|        0|            0.0238073|
 |corticoids       |PCA    |       2| 0.2340784| 0.1794435|        0|            0.9997166|
 
-$pca$... provides the sample coordinates for the PCAs performed for each set of genes. Here is the result for the first 10 PCs of the appetite genes.
+$pca provides the sample coordinates for the PCAs performed for each set of genes. Here is the result for the first 10 PCs of the appetite genes.
 ```r
 head(dim_reduction_output$pca$appetite[,1"10])
 ```
