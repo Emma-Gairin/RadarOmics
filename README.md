@@ -7,7 +7,7 @@ It is designed to handle **complex experimental designs** with >2 treatments, an
 
 ## Installation
 
-You can install the development version directly from GitHub:
+You can install the development version directly from GitHub.
 
 ```r
 # Install remotes if not already installed
@@ -22,13 +22,13 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 Here we go through an example pipeline based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological processes, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
-#### Load the package
+### Load the package
 ```r
 # load the package
 library(RadarOmics)
 ```
 
-#### Import the data.
+### Import the data
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
@@ -81,7 +81,7 @@ head(data_input$gene_meta)
 |XP_054861429.1 |vision   |
 |XP_023135802.2 |vision   |
 
-#### Dimensional reduction
+### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4).
 ```r
 dim_reduction_output = dim_reduction(
