@@ -18,7 +18,18 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ```
 
 ## Implementation
-Here is an example of usage based on RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
+1) Load the package
+```r
+library(RadarOmics)
+```
+2) Upload the correctly-formatted required input files
+```r
+
+```
+
+
+## Example of use
+Here is an example based on RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
 We use radar plots to summarise the gene expression profile of each sample at each stage for a pre-defined set of biological processes.
 
@@ -27,11 +38,50 @@ We are supplying:
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
 - gene list with two columns: genes and their categories (here, various biological processes, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
 
-1) load the package
 ```r
+# load the package
 library(RadarOmics)
-```
-2) Upload the correctly-formatted required input files
-```r
 
+# import data
+data_input <- import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
+
+# run PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4)
+
+dim_reduction_output=dim_reduction(
+  data_input,
+  method = "pca",
+  threshold = 0.4, focus= "group") # group here is the developmental stage
 ```
+
+**dim_reduction()** yields multiple objects.
+By using scaling, PCA, or LDA, it obtains a value between 0 and 1 for each sample.
+$projection provides, for each sample and biological category, the two furthest groups (e.g., stages 1 and 6 here), 
+```r
+head(dim_reduction_output$projection)
+```
+ sample category furthest_groups   distance normalised_distance group
+1 SRR7610144 appetite           s6-s1  2.8323352           0.7202689    s2
+2 SRR7610145 appetite           s6-s1  2.8659379           0.7223736    s2
+3 SRR7610146 appetite           s6-s1  2.8315239           0.7202181    s3
+4 SRR7610147 appetite           s6-s1  2.7019725           0.7121038    s3
+5 SRR7610148 appetite           s6-s1  0.7051692           0.5870365    s3
+6 SRR7610149 appetite           s6-s1 -0.2501827           0.5271992    s4
+
+
+```r
+head(dim_reduction_output$information)
+```
+ category method num_pcs      centroid maxvariancedirection sum_variance_kept_pcs       pc1       pc2 n_genes
+1         appetite    PCA       2 -6.344132e-17          -0.71476712             0.4079186 0.2365357 0.1713829      80
+2         appetite    PCA       2  1.046782e-15           0.69936254             0.4079186 0.2365357 0.1713829      80
+3        digestion    PCA       1            NA                   NA             0.4037782 0.4037782 0.1465124     121
+4 gastrointestinal    PCA       1            NA                   NA             0.4675435 0.4675435 0.2194519      17
+5       corticoids    PCA       2  1.332268e-15           0.02380731             0.4135218 0.2340784 0.1794435      28
+6       corticoids    PCA       2  2.030122e-15           0.99971657             0.4135218 0.2340784 0.1794435      28
+  expr_pca_correlation_spearman_rho expr_pca_correlation_pvalue flipped
+1                         0.4194805                5.960695e-02   FALSE
+2                         0.4194805                5.960695e-02   FALSE
+3                         0.9883117                4.401105e-06   FALSE
+4                         0.9896104                4.354016e-06   FALSE
+5                         0.3623377                1.070934e-01    TRUE
+6                         0.3623377                1.070934e-01    TRUE
