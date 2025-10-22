@@ -1,6 +1,9 @@
 # RadarOmics
 
-RadarOmics is an R package for summarising 'omics datasets using dimensional reduction techniques and visualising the output across samples, treatments, and biological processes using radar plots. It is designed to handle complex experimental set-ups with >2 treatments, and can handle nested experimental design (e.g., multiple developmental stages and chemical exposure treatments). It works with gene or protein expression tables (or similar tabular datasets).
+##
+RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction**  and visualising the output across samples, treatments, and biological processes with **radar plots**.
+
+It is designed to handle **complex experimental designs** with >2 treatments, and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar tabular datasets.
 ---
 
 ## Installation
@@ -17,7 +20,9 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 
 ## Implementation
 Here is an example of usage based on RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661).
+
 We use radar plots to summarise the gene expression profile of each sample at each stage for a pre-defined set of biological processes.
+
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
