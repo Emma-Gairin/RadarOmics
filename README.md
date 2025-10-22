@@ -14,3 +14,6 @@ install.packages("remotes")
 # Install RadarOmics from GitHub
 remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
+
+## Implementation
+Here is an example of usage based on RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023), open access](https://doi.org/10.1016/j.celrep.2023.112661))).
