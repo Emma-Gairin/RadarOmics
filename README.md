@@ -59,29 +59,23 @@ $projection provides, for each sample and biological category, the two furthest 
 ```r
 head(dim_reduction_output$projection)
 ```
- sample category furthest_groups   distance normalised_distance group
-1 SRR7610144 appetite           s6-s1  2.8323352           0.7202689    s2
-2 SRR7610145 appetite           s6-s1  2.8659379           0.7223736    s2
-3 SRR7610146 appetite           s6-s1  2.8315239           0.7202181    s3
-4 SRR7610147 appetite           s6-s1  2.7019725           0.7121038    s3
-5 SRR7610148 appetite           s6-s1  0.7051692           0.5870365    s3
-6 SRR7610149 appetite           s6-s1 -0.2501827           0.5271992    s4
+|sample     |category |furthest_groups |   distance| normalised_distance|group |
+|:----------|:--------|:---------------|----------:|-------------------:|:-----|
+|SRR7610144 |appetite |s6-s1           |  2.8323352|           0.7202689|s2    |
+|SRR7610145 |appetite |s6-s1           |  2.8659379|           0.7223736|s2    |
+|SRR7610146 |appetite |s6-s1           |  2.8315239|           0.7202181|s3    |
+|SRR7610147 |appetite |s6-s1           |  2.7019725|           0.7121038|s3    |
+|SRR7610148 |appetite |s6-s1           |  0.7051692|           0.5870365|s3    |
+|SRR7610149 |appetite |s6-s1           | -0.2501827|           0.5271992|s4    |
 
 
 ```r
 head(dim_reduction_output$information)
 ```
- category method num_pcs      centroid maxvariancedirection sum_variance_kept_pcs       pc1       pc2 n_genes
-1         appetite    PCA       2 -6.344132e-17          -0.71476712             0.4079186 0.2365357 0.1713829      80
-2         appetite    PCA       2  1.046782e-15           0.69936254             0.4079186 0.2365357 0.1713829      80
-3        digestion    PCA       1            NA                   NA             0.4037782 0.4037782 0.1465124     121
-4 gastrointestinal    PCA       1            NA                   NA             0.4675435 0.4675435 0.2194519      17
-5       corticoids    PCA       2  1.332268e-15           0.02380731             0.4135218 0.2340784 0.1794435      28
-6       corticoids    PCA       2  2.030122e-15           0.99971657             0.4135218 0.2340784 0.1794435      28
-  expr_pca_correlation_spearman_rho expr_pca_correlation_pvalue flipped
-1                         0.4194805                5.960695e-02   FALSE
-2                         0.4194805                5.960695e-02   FALSE
-3                         0.9883117                4.401105e-06   FALSE
-4                         0.9896104                4.354016e-06   FALSE
-5                         0.3623377                1.070934e-01    TRUE
-6                         0.3623377                1.070934e-01    TRUE
+|category         |method | num_pcs| centroid| maxvariancedirection| sum_variance_kept_pcs|       pc1|       pc2| n_genes| expr_pca_correlation_spearman_rho| expr_pca_correlation_pvalue|flipped |
+|:----------------|:------|-------:|--------:|--------------------:|---------------------:|---------:|---------:|-------:|---------------------------------:|---------------------------:|:-------|
+|appetite         |PCA    |       2|        0|           -0.7147671|             0.4079186| 0.2365357| 0.1713829|      80|                         0.4194805|                   0.0596069|FALSE   |
+|appetite         |PCA    |       2|        0|            0.6993625|             0.4079186| 0.2365357| 0.1713829|      80|                         0.4194805|                   0.0596069|FALSE   |
+|digestion        |PCA    |       1|       NA|                   NA|             0.4037782| 0.4037782| 0.1465124|     121|                         0.9883117|                   0.0000044|FALSE   |
+|gastrointestinal |PCA    |       1|       NA|                   NA|             0.4675435| 0.4675435| 0.2194519|      17|                         0.9896104|                   0.0000044|FALSE   |
+|corticoids       |PCA    |       2|        0|            0.0238073|             0.4135218| 0.2340784| 0.1794435|      28|                         0.3623377|                   0.1070934|TRUE    |
