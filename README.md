@@ -43,11 +43,11 @@ We are supplying:
 library(RadarOmics)
 
 # import data
-data_input <- import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
+data_input = import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
 
 # run PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4)
 
-dim_reduction_output=dim_reduction(
+dim_reduction_output = dim_reduction(
   data_input,
   method = "pca",
   threshold = 0.4, focus= "group") # group here is the developmental stage
@@ -94,3 +94,4 @@ head(dim_reduction_output$pca_information
 |gastrointestinal |PCA    |       1| 0.4675435| 0.2194519|       NA|                   NA|
 |corticoids       |PCA    |       2| 0.2340784| 0.1794435|        0|            0.0238073|
 |corticoids       |PCA    |       2| 0.2340784| 0.1794435|        0|            0.9997166|
+
