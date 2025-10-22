@@ -12,5 +12,5 @@ You can install the development version directly from GitHub:
 install.packages("remotes")
 
 # Install RadarOmics from GitHub
-remotes::install_github("YourUsername/RadarOmics", auth_token = "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")
+remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
