@@ -5,7 +5,7 @@ It is designed to handle **complex experimental designs** with >2 treatments, an
 #
 ---
 
-# Installation
+## Installation
 
 You can install the development version directly from GitHub:
 
@@ -17,7 +17,7 @@ install.packages("remotes")
 remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
 
-# Implementation and example of use
+## Implementation and example of use
 
 Here we demonstrate the use of **RadarOmics** to summarise the gene expression profile of each sample within different groups for a pre-defined set of biological processes.
 We use as an example the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
