@@ -17,36 +17,29 @@ install.packages("remotes")
 remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
 
-## Implementation
-1) Load the package
+## Implementation and example of use
+
+Here we demonstrate the use of **RadarOmics** to summarise the gene expression profile of each sample within different groups for a pre-defined set of biological processes.
+We use as an example the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
+
+# Load the package
 ```r
+# load the package
 library(RadarOmics)
 ```
-2) Upload the correctly-formatted required input files
-```r
 
-```
-
-
-## Example of use
-Here is an example based on RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
-
-We use radar plots to summarise the gene expression profile of each sample at each stage for a pre-defined set of biological processes.
-
+# Import the data.
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
 - gene list with two columns: genes and their categories (here, various biological processes, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
 
 ```r
-# load the package
-library(RadarOmics)
-
 # import data
 data_input = import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
 ```
-Here is how the data should look like.
-1) Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
+Here is what the data should look like.
+- Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
 ```r
 head(data_input$expr[,1:10])
 ```
@@ -59,6 +52,9 @@ head(data_input$expr[,1:10])
 |YP_001054871.1 |   10.60595|   11.21210|   11.32445|   11.69303|   11.67610|   11.26584|   11.17176|   11.72576|   11.77252|   12.31938|
 |YP_001054872.1 |   15.80708|   16.16411|   15.73523|   16.09713|   16.08820|   15.68903|   16.00612|   16.11608|   16.22958|   17.62626|
 
+*Note that samples are columns, genes are rows.*
+
+- Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
 ```r
 head(data_input$sample_meta)
 ```
@@ -71,6 +67,7 @@ head(data_input$sample_meta)
 |SRR7610145 |s2    |
 |SRR7610163 |s2    |
 
+- Gene information with columns "gene" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
 ```r
 head(data_input$gene_meta)
 ```
@@ -78,22 +75,15 @@ head(data_input$gene_meta)
 |:--------------|:--------|
 |XP_023142913.1 |appetite |
 |XP_023142914.1 |appetite |
-|XP_023134073.1 |appetite |
-|XP_023123278.2 |appetite |
-|XP_023123279.2 |appetite |
 |XP_023120868.1 |appetite |
 ...
 |XP_054861428.1 |vision   |
 |XP_054861429.1 |vision   |
-|XP_023124334.1 |vision   |
-|XP_023124335.1 |vision   |
-|XP_023135803.2 |vision   |
 |XP_023135802.2 |vision   |
 
-
+# Dimensional reduction
+Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4).
 ```r
-# run PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4)
-
 dim_reduction_output = dim_reduction(
   data_input,
   method = "pca",
