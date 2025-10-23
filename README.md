@@ -67,6 +67,7 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ---
 ## Example #1 - method = "pca"
 Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
+
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
 ### Load the package
@@ -280,6 +281,7 @@ head(data_input$expr[,1:4])
 |ENSDARG00000000019 |                                    3901|                                   11648|                                       0|                                    4131|
 |ENSDARG00000000068 |                                    1465|                                    4536|                                       0|                                     825|
 |ENSDARG00000000069 |                                    2178|                                    6529|                                       0|                                    4625|
+
 *Note that samples are columns, genes are rows.*
 
 - Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
