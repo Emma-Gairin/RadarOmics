@@ -243,7 +243,7 @@ colnames(category_list)=c("category","order")
 
 category_list=as.data.frame(category_list)
 
-plot_radar(data_input, dim_reduction_output, category_list)
+plot_radar(data_input, dim_reduction_output, category_list = category_list)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
 
@@ -337,7 +337,7 @@ dim_reduction_output = dim_reduction(
   data_input,
   method = "pca")
 
-radars=plot_radar(result, dim_reduction_output, category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
+radars=plot_radar(result, dim_reduction_output, category_list = category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
@@ -347,11 +347,26 @@ wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 
 On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
 
-In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
+We can modify the function call by adding the argument _focus = "substance_concentration"_ which will use substance + concentration rather than groups to determine the main axis of variance when > 1 PC is retained.
+```r
+dim_reduction_output = dim_reduction(
+  data_input,
+  method = "pca",
+  focus = "substance_concentration")
 
-We now test method = **"lda"** with _lda_focus = substance_concentration_. If the variance explained by PC1 > 80% of the total variance, the PC1 coordinate of each sample is retained. If not, a LDA is generated and the coordinates of each sample along the top LD dimensions representing at least 80% of the variance are used.
+radars=plot_radar(result, dim_reduction_output, category_list = category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
 
-Using a high threshold for PCA variance allows to retain most of the inter-sample variance before feeding the coordinates to LDA. Users can test multiple thresholds and decide which are best suited for their dataset.
+unique(result$sample_meta$group) # to control the order of the groups
+
+wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
+```
+![Radar plot for all samples](example2/all_samples_pca_substance_concentration.png)
+
+As an alternative to modifying the sample projection axes on the PCAs, in the case of complex and nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
+
+We now test method = **"lda"** with _lda_focus = "substance_concentration"_, keeing the default _focus = "group"_. If the variance explained by PC1 > 80% of the total variance, the PC1 coordinate of each sample is retained. If not, a LDA is generated and the coordinates of each sample along the top LD dimensions representing at least 80% of the variance are used.
+
+Using a high threshold for PCA variance allows to retain most of the inter-sample variance before feeding the coordinates to LDA. Users can test multiple thresholds and sets of _focus_ and _lda_focus_ and decide which are best suited for their dataset.
 
 ```r
 dim_reduction_output = dim_reduction(
@@ -361,7 +376,7 @@ dim_reduction_output = dim_reduction(
   threshold=0.8,
   lda_threshold = 0.8)
 
-radars=plot_radar(result, dim_reduction_output, category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
+radars=plot_radar(result, dim_reduction_output, category_list = category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
@@ -403,6 +418,15 @@ plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of
 *Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.*
 
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
-*Here we can see the 
+*This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.* 
 
-# add a level of complexity by allowing the main axis of variance to be drawn through things other than groups before then deriving value per group
+---
+Lastly, users can customise the grouping of the samples on radar plots using the argument _radar_grouping_ in **plot_radar()**
+```r
+radars=plot_radar(result, dim_reduction_output,radar_grouping = "substance_concentration",
+category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label_position = "top")
+
+wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nrow=1)
+```
+![radar based on substance + concentration grouping rather than all groups](example2/substance_concentration_radar.png)
+
