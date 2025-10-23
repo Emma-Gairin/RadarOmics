@@ -146,7 +146,7 @@ By using scaling, PCA, or LDA, it obtains a value between 0 and 1 for each sampl
 #
 $projection provides, for each sample and biological category, the two furthest groups (e.g., stages 1 and 6 here), 
 ```r
-head(dim_reduction_output$projection)
+dim_reduction_output$projection
 ```
 |sample     |category |furthest_groups |   distance| normalised_distance|group |
 |:----------|:--------|:---------------|----------:|-------------------:|:-----|
@@ -323,7 +323,7 @@ dim_reduction_output = dim_reduction(
 By using scaling, PCA, or LDA, it obtains a value between 0 and 1 for each sample.
 $projection provides, for each sample and biological category, the two furthest groups (e.g., stages 1 and 6 here), 
 ```r
-head(dim_reduction_output$projection)
+dim_reduction_output$projection
 ```
 |sample     |category |furthest_groups |   distance| normalised_distance|group |
 |:----------|:--------|:---------------|----------:|-------------------:|:-----|
