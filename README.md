@@ -244,7 +244,10 @@ We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=1
 ---
 ## Example #2 - method = "lda"
 Here we go through an example pipeline using method = "lda" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
+
 We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure conditions (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)).
+
+In this experiment, the developmental stage of each sample has a major footprint on gene expression profiles. Here, we run the pipeline first with method = **"pca"** and then explore various outputs provided by method = **"lda"**.
 
 ### Load the package
 ```r
@@ -262,48 +265,49 @@ We are supplying:
 # import data
 data_input = import_data(expr_path = "vsd_zebrafish.csv", sample_meta_path = "sampleinfo_zebrafish.csv", gene_meta_path = "genelist_zebrafish.csv")
 ```
-Here is what the data should look like.
 - Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
 ```r
-head(data_input$expr[,1:10])
+head(data_input$expr[,1:4])
 ```
-|               | SRR7610156| SRR7610157| SRR7610162| SRR7610144| SRR7610145| SRR7610163| SRR7610146| SRR7610147| SRR7610148| SRR7610149|
-|:--------------|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
-|YP_001054867.1 |   13.99266|   14.36672|   14.34720|   14.11891|   14.44253|   14.08794|   14.27059|   14.18767|   14.59782|   15.71519|
-|YP_001054868.1 |   13.57260|   13.89591|   13.76110|   13.66079|   13.99851|   13.51833|   13.67022|   13.61725|   14.24787|   15.25302|
-|YP_001054869.1 |   18.23788|   18.97548|   18.62184|   18.31808|   18.79498|   18.51865|   18.40833|   18.70388|   18.56178|   19.28712|
-|YP_001054870.1 |   15.80561|   16.85047|   16.49806|   16.33397|   16.62497|   16.48044|   16.17988|   16.61900|   16.64477|   17.49150|
-|YP_001054871.1 |   10.60595|   11.21210|   11.32445|   11.69303|   11.67610|   11.26584|   11.17176|   11.72576|   11.77252|   12.31938|
-|YP_001054872.1 |   15.80708|   16.16411|   15.73523|   16.09713|   16.08820|   15.68903|   16.00612|   16.11608|   16.22958|   17.62626|
 
+
+
+|                   | 10_DMSO_Kontrolle2_96h_Eppi-12_Index-B5| 11_DMSO_Kontrolle3_96h_Eppi-13_Index-C5| 12_DMSO_Kontrolle4_96h_Eppi-14_Index-D5| 19_DMSO_Kontrolle3_36h_Eppi-28_Index-C6|
+|:------------------|---------------------------------------:|---------------------------------------:|---------------------------------------:|---------------------------------------:|
+|ENSDARG00000000001 |                                     145|                                     336|                                       0|                                     125|
+|ENSDARG00000000002 |                                     719|                                    2285|                                       0|                                     456|
+|ENSDARG00000000018 |                                     918|                                    2787|                                       0|                                    2997|
+|ENSDARG00000000019 |                                    3901|                                   11648|                                       0|                                    4131|
+|ENSDARG00000000068 |                                    1465|                                    4536|                                       0|                                     825|
+|ENSDARG00000000069 |                                    2178|                                    6529|                                       0|                                    4625|
 *Note that samples are columns, genes are rows.*
 
 - Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
 ```r
 head(data_input$sample_meta)
 ```
-|sample     |group |
-|:----------|:-----|
-|SRR7610156 |s1    |
-|SRR7610157 |s1    |
-|SRR7610162 |s1    |
-|SRR7610144 |s2    |
-|SRR7610145 |s2    |
-|SRR7610163 |s2    |
+|sample                                   |group               | time_hpf|substance | concentration|substance_concentration |substance_hpe |
+|:----------------------------------------|:-------------------|--------:|:---------|-------------:|:-----------------------|:-------------|
+|51_DMSO_Kontrolle1_96h_Eppi-76_Index-D10 |96_DMSO_0_72        |       96|DMSO      |           0.0|DMSO_0                  |DMSO_96       |
+|52_DMSO_Kontrolle2_96h_Eppi-77_Index-E10 |96_DMSO_0_72        |       96|DMSO      |           0.0|DMSO_0                  |DMSO_96       |
+|53_DMSO_Kontrolle3_96h_Eppi-78_Index-F10 |96_DMSO_0_72        |       96|DMSO      |           0.0|DMSO_0                  |DMSO_96       |
+|54_Sorafenib_EC50_96h_Eppi-83_Index-G10  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
+|55_Sorafenib_EC50_96h_Eppi-84_Index-H10  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
+|56_Sorafenib_EC50_96h_Eppi-85_Index-A11  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
 
 - Gene information with columns "gene" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
 ```r
 data_input$gene_meta
 ```
-|gene           |category |
-|:--------------|:--------|
-|XP_023142913.1 |appetite |
-|XP_023142914.1 |appetite |
-|XP_023120868.1 |appetite |
+|gene               |category          |
+|:------------------|:-----------------|
+|ENSDARG00000053449 |appetite          |
+|ENSDARG00000035350 |appetite          |
+|ENSDARG00000116735 |appetite          |
 ...
-|XP_054861428.1 |vision   |
-|XP_054861429.1 |vision   |
-|XP_023135802.2 |vision   |
+|ENSDARG00000075996 |brain_development |
+|ENSDARG00000078701 |brain_development |
+|ENSDARG00000018765 |brain_development |
 
 ### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
