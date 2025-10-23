@@ -447,19 +447,19 @@ plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of
 *Figure 11: PC1 and 2 obtained from the vision-related genes.*
 
 Here, we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
----
+
 ###
 ![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
 *Figure 12: LD1 and 2 obtained from the glycolysis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments.
----
+
 ###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
 *Figure 13: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.
----
+
 ###
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
 *Figure 14: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
