@@ -65,17 +65,17 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ## Implementation
 
 ---
-### Example #1 - method = "pca"
+## Example #1 - method = "pca"
 Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
-#### Load the package
+### Load the package
 ```r
 # load the package
 library(RadarOmics)
 ```
 
-#### Import the data
+### Import the data
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
@@ -132,7 +132,7 @@ data_input$gene_meta
 
 *Note that the package needs a column named "category".*
 #
-#### Dimensional reduction
+### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
 ```r
 dim_reduction_output = dim_reduction(
@@ -202,7 +202,7 @@ head(dim_reduction_output$pca$appetite[,1"10])
 |SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
 
 #
-#### Plotting
+### Plotting
 Using **plot_radar()** will plot the value extracted for each sample and biological category.
 ```r
 plot_radar(data_input, dim_reduction_output)
@@ -241,17 +241,17 @@ We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=1
 ![Radar plots for each stage](example1/all_stages_manualedit.png)
 
 ---
-### Example #2 - method = "lda"
+## Example #2 - method = "lda"
 Here we go through an example pipeline using method = "lda" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure conditions (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)).
 
-#### Load the package
+### Load the package
 ```r
 # load the package
 library(RadarOmics)
 ```
 
-#### Import the data
+### Import the data
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with multiple columns: samples, hours post fertilisation, substance, concentration, and a combination of substance + concentration, substance + hours post fertilisation
@@ -304,7 +304,7 @@ data_input$gene_meta
 |XP_054861429.1 |vision   |
 |XP_023135802.2 |vision   |
 
-#### Dimensional reduction
+### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
 ```r
 dim_reduction_output = dim_reduction(
@@ -370,7 +370,7 @@ head(dim_reduction_output$pca$appetite[,1"10])
 |SRR7610145 | -0.8675218| 3.211298|  1.7897778|  1.9636571|  1.7966160|  1.1435161|  1.6665057| -1.7197282|  1.2747393|  2.6163786|
 |SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
 
-#### Plotting
+### Plotting
 Using **plot_radar()** will plot the value extracted for each sample and biological category.
 ```r
 plot_radar(data_input, dim_reduction_output)
