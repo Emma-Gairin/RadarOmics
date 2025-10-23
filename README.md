@@ -433,7 +433,6 @@ In addition to yielding simple markers such as the correlation between the PCA/L
 
 Still using the dataset from zebrafish, we use **plot_dimension()** to visualise the first two dimensions of the dimensional reduction approach chosen (here, PCA if the variance explained by PC1 is >0.8, if not, LDA) and the main axis of variance (when more than 1 LD is retained, if not the LD1 coordinate is used by **dim_reduction()** to extract the values to plot on the radars for each sample and biological category).
 
-Example for glycolysis (LD1 was used).
 ```r
 plots = plot_dimensions(data_input, dim_reduction_output,
                       colour="substance_hpf", shape="hpf",
@@ -448,17 +447,19 @@ plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of
 *Figure 11: PC1 and 2 obtained from the vision-related genes.*
 
 Here, we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
-
+---
 ###
 ![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
 *Figure 12: LD1 and 2 obtained from the glycolysis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments.
+---
 ###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
 *Figure 13: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.
+---
 ###
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
 *Figure 14: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
