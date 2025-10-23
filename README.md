@@ -10,6 +10,20 @@ We provide examples of outputs with simple datasets in **Implementation** below.
  ![Radar plots from the landscape transcriptomics study](images/example.png)
 *Figure 1: Example output of the package - following manual editing on vector graphics software*
 
+---
+
+## Installation
+
+The development version can be directly installed from GitHub using **remotes::install_github()**.
+
+```r
+# Install remotes if not already installed
+install.packages("remotes")
+
+# Install RadarOmics from GitHub
+remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
+```
+
 #
 ## Detailed description
 RadarOmics summarises the expression profiles of genes or other molecules within predefined biological categories using dimensional reduction analysis and radar plot visualisations.
@@ -70,20 +84,6 @@ We provide various data inspection solutions when using method = **"pca"** or **
 Find examples of data inspection outputs [here](#data-inspection).
 
  
-
----
-
-## Installation
-
-The development version can be directly installed from GitHub using **remotes::install_github()**.
-
-```r
-# Install remotes if not already installed
-install.packages("remotes")
-
-# Install RadarOmics from GitHub
-remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
-```
 
 ---
 ## Implementation
