@@ -83,7 +83,7 @@ We are supplying:
 # import data
 data_input = import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
 ```
-
+#
 Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
 ```r
 head(data_input$expr[,1:10])
@@ -98,7 +98,7 @@ head(data_input$expr[,1:10])
 |YP_001054872.1 |   15.80708|   16.16411|   15.73523|   16.09713|   16.08820|   15.68903|   16.00612|   16.11608|   16.22958|   17.62626|
 
 *Note that samples are columns, genes are rows.*
-
+#
 Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
 ```r
 head(data_input$sample_meta)
@@ -113,7 +113,7 @@ head(data_input$sample_meta)
 |SRR7610163 |s2    |
 
 *Note that the package will look for a column named "group" unless otherwise specified as arguments in **dim_reduction()**.*
-
+#
 Gene information with columns "gene" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
 ```r
 data_input$gene_meta
@@ -129,7 +129,7 @@ data_input$gene_meta
 |XP_023135802.2 |vision   |
 
 *Note that the package needs a column named "category".
-
+#
 #### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
 ```r
