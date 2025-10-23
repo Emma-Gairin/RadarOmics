@@ -227,7 +227,7 @@ plot_radar(data_input, dim_reduction_output, category_list)
 ![Radar plot for stage 1](example1/stage_1.png)
 
 #
-Users can also modify the size of the labels, control the order of each group, and display radar plots together
+Users can also modify the size of the labels, control the order of each group, and display radar plots together.
 ```r
 radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
 ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
@@ -389,7 +389,7 @@ plot_radar(data_input, dim_reduction_output, category_list)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
 
-Users can also modify the size of the labels, control the order of each group, and display radar plots together
+Users can also modify the size of the labels, control the order of each group, and display radar plots together.
 ```r
 radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
 ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
