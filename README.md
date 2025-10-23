@@ -58,18 +58,6 @@ install.packages("remotes")
 remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
 
-## Important notes
-RadarOmics comes with three main options:
-- dimensional reduction based on expression scaling and averaging (method = "scale") - best for cases with few genes per category or consistent, positively correlated expression patterns.
-- Principal Component Analyses (PCAs) (method = "pca") - unsupervised, unbiased dimensional reduction aiming to maximise the variance across all samples.
-- a combination of PCA and Linear Discriminant Analyses (LDAs) (method = "lda") - can be tailored to maximise the variance between sample groups/treatments of interest.
-
-As a first approach, we recommend using PCAs (method = "pca"). We provide an example of pipeline using a simple developmental timeseries with 7 developmental stages.
-In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles. We provide an example pipeline using a complex developmental timeseries with 3 developmental stages and an exposure to 4 different combinations of doses and chemicals.
-
----- three levels: choose how to derive distance between samples (eg. group), how to drive lda, what gets presented on final radar plot.
-
-
 ## Implementation and example of use
 
 ### method = "pca"
@@ -198,4 +186,22 @@ head(dim_reduction_output$pca$appetite[,1"10])
 |SRR7610144 | -2.0167031| 1.988757| -0.4551666| -0.5278917|  0.4099790|  1.2982684|  0.8531442|  0.0507996|  0.8293554| -2.5758929|
 |SRR7610145 | -0.8675218| 3.211298|  1.7897778|  1.9636571|  1.7966160|  1.1435161|  1.6665057| -1.7197282|  1.2747393|  2.6163786|
 |SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
+
+
+
+
+
+
+
+
+## Important notes
+RadarOmics comes with three main options:
+- dimensional reduction based on expression scaling and averaging (method = "scale") - best for cases with few genes per category or consistent, positively correlated expression patterns.
+- Principal Component Analyses (PCAs) (method = "pca") - unsupervised, unbiased dimensional reduction aiming to maximise the variance across all samples.
+- a combination of PCA and Linear Discriminant Analyses (LDAs) (method = "lda") - can be tailored to maximise the variance between sample groups/treatments of interest.
+
+As a first approach, we recommend using PCAs (method = "pca"). We provide an example of pipeline using a simple developmental timeseries with 7 developmental stages.
+In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles. We provide an example pipeline using a complex developmental timeseries with 3 developmental stages and an exposure to 4 different combinations of doses and chemicals.
+
+---- three levels: choose how to derive distance between samples (eg. group), how to drive lda, what gets presented on final radar plot.
 
