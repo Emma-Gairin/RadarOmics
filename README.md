@@ -61,8 +61,10 @@ install.packages("remotes")
 remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "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")
 ```
 
+---
 ## Implementation and example of use
 
+---
 ### Example #1 - method = "pca"
 Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
@@ -238,8 +240,7 @@ wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
 ![Radar plots for each stage](example1/all_stages_manualedit.png)
 
-#
-#
+---
 ### Example #2 - method = "lda"
 Here we go through an example pipeline using method = "lda" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure conditions (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)).
