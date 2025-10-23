@@ -36,7 +36,7 @@ While we provide a few options for text size and colour coding as part of **plot
 ---
 ### How does dim_reduction() work?
 
-- method = **"scale"** scales the expression level of each gene/protein/other for each biological category to a value between 0 and 1 (0: sample with lowest expression level, 1: highest). The average 0-1 scaled expression level across all genes/proteins/others for each biological category is then calculated for each sample, yielding one value between 0 and 1 for each sample and biological category.
+- method = **"scale"** lineary scales the expression level of each gene/protein/other for each biological category to a value between 0 and 1 (0: sample with lowest expression level, 1: highest). The average scaled expression level across all genes/proteins/others for each biological category is then calculated for each sample. The value obtained for each sample is then linearly scaled again from 0 to 1 with the sample showing lowest average value assigned 0 and highest value 1. This yields one value between 0 and 1 for each sample and biological category.
   
 - method = **"pca"** starts with generating a **Principal Component Analysis** (**prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each biological category. The minimum number of PC dimensions  accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). If PC1 represents a higher portion of the variance than __threshold__ when inspecting a given biological category, the PC1 coordinate of each sample will be used. If more than 1 dimension is necessary to reach __threshold__, the average coordinates of all samples from each **group** for these top PC dimensions are calculated (thus, the choice of how to **group** samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top PC dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1** (see Figure 2 below). To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1.
   
@@ -60,7 +60,7 @@ In particular, for methods "pca" and "lda" we recommend testing multiple _thresh
 
 We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
 - __$information__, output from __dim_reduction()__, provides the number of PC and LD dimensions retained for each category
-- __$information__, output from __dim_reduction()__, provides the linear correlation between the projected coordinates from PCAs and LDAs and the average scaled gene expression across each category, which is calculated with a user-selected statistical test (_correlation_method_ argument in __dim_reduction()__), such as Pearson and Spearman correlation tests,
+- __$information__, output from __dim_reduction()__, provides the linear correlation between the projected coordinates from PCAs and LDAs and the average scaled gene expression of each sample for each category (in detail - 0-1 scaling of the expression across samples, average of all genes/proteins/others in biological category for each sample, 0-1 scaling of this value based on most extreme samples). The correlation is is calculated with a user-selected statistical test (_correlation_method_ argument in __dim_reduction()__), such as Pearson or Spearman (default: "spearman"),
 - __$pca_information__ and __$lda_information__, outputs from __dim_reduction()__, provide the coordinates of the samples for each PCA and LDA generated. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**.
 
 
@@ -184,13 +184,14 @@ head(dim_reduction_output$information)
 ```
 |category         | n_variables|method | num_pcs| sum_variance_kept_pcs| expr_pca_correlation| expr_pca_correlation_pvalue|
 |:----------------|-----------:|:------|-------:|---------------------:|--------------------:|---------------------------:|
-|appetite         |          80|PCA    |       3|             0.5578087|            0.4324675|                   0.0515594|
-|digestion        |         121|PCA    |       2|             0.5502907|            0.9844156|                   0.0000045|
-|gastrointestinal |          17|PCA    |       2|             0.6869954|            0.9740260|                   0.0000048|
-|corticoids       |          28|PCA    |       3|             0.5676356|            0.3935065|                   0.0785951|
-|thyroid          |          31|PCA    |       3|             0.5859959|            0.5142857|                   0.0184021|
-|betaoxi          |          14|PCA    |       1|             0.6837123|            0.9337662|                   0.0000050|
+|appetite         |          80|PCA    |       3|             0.5578087|            0.6753247|                   0.0010605|
+|digestion        |         121|PCA    |       2|             0.5502907|            0.9597403|                   0.0000051|
+|gastrointestinal |          17|PCA    |       2|             0.6869954|            0.9883117|                   0.0000044|
+|corticoids       |          28|PCA    |       3|             0.5676356|            0.3610390|                   0.1084280|
+|thyroid          |          31|PCA    |       3|             0.5859959|            0.1116883|                   0.6287796|
+|betaoxi          |          14|PCA    |       1|             0.6837123|            0.9324675|                   0.0000049|
 
+*In this case, most biological categories show consistent expression across genes (_i.e.,_ genes show overall higher expression in a given sample). An exception is genes in the "thyroid" category here. Thyroid-related gene expression is often complex, and here different samples show different profiles with various genes acting in a complex heterogeneous pattern. Thus, for this biological category, the values extracted from **dim_reduction()** do not directly relate the overall gene expression level.*
 #
 $pca_information provides key details for plotting PCA outputs for each category and visualising the main axis of variance (only for the first two PCs)
 ```r
@@ -373,6 +374,8 @@ We recommend checking the various outputs of **dim_reduction()** to fully inspec
 ---
 ## Data inspection
 
-Using the same dataset from zebrafish, we can check multiple variables.
+In addition to simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category, we also provide options to plot the output of **dim_reduction()**.
+
+Still using the dataset from zebrafish, 
 
 
