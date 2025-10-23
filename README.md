@@ -49,7 +49,7 @@ For a given biological category, after running a PCA or LDA and selecting the to
 
 If more than 1 dimension is necessary, the samples are projected along the main axis of variance across the groups of samples. The method is illustrated here with 2 PC dimensions:
  ![Extracting a value for each sample using PCA](images/method.png)
-*Figure 2: Methodological sketch describing steps from __dim_reduction()__*.
+*Figure 2: Methodological sketch describing steps from __dim_reduction()__, here using method = "pca".*
 
 ***
 ### Recommendations
