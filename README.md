@@ -39,12 +39,14 @@ Users can mix-and-match methods and manually create the table to feed into **plo
 - method = **"lda"** starts with generating a Principal Component Analysis (**pca = prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each biological category. The minimum number of PC dimensions (**num_pcs**) accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). If PC1 represents a higher portion of the variance than __threshold__ when inspecting a given biological category, the PC1 coordinate of each sample will be used. If more than 1 dimension is necessary to reach __threshold__, the coordinates of each sample across these top dimensions are used in a Linear Discriminant Analysis (LDA) with the function **MASS::lda(pca$x[,1:num_pcs], grouping = lda_focus**. This LDA maximises the variance between samples based on a user-defined ___lda_focus___ in **dim_reduction()**, which by default is "group" but can be set to a different column from the sample information table. Once the LDA is performed, the minimum number of LD dimensions accounting for a user-defined percentage of the total variance is selected (___lda_threshold___ = *e.g.,* 0.8, 0.9). The average coordinates of all samples from each **group** for these top LD dimensions are calculated (thus, the choice of how to group samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top LD dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1. 
 
 ---
-### Sketch of steps performed by dim_reduction() and plot_radar() when using method = "pca" or "lda"
-For a given biological category, after running a PCA or LDA and selecting the top dimensions, the following steps are performed (example with 2 PC dimensions retained):
+## Visual package description
+
+For a given biological category, after running a PCA or LDA and selecting the top dimensions, one value is retained per sample (example with 2 PC dimensions):
  ![Extracting a value for each sample using PCA](images/method.png)
 *Figure 2: Methodological sketch describing steps from __dim_reduction()__*
 
-After obtaining a PCA or LDA plot for all biological categories, the radar plot is produced by plot_radar() by displaying the 0-1 values for each sample and each biological category.
+-
+plot_radar() displays the 0-1 values for each sample and each biological category following dimensional reduction.
  ![Summarising the value for each sample using a radar plot](images/method_2.png)
 *Figure 3: Methodological sketch describing steps from **dim_reduction()** and __plot()__*
 ---
