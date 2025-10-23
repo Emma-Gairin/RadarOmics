@@ -445,21 +445,21 @@ plots$cholesterol # LD1 met the threshold
 plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of the main axis of variance across groups of samples.
 ```
 ![PC1 and 2 for vision](example2/pca_vision.png)
-*Figure 11: PC1 and 2 obtained from the vision-related genes for all samples.*
+*Figure 11: PC1 and 2 obtained from the vision-related genes.*
 Here we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
 
 ###
 ![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
-*Figure 12: LD1 and 2 obtained from the glycolysis-related genes for all samples.*
+*Figure 12: LD1 and 2 obtained from the glycolysis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments.
 ###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
-*Figure 13: LD1 and 2 obtained from the cholesterol synthesis-related genes for all samples.*
+*Figure 13: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.
 ###
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
-*Figure 14: LD1 and 2 obtained from the thyroid-related genes for all samples.*
+*Figure 14: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
 
 This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.
