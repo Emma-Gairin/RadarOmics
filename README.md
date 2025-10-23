@@ -1,8 +1,33 @@
 # RadarOmics
 
-RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction**  and visualising the output across samples, treatments, and biological processes with **radar plots**.
+RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction** and visualising the output across samples, treatments, and biological processes with **radar plots**.
 It is designed to handle **complex experimental designs** with >2 treatments, and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar tabular datasets.
 #
+## Detailed description
+RadarOmics summarises the expression profiles of genes or other molecules within predefined biological categories using dimensional reduction analysis and radar plot visualisations.
+
+Prior to using the package, three data frames must be prepared: 1) a count matrix normalised according to the preferred dimensional reduction method, e.g., variance-stabilising transformation of gene counts prior to running Principal Component Analysis; 2) sample information including the name of the samples and their corresponding group; 3) biological information with the gene/protein/etc. identifiers and their corresponding user-defined categories based on *e.g.,* manually curated lists, Gene Ontology terms, KEGG pathways. See examples of dataset structure below.
+
+**import_data()** is used to upload these three data frames into the package.
+
+**dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological process (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological process. There are three options of dimensional reduction:
+- method = **"scale"**,
+- method = **"pca"**,
+- method = **"lda"**
+
+**plot()** is used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
+
+## dim_reduction() options
+Using
+- method = **"scale"** scales the expression level of each gene/protein/other for each category of biological process of interest to a value between 0 and 1 (0: sample with lowest expression level, 1: highest). The average 0-1 scaled expression level across all genes/proteins/others for each biological process is then calculated for each sample, yielding one value between 0 and 1 for each sample and category of biological process.
+- method = **"pca"** starts with generating a **Principal Component Analysis** (**prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each category of biological process of interest. The minimum number of PC dimensions accounting for a **user-defined percentage of the total variance** (*e.g.,* 25, 50, 75%) is selected. The average coordinates of all samples from each **group** for these top PC dimensions are calculated (thus, the choice of how to **group** samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument _focus =_). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top PC dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1.
+- method = **"lda"** starts with generating a Principal Component Analysis (**pca = prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each category of biological process of interest. The minimum number of PC dimensions (**num_pcs**) accounting for a **user-defined percentage of the total variance** (threshold = *e.g.,* 0.25, 0.50, 0.75) is selected. The coordinates of each sample across these top dimensions are then used in a **Linear Discriminant Analysis** which can maximise the variance between samples based on a user-defined _lda_focus_, which by default is "group" but can be set to a different column from the sample information table (**MASS::lda(pca$x[,1:num_pcs],grouping = lda_focus**). Once the LDA is performed, the minimum number of LD dimensions accounting for a **user-defined percentage of the total variance** (lda_threshold = *e.g.,* 0.8, 0.9) is selected. The average coordinates of all samples from each **group** for these top LD dimensions are calculated (thus, the choice of how to **group** samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument _focus =_). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top LD dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1.
+
+**Recommendations**
+This is particularly useful to disentangle drivers of biological processes in the case of nested, multidimensional study designs with multiple variables affecting groups of samples. 
+
+- The correlation between the projected coordinates and the average normalised and scaled gene expression across each category is calculated with a user-selected statistical test, such as Pearson and Spearman linear correlations. The results are stored in two function outputs: projection (which includes the coordinates of each sample and information about the most extreme groups for each gene category) and information (which includes the number of PC dimensions retained for each gene category and correlation test results).
+
 ---
 
 ## Installation
@@ -28,19 +53,6 @@ In the case of complex, nested experimental treatments, the combination of PCA +
 
 ---- three levels: choose how to derive distance between samples (eg. group), how to drive lda, what gets presented on final radar plot.
 
-## Detailed description
-RadarOmics is a R package designed to summarise the expression patterns of genes within predefined biological categories using dimensional reduction analysis and radar plot visualisations. The package dependencies are dplyr, ggplot2, ggradar, and tidyr and consists in three main functions: import_data(), dim_reduction(), and plot_radar().
-
-Prior to using the package, three data frames must be prepared: 1) a gene count matrix normalised according to the preferred dimensional reduction method, e.g., variance-stabilising transformation prior to running Principal Component Analysis; 2) sample information including the name of the samples and their corresponding group; 3) gene information with the gene identifiers and user-defined categories based on e.g., manually curated lists, Gene Ontology terms, KEGG pathways.
-
-import_data() is used to upload these three data frames into the package.
-
-Dimensional reduction is then performed with dim_reduction(), with three options:
-- method = "scale"
-- method = "pca". This starts with generating a Principal Component Analysis (prcomp(,scale=TRUE) from base R package stats) for each category of genes. The minimum number of dimensions accounting for a user-defined percentage of the total variance (*e.g.,* 25, 50, 75%) is selected and the average coordinates of all samples from each group are calculated. The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. Each sample is projected onto this main axis, yielding points along a segment bounded by the two most extreme samples. The two extreme samples are assigned values of 0 and 1. To determine which sample has a value of 0 or 1, the gene expression levels of the two sites with the most extreme average projections along the segment are compared, and the sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity was set to have a value of 1. The correlation between the projected coordinates and the average normalised and scaled gene expression across each category is calculated with a user-selected statistical test, such as Pearson and Spearman linear correlations. The results are stored in two function outputs: projection (which includes the coordinates of each sample and information about the most extreme groups for each gene category) and information (which includes the number of PC dimensions retained for each gene category and correlation test results).
-- method = "lda"
-
-Lastly, radar plots summarising the projected coordinates of each sample across each gene category are generated. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the gene information file unless a different order is specified by the user.
 
 ## Implementation and example of use
 
