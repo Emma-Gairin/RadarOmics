@@ -137,9 +137,10 @@ dim_reduction_output = dim_reduction(
   data_input,
   method = "pca")
 ```
-
+#
 **dim_reduction()** yields multiple objects.
 By using scaling, PCA, or LDA, it obtains a value between 0 and 1 for each sample.
+#
 $projection provides, for each sample and biological category, the two furthest groups (e.g., stages 1 and 6 here), 
 ```r
 head(dim_reduction_output$projection)
@@ -156,7 +157,7 @@ head(dim_reduction_output$projection)
 |SRR7610168 |vision   |s5-s1           | -5.911884|            0.0000000|s5    |
 |SRR7610169 |vision   |s5-s1           | -3.772787|            0.1528812|s6    |
 |SRR7610170 |vision   |s5-s1           | -4.073592|            0.1313827|s6    |
-
+#
 $information provides the category, number of variables (genes here) in the category also found in the counts table, the number of PCA dimensions retained and the variance they explain (default: threshold = 0.5 - so all sum_variance_kept_pcs > 0.5), and the correlation between the extracted value for each sample and the average gene expression of all genes in the category (default: spearman correlation test). 
 ```r
 head(dim_reduction_output$information)
@@ -170,6 +171,7 @@ head(dim_reduction_output$information)
 |thyroid          |          31|PCA    |       3|             0.5859959|            0.5142857|                   0.0184021|
 |betaoxi          |          14|PCA    |       1|             0.6837123|            0.9337662|                   0.0000050|
 
+#
 $pca_information provides key details for plotting PCA outputs for each category and visualising the main axis of variance (only for the first two PCs)
 ```r
 head(dim_reduction_output$pca_information)
@@ -183,6 +185,7 @@ head(dim_reduction_output$pca_information)
 |digestion        |PCA    |       2| 0.4037782| 0.1465124|  3.8e-16|           -0.1536375|
 |gastrointestinal |PCA    |       2| 0.4675435| 0.2194519|  1.8e-16|           -0.9765832|
 
+#
 $pca provides the sample coordinates for the PCAs performed for each set of genes. Here is the result for the first 10 PCs of the appetite genes.
 ```r
 head(dim_reduction_output$pca$appetite[,1"10])
@@ -196,6 +199,7 @@ head(dim_reduction_output$pca$appetite[,1"10])
 |SRR7610145 | -0.8675218| 3.211298|  1.7897778|  1.9636571|  1.7966160|  1.1435161|  1.6665057| -1.7197282|  1.2747393|  2.6163786|
 |SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
 
+#
 #### Plotting
 Using **plot_radar()** will plot the value extracted for each sample and biological category.
 ```r
@@ -203,6 +207,7 @@ plot_radar(data_input, dim_reduction_output)
 ```
 ![Radar plot for stage 1](example1/stage_1_raw.png)
 
+#
 The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
 ```r
 category_list_names = c(
@@ -220,6 +225,7 @@ plot_radar(data_input, dim_reduction_output, category_list)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
 
+#
 Users can also modify the size of the labels, control the order of each group, and display radar plots together
 ```r
 radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
@@ -228,11 +234,12 @@ wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
 
+#
 We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
 ![Radar plots for each stage](example1/all_stages_manualedit.png)
 
-
-
+#
+#
 ### Example #2 - method = "lda"
 Here we go through an example pipeline using method = "lda" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure conditions (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)).
