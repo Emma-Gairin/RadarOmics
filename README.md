@@ -30,8 +30,8 @@ Users can mix-and-match methods and manually create the table to feed into **plo
 
 ---
 ### Recommendations
-- method = **"scale"** is recommended only in the case of biological processes with few genes/proteins/others ( < 5 -10) when expression levels are consistent or positively correlated across the process
-- method = **"pca"** is recommended when using the package with simple experimental designs (_e.g.,_ one dimensional developmental series with a few stages, see example #1 below) or with complex experimental designs where users want to preserve the variance across all samples (particularly when the effect of various co-acting variables on the samples is similar in extent or depends on the biological process of interest).
+- method = **"scale"** is recommended only in the case of biological processes with few genes/proteins/others (< 5 -10) when expression levels are consistent or positively correlated across the process
+- method = **"pca"** is recommended when using the package with simple experimental designs (_e.g.,_ one dimensional developmental series with a few stages, see example #1 below) or with complex experimental designs where users want to preserve the variance across all samples (particularly during data exploration or when the effect of various co-acting variables on the samples is similar in extent or depends on the biological process of interest).
 - method = **"lda"** is recommended when using the package with complex experimental designs where one variable acting on the samples has a strong influence that is not the main focus of the study (_e.g.,_ developmental timeseries with a few stages and multiple treatments: in that case, on a PCA, the signal of the developmental stage obscures that of the treatment and so using _lda_focus = "treatment"_ would better disentangle the effect of the treatment on the samples).
 
 ### Notes
