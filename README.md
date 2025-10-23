@@ -69,7 +69,7 @@ We provide various data inspection solutions when using method = **"pca"** or **
   
 Find examples of data inspection outputs [here](#data-inspection).
 
-
+ 
 
 ---
 
