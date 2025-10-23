@@ -36,12 +36,13 @@ Users can mix-and-match methods and manually create the table to feed into **plo
 
 ### Notes
 RadarOmics is intended to facilitate data visualisation across many biological processes and samples, and while offering multiple analytical options, it is best used in combination with other approaches to validate the results.
-We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
-- The number of PC and LD dimensions retained,
-- The correlation between the projected coordinates from PCAs and LDAs and the average scaled gene expression across each category is calculated with a user-selected statistical test, such as Pearson and Spearman linear correlations,
-- The coordinates of the samples for each PCA and LDA generated are returned by the function **dim_reduction()**. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**.
+In particular, for methods "pca" and "lda" we recommend testing multiple _threshold_ and _lda_threshold_ values, inspecting the output of **dim_reduction()**, producing multiple options of radar plots, and cross-checking results for each biological category with other visualisations (_e.g.,_ heatmaps for each biological category) before making a final choice.
 
-For methods "pca" and "lda" we recommend testing multiple _threshold_ and _lda_threshold_ values, inspecting the output of **dim_reduction()**, producing multiple options of radar plots, and cross-checking results for each biological category with other visualisations (_e.g.,_ heatmaps for each biological category) before making a final choice.
+We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
+- __$information__, output from __dim_reduction()__, provides the number of PC and LD dimensions retained for each category
+- __$information__, output from __dim_reduction()__, provides the linear correlation between the projected coordinates from PCAs and LDAs and the average scaled gene expression across each category, which is calculated with a user-selected statistical test (_correlation_method_ argument in __dim_reduction()__), such as Pearson and Spearman correlation tests,
+- __$pca_information__ and __$lda_information__, outputs from __dim_reduction()__, provide the coordinates of the samples for each PCA and LDA generated. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**.
+
 
 
 ---
