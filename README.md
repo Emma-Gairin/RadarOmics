@@ -63,7 +63,7 @@ In particular, for methods "pca" and "lda" we recommend testing multiple _thresh
 We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
 - __$information__, output from __dim_reduction()__, provides the number of PC and LD dimensions retained for each category
 - __$information__, output from __dim_reduction()__, provides the linear correlation between the projected coordinates from PCAs and LDAs and the average scaled gene expression of each sample for each category (in detail - 0-1 scaling of the expression across samples, average of all genes/proteins/others in biological category for each sample, 0-1 scaling of this value based on most extreme samples). The correlation is is calculated with a user-selected statistical test (_correlation_method_ argument in __dim_reduction()__), such as Pearson or Spearman (default: "spearman"),
-- __$pca_information__ and __$lda_information__, outputs from __dim_reduction()__, provide the coordinates of the samples for each PCA and LDA generated. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**.
+- __$dimred_information__, outputs from __dim_reduction()__, provide the coordinates of the samples for each PCA and LDA generated. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**.
 
 
 
@@ -195,9 +195,9 @@ head(dim_reduction_output$information)
 
 *In this case, most biological categories show consistent expression across genes (_i.e.,_ genes show overall higher expression in a given sample). An exception is genes in the "thyroid" category here. Thyroid-related gene expression is often complex, and here different samples show different profiles with various genes acting in a complex heterogeneous pattern. Thus, for this biological category, the values extracted from **dim_reduction()** do not directly relate the overall gene expression level.*
 #
-$pca_information provides key details for plotting PCA outputs for each category and visualising the main axis of variance (only for the first two PCs)
+$dimred_information provides key details for plotting PCA outputs for each category and visualising the main axis of variance (only for the first two PCs)
 ```r
-head(dim_reduction_output$pca_information)
+head(dim_reduction_output$dimred_information)
 ```
 |category         |method | num_pcs|       pc1|       pc2| centroid| maxvariancedirection|
 |:----------------|:------|-------:|---------:|---------:|--------:|--------------------:|
@@ -425,6 +425,10 @@ wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nro
 ---
 ## Data inspection
 
+### Basic information
+Basic information about the number of genes/proteins/others used in each category and statistics about the values extracted by **dim_reduction()** are provided by the outputs $projection, $information, and $dimred_information. See examples of output in the section "Example $1".
+
+### PCA and LDA plots
 In addition to yielding simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category in $information from the output of **dim_reduction()**, we also provide options to plot the PCAs and LDAs and visualise the main axis of variance when > 1 dimension is retained (if the first dimension passes the user-defined variance threshold, the PC1 or LD1 coordinate is used to derive values for each sample and biological category).
 
 Still using the dataset from zebrafish, we use **plot_dimension()** to visualise the first two dimensions of the dimensional reduction approach chosen (here, PCA if the variance explained by PC1 is >0.8, if not, LDA) and the main axis of variance (when more than 1 LD is retained, if not the LD1 coordinate is used by **dim_reduction()** to extract the values to plot on the radars for each sample and biological category).
