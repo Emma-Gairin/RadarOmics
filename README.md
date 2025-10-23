@@ -268,7 +268,7 @@ radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.
 
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
-![Radar plots for each stage](example1/all_stages_scale.png)
+![Radar plots for each stage](example1/all_samples_scale.png)
 
 ---
 ## Example #2 - method = "lda"
