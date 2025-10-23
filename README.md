@@ -325,7 +325,7 @@ data_input$gene_meta
 |ENSDARG00000078701 |brain_development |
 |ENSDARG00000018765 |brain_development |
 
-### Dimensional reduction
+
 Once the dataset is uploaded, we first explore the data with method = **"pca"** and plot the results.
 ```r
 dim_reduction_output = dim_reduction(
@@ -362,3 +362,9 @@ wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ![Radar plot for all samples](example2/all_samples_lda_08_08_substance_concentration.png)
 
 In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern the biological processes modified by each treatment, and at which hour post fertilisation they are affected.
+Note that the values extracted by **dim_reduction()** do not necessarily reflect the overall gene expression level (higher _vs._ lower) but rather show how distant samples are from each other in the multidimensional space. We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
+
+---
+## Data inspection
+
+
