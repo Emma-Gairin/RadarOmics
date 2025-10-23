@@ -12,30 +12,30 @@ Prior to using the package, three data frames must be prepared: 1) a count matri
 The three main functions of the package are:
 **import_data()** is used to upload these three data frames into the package.
 
-**dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological process (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological process. There are three options of dimensional reduction:
+**dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological category (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological category. There are three options of dimensional reduction:
 - method = **"scale"**,
 - method = **"pca"**,
 - method = **"lda"**
 
 **plot()** is used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
-Users can mix-and-match methods and manually create the table to feed into **plot()**, in particular if some biological processes have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot()**.
+Users can mix-and-match methods and manually create the table to feed into **plot()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot()**.
 
 ---
 ## dim_reduction() method options
-- method = **"scale"** scales the expression level of each gene/protein/other for each category of biological process of interest to a value between 0 and 1 (0: sample with lowest expression level, 1: highest). The average 0-1 scaled expression level across all genes/proteins/others for each biological process is then calculated for each sample, yielding one value between 0 and 1 for each sample and category of biological process.
+- method = **"scale"** scales the expression level of each gene/protein/other for each biological category to a value between 0 and 1 (0: sample with lowest expression level, 1: highest). The average 0-1 scaled expression level across all genes/proteins/others for each biological category is then calculated for each sample, yielding one value between 0 and 1 for each sample and biological category.
   
-- method = **"pca"** starts with generating a **Principal Component Analysis** (**prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each category of biological process of interest. The minimum number of PC dimensions  accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). If PC1 represents a higher portion of the variance than __threshold__ when inspecting a given biological process category, the PC1 coordinate of each sample will be used. If more than 1 dimension is necessary to reach __threshold__, the average coordinates of all samples from each **group** for these top PC dimensions are calculated (thus, the choice of how to **group** samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top PC dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1.
+- method = **"pca"** starts with generating a **Principal Component Analysis** (**prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each biological category. The minimum number of PC dimensions  accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). If PC1 represents a higher portion of the variance than __threshold__ when inspecting a given biological category, the PC1 coordinate of each sample will be used. If more than 1 dimension is necessary to reach __threshold__, the average coordinates of all samples from each **group** for these top PC dimensions are calculated (thus, the choice of how to **group** samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top PC dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1.
   
-- method = **"lda"** starts with generating a Principal Component Analysis (**pca = prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each category of biological process of interest. The minimum number of PC dimensions (**num_pcs**) accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). If PC1 represents a higher portion of the variance than __threshold__ when inspecting a given biological process category, the PC1 coordinate of each sample will be used. If more than 1 dimension is necessary to reach __threshold__, the coordinates of each sample across these top dimensions are used in a Linear Discriminant Analysis (LDA) with the function **MASS::lda(pca$x[,1:num_pcs], grouping = lda_focus**. This LDA maximises the variance between samples based on a user-defined ___lda_focus___ in **dim_reduction()**, which by default is "group" but can be set to a different column from the sample information table. Once the LDA is performed, the minimum number of LD dimensions accounting for a user-defined percentage of the total variance is selected (___lda_threshold___ = *e.g.,* 0.8, 0.9). The average coordinates of all samples from each **group** for these top LD dimensions are calculated (thus, the choice of how to group samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top LD dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1. 
+- method = **"lda"** starts with generating a Principal Component Analysis (**pca = prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each biological category. The minimum number of PC dimensions (**num_pcs**) accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). If PC1 represents a higher portion of the variance than __threshold__ when inspecting a given biological category, the PC1 coordinate of each sample will be used. If more than 1 dimension is necessary to reach __threshold__, the coordinates of each sample across these top dimensions are used in a Linear Discriminant Analysis (LDA) with the function **MASS::lda(pca$x[,1:num_pcs], grouping = lda_focus**. This LDA maximises the variance between samples based on a user-defined ___lda_focus___ in **dim_reduction()**, which by default is "group" but can be set to a different column from the sample information table. Once the LDA is performed, the minimum number of LD dimensions accounting for a user-defined percentage of the total variance is selected (___lda_threshold___ = *e.g.,* 0.8, 0.9). The average coordinates of all samples from each **group** for these top LD dimensions are calculated (thus, the choice of how to group samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top LD dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1. 
 
 ---
 ### Recommendations
-- method = **"scale"** is recommended only in the case of biological processes with few genes/proteins/others (< 5 -10) when expression levels are consistent or positively correlated across the process
-- method = **"pca"** is recommended when using the package with simple experimental designs (_e.g.,_ one dimensional developmental series with a few stages, see ___example #1___ below) or with complex experimental designs where users want to preserve the variance across all samples (particularly during data exploration or when the effect of various co-acting variables on the samples is similar in extent or depends on the biological process of interest).
+- method = **"scale"** is recommended only in the case of biological categories with few genes/proteins/others (< 5 -10) when expression levels are consistent or positively correlated across the category
+- method = **"pca"** is recommended when using the package with simple experimental designs (_e.g.,_ one dimensional developmental series with a few stages, see ___example #1___ below) or with complex experimental designs where users want to preserve the variance across all samples (particularly during data exploration or when the effect of various co-acting variables on the samples is similar in extent or depends on the biological category of interest).
 - method = **"lda"** is recommended when using the package with complex experimental designs where one variable acting on the samples has a strong influence that is not the main focus of the study (_e.g.,_ developmental timeseries with a few stages and multiple treatments: in that case, on a PCA, the signal of the developmental stage obscures that of the treatment and so using _lda_focus = "treatment"_ would better disentangle the effect of the treatment on the samples, see ___example #2___ below).
 
 ### Notes
-RadarOmics is intended to facilitate data visualisation across many biological processes and samples, and while offering multiple analytical options, it is best used in combination with other approaches to validate the results.
+RadarOmics is intended to facilitate data visualisation across many biological categories and samples, and while offering multiple analytical options, it is best used in combination with other approaches to validate the results.
 In particular, for methods "pca" and "lda" we recommend testing multiple _threshold_ and _lda_threshold_ values, inspecting the output of **dim_reduction()**, producing multiple options of radar plots, and cross-checking results for each biological category with other visualisations (_e.g.,_ heatmaps for each biological category) before making a final choice.
 
 We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
@@ -62,7 +62,7 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ## Implementation and example of use
 
 ### method = "pca"
-Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological processes, of samples from different groups.
+Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
 #### Load the package
@@ -75,7 +75,7 @@ library(RadarOmics)
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
-- gene list with two columns: genes and their categories (here, various biological processes, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
+- gene list with two columns: genes and their categories (here, various biological categories, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
 
 ```r
 # import data
@@ -125,12 +125,11 @@ head(data_input$gene_meta)
 |XP_023135802.2 |vision   |
 
 #### Dimensional reduction
-Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 40 % of variance (defined by threshold = 0.4).
+Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
 ```r
 dim_reduction_output = dim_reduction(
   data_input,
-  method = "pca",
-  threshold = 0.4, focus= "group") # group here is the developmental stage
+  method = "pca")
 ```
 
 **dim_reduction()** yields multiple objects.
@@ -141,39 +140,38 @@ head(dim_reduction_output$projection)
 ```
 |sample     |category |furthest_groups |   distance| normalised_distance|group |
 |:----------|:--------|:---------------|----------:|-------------------:|:-----|
-|SRR7610144 |appetite |s6-s1           |  2.8323352|           0.7202689|s2    |
-|SRR7610145 |appetite |s6-s1           |  2.8659379|           0.7223736|s2    |
-|SRR7610146 |appetite |s6-s1           |  2.8315239|           0.7202181|s3    |
-|SRR7610147 |appetite |s6-s1           |  2.7019725|           0.7121038|s3    |
-|SRR7610148 |appetite |s6-s1           |  0.7051692|           0.5870365|s3    |
-|SRR7610149 |appetite |s6-s1           | -0.2501827|           0.5271992|s4    |
+|SRR7610144 |appetite |s1-s6           | -2.8395655|           0.7192360|s2    |
+|SRR7610145 |appetite |s1-s6           | -2.8303468|           0.7186562|s2    |
+|SRR7610146 |appetite |s1-s6           | -2.8207618|           0.7180534|s3    |
+|SRR7610147 |appetite |s1-s6           | -2.6803610|           0.7092227|s3    |
+|SRR7610148 |appetite |s1-s6           | -0.7085984|           0.5852071|s3    |
+|SRR7610149 |appetite |s1-s6           |  0.1988189|           0.5281344|s4    |
 
-$information provides the number of dimensions retained from the PCA (and LDA if using LDA), the variance described by PC1 and PC2, the number of genes in the category, and the correlation between the extracted value for each sample and the average gene expression of all genes in the category (default: spearman). "flipped" is TRUE is the normalised_distance reported in $projection was reversed (i.e., if 
+$information provides the category, number of variables (genes here) in the category also found in the counts table, the number of PCA dimensions retained and the variance they explain (default: threshold = 0.5 - so all sum_variance_kept_pcs > 0.5), and the correlation between the extracted value for each sample and the average gene expression of all genes in the category (default: spearman correlation test). 
 ```r
 head(dim_reduction_output$information)
 ```
-
-|category         |method | num_pcs| sum_variance_kept_pcs|       pc1|       pc2| n_genes| expr_pca_correlation| expr_pca_correlation_pvalue|
-|:----------------|:------|-------:|---------------------:|---------:|---------:|-------:|--------------------:|---------------------------:|
-|appetite         |PCA    |       2|             0.4079186| 0.2365357| 0.1713829|      80|            0.4194805|                   0.0596069|
-|digestion        |PCA    |       1|             0.4037782| 0.4037782| 0.1465124|     121|            0.9883117|                   0.0000044|
-|gastrointestinal |PCA    |       1|             0.4675435| 0.4675435| 0.2194519|      17|            0.9896104|                   0.0000044|
-|corticoids       |PCA    |       2|             0.4135218| 0.2340784| 0.1794435|      28|            0.3623377|                   0.1070934|
-|thyroid          |PCA    |       2|             0.4327358| 0.2307809| 0.2019549|      31|            0.5961039|                   0.0051323|
-|betaoxi          |PCA    |       1|             0.6837123| 0.6837123| 0.1197882|      14|            0.9337662|                   0.0000050|
+|category         | n_variables|method | num_pcs| sum_variance_kept_pcs| expr_pca_correlation| expr_pca_correlation_pvalue|
+|:----------------|-----------:|:------|-------:|---------------------:|--------------------:|---------------------------:|
+|appetite         |          80|PCA    |       3|             0.5578087|            0.4324675|                   0.0515594|
+|digestion        |         121|PCA    |       2|             0.5502907|            0.9844156|                   0.0000045|
+|gastrointestinal |          17|PCA    |       2|             0.6869954|            0.9740260|                   0.0000048|
+|corticoids       |          28|PCA    |       3|             0.5676356|            0.3935065|                   0.0785951|
+|thyroid          |          31|PCA    |       3|             0.5859959|            0.5142857|                   0.0184021|
+|betaoxi          |          14|PCA    |       1|             0.6837123|            0.9337662|                   0.0000050|
 
 $pca_information provides key details for plotting PCA outputs for each category and visualising the main axis of variance (only for the first two PCs)
 ```r
-head(dim_reduction_output$pca_information
+head(dim_reduction_output$pca_information)
 ```
 |category         |method | num_pcs|       pc1|       pc2| centroid| maxvariancedirection|
 |:----------------|:------|-------:|---------:|---------:|--------:|--------------------:|
-|appetite         |PCA    |       2| 0.2365357| 0.1713829|        0|           -0.7147671|
-|appetite         |PCA    |       2| 0.2365357| 0.1713829|        0|            0.6993625|
-|digestion        |PCA    |       1| 0.4037782| 0.1465124|       NA|                   NA|
-|gastrointestinal |PCA    |       1| 0.4675435| 0.2194519|       NA|                   NA|
-|corticoids       |PCA    |       2| 0.2340784| 0.1794435|        0|            0.0238073|
-|corticoids       |PCA    |       2| 0.2340784| 0.1794435|        0|            0.9997166|
+|appetite         |PCA    |       3| 0.2365357| 0.1713829| -6.3e-17|            0.7167241|
+|appetite         |PCA    |       3| 0.2365357| 0.1713829|  1.0e-15|           -0.6971527|
+|appetite         |PCA    |       3| 0.2365357| 0.1713829| -1.2e-16|            0.0168694|
+|digestion        |PCA    |       2| 0.4037782| 0.1465124|  3.2e-16|           -0.9881273|
+|digestion        |PCA    |       2| 0.4037782| 0.1465124|  3.8e-16|           -0.1536375|
+|gastrointestinal |PCA    |       2| 0.4675435| 0.2194519|  1.8e-16|           -0.9765832|
 
 $pca provides the sample coordinates for the PCAs performed for each set of genes. Here is the result for the first 10 PCs of the appetite genes.
 ```r
@@ -189,11 +187,24 @@ head(dim_reduction_output$pca$appetite[,1"10])
 |SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
 
 #### Plotting
+Using **plot_radar()** will plot the value extracted for each sample and biological category.
 ```r
 plot_radar(data_input,dim_reduction_output)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
 
+The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified manually to change the order or remove some categories from the radar plot. 
+```r
+category_list_names = c(
+  "appetite","glycolysis","lactic","krebs","betaoxi",
+                        "cholesterol","fatty","digestion","gastrointestinal",
+                        "corticoids",
+                        "thyroid","ossification","vision",
+                        "pigmentation","melanophore","iridophore","xanthophore")
+category_list=cbind(category_list_names,c(1:length(category_list_names)))
+colnames(category_list)=c("category","order")
+category_list=as.data.frame(category_list)
+```
 You can order and display plots together
 ```r
 ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
