@@ -152,7 +152,7 @@ data_input$gene_meta
 
 *Note that the package needs a column named "category".*
 #
-### Dimensional reduction
+### Dimensional reduction - PCA
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
 ```r
 dim_reduction_output = dim_reduction(
@@ -261,7 +261,8 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ![Radar plots for each stage](example1/all_stages.png)
 *Figure 5: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
 
-#
+### Dimensional reduction and plotting - scale
+
 
 Below, we show the output using method = **"scale"**. For some biological categories, the results look similar to those on the radars obtained with method = **"pca"** - which is to be expected when the values extracted for each sample are closely linearly correlated to the mean expression in the sample (see $information output from __dim_reduction()__).
 ```r
@@ -337,6 +338,8 @@ data_input$gene_meta
 |ENSDARG00000018765 |brain_development |
 
 
+### Dimensional reduction and plotting - PCA with "group"
+
 Once the dataset is uploaded, we first explore the data with method = **"pca"** and plot the results.
 ```r
 dim_reduction_output = dim_reduction(
@@ -355,6 +358,7 @@ wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
 
 ###
+### Dimensional reduction and plotting - PCA with other grouping design
 
 We can modify the function call by adding the argument _focus = "substance_concentration"_ which will use substance + concentration rather than groups to determine the main axis of variance when > 1 PC is retained.
 ```r
@@ -373,6 +377,7 @@ wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 *Figure 8: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
 
 ###
+### Dimensional reduction and plotting - LDA
 
 As an alternative to modifying the sample projection axes on the PCAs, in the case of complex and nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
 
@@ -402,6 +407,9 @@ In this instance, forcing the variance to capture the footprint of the substance
 Note that the values extracted by **dim_reduction()** do not necessarily reflect the overall gene expression level (_i.e.,_ higher _vs._ lower) but rather show how distant samples are from each other in the multidimensional space.
 
 We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
+
+### Plotting - other grouping design
+
 
 ---
 Note that users can customise the grouping of the samples on radar plots using the argument _radar_grouping_ in **plot_radar()**
