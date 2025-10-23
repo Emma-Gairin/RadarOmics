@@ -112,7 +112,7 @@ head(data_input$sample_meta)
 
 - Gene information with columns "gene" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
 ```r
-head(data_input$gene_meta)
+data_input$gene_meta
 ```
 |gene           |category |
 |:--------------|:--------|
@@ -144,8 +144,12 @@ head(dim_reduction_output$projection)
 |SRR7610145 |appetite |s1-s6           | -2.8303468|           0.7186562|s2    |
 |SRR7610146 |appetite |s1-s6           | -2.8207618|           0.7180534|s3    |
 |SRR7610147 |appetite |s1-s6           | -2.6803610|           0.7092227|s3    |
-|SRR7610148 |appetite |s1-s6           | -0.7085984|           0.5852071|s3    |
-|SRR7610149 |appetite |s1-s6           |  0.1988189|           0.5281344|s4    |
+...
+|SRR7610166 |vision   |s5-s1           | -4.127260|            0.1275470|s7    |
+|SRR7610167 |vision   |s5-s1           | -3.394484|            0.1799185|s6    |
+|SRR7610168 |vision   |s5-s1           | -5.911884|            0.0000000|s5    |
+|SRR7610169 |vision   |s5-s1           | -3.772787|            0.1528812|s6    |
+|SRR7610170 |vision   |s5-s1           | -4.073592|            0.1313827|s6    |
 
 $information provides the category, number of variables (genes here) in the category also found in the counts table, the number of PCA dimensions retained and the variance they explain (default: threshold = 0.5 - so all sum_variance_kept_pcs > 0.5), and the correlation between the extracted value for each sample and the average gene expression of all genes in the category (default: spearman correlation test). 
 ```r
@@ -189,11 +193,11 @@ head(dim_reduction_output$pca$appetite[,1"10])
 #### Plotting
 Using **plot_radar()** will plot the value extracted for each sample and biological category.
 ```r
-plot_radar(data_input,dim_reduction_output)
+plot_radar(data_input, dim_reduction_output)
 ```
-![Radar plot for stage 1](example1/stage_1.png)
+![Radar plot for stage 1](example1/stage_1_raw.png)
 
-The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified manually to change the order or remove some categories from the radar plot. 
+The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
 ```r
 category_list_names = c(
   "appetite","glycolysis","lactic","krebs","betaoxi",
@@ -204,11 +208,17 @@ category_list_names = c(
 category_list=cbind(category_list_names,c(1:length(category_list_names)))
 colnames(category_list)=c("category","order")
 category_list=as.data.frame(category_list)
+
+
+plot_radar(data_input, dim_reduction_output, category_list)
 ```
-You can order and display plots together
+![Radar plot for stage 1](example1/stage_1.png)
+
+You can also modify the size of the labels, control the order of each group, and display radar plots together
 ```r
+radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
 ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
-wrap_plots(radars[ordered_list],ncol=3,nrow=3)
+wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
 
