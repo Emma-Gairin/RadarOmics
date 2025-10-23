@@ -239,7 +239,7 @@ wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ![Radar plots for each stage](example1/all_stages.png)
 
 #
-We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
+We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots using vector graphics software (we use [Inkscape](https://inkscape.org/)) to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
 ![Radar plots for each stage](example1/all_stages_manualedit.png)
 
 ---
