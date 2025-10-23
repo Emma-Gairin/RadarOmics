@@ -62,7 +62,7 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ```
 
 ---
-## Implementation and example of use
+## Implementation
 
 ---
 ### Example #1 - method = "pca"
