@@ -8,8 +8,8 @@ RadarOmics summarises the expression profiles of genes or other molecules within
 
 Prior to using the package, three data frames must be prepared: 1) a count matrix normalised according to the preferred dimensional reduction method, e.g., variance-stabilising transformation of gene counts prior to running Principal Component Analysis; 2) sample information including the name of the samples and their corresponding group; 3) biological information with the gene/protein/etc. identifiers and their corresponding user-defined categories based on *e.g.,* manually curated lists, Gene Ontology terms, KEGG pathways. See examples of dataset structure below.
 
-The three main functions of the package are:
 #
+The three main functions of the package are:
 **import_data()** is used to upload these three data frames into the package.
 
 **dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological process (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological process. There are three options of dimensional reduction:
@@ -20,6 +20,7 @@ The three main functions of the package are:
 **plot()** is used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
 Users can mix-and-match methods and manually create the table to feed into **plot()**, in particular if some biological processes have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot()**.
 
+#
 ## dim_reduction() method options
 - method = **"scale"** scales the expression level of each gene/protein/other for each category of biological process of interest to a value between 0 and 1 (0: sample with lowest expression level, 1: highest). The average 0-1 scaled expression level across all genes/proteins/others for each biological process is then calculated for each sample, yielding one value between 0 and 1 for each sample and category of biological process.
   
@@ -27,14 +28,13 @@ Users can mix-and-match methods and manually create the table to feed into **plo
   
 - method = **"lda"** starts with generating a Principal Component Analysis (**pca = prcomp(,scale=TRUE)** from base R package _stats_) based on the expression level of each gene/protein/other for each category of biological process of interest. The minimum number of PC dimensions (**num_pcs**) accounting for a user-defined percentage of the total variance is selected (___threshold___ = *e.g.,* 0.25, 0.50, 0.75). The coordinates of each sample across these top dimensions are then used in a Linear Discriminant Analysis (LDA) with the function **MASS::lda(pca$x[,1:num_pcs], grouping = lda_focus**. This LDA maximises the variance between samples based on a user-defined ___lda_focus___ in **dim_reduction()**, which by default is "group" but can be set to a different column from the sample information table. Once the LDA is performed, the minimum number of LD dimensions accounting for a user-defined percentage of the total variance is selected (___lda_threshold___ = *e.g.,* 0.8, 0.9). The average coordinates of all samples from each **group** for these top LD dimensions are calculated (thus, the choice of how to group samples together has an importance on the final result. By default, the package uses the column "group" but this can be modified using the argument ___focus___ in **dim_reduction()). The first eigenvector of the covariance matrix obtained from these averages defines the main axis of variance across groups. This main axis is drawn through the multidimensional space for all top LD dimensions selected. Each sample is projected onto this main axis in multidimensional space, yielding points along a segment bounded by the two most extreme samples. The **two extrememost samples are assigned values of 0 and 1**. To determine which sample has a value of 0 or 1, the expression levels of the two sites with the most extreme average projections along the segment are compared, and the extrememost sample closest to the site with lowest average expression level is set to have a value of 0, while the opposite extremity is set to 1.
 
-**Recommendations**
 #
+**Recommendations**
 method = **"scale"** is recommended only in the case of biological processes with few genes/proteins/others ( < 5 -10) when expression levels are consistent or positively correlated across the process
 method = **"pca"** is recommended when using the package with simple experimental designs (_e.g.,_ one dimensional developmental series with a few stages, see example #1 below) or with complex experimental designs where users want to preserve the variance across all samples (particularly when the effect of various co-acting variables on the samples is similar in extent or depends on the biological process of interest).
 method = **"lda"** is recommended when using the package with complex experimental designs where one variable acting on the samples has a strong influence that is not the main focus of the study (_e.g.,_ developmental timeseries with a few stages and multiple treatments: in that case, on a PCA, the signal of the developmental stage obscures that of the treatment and so using _lda_focus = "treatment"_ would better disentangle the effect of the treatment on the samples).
 
 **Notes**
-#
 RadarOmics is intended to facilitate data visualisation across many biological processes and samples, and while offering multiple analytical options, it is best used in combination with other approaches to validate the results.
 We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
 - The number of PC and LD dimensions retained,
