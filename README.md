@@ -426,7 +426,7 @@ wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nro
 ## Data inspection
 
 ### Basic information
-Basic information about the number of genes/proteins/others used in each category and statistics about the values extracted by **dim_reduction()** are provided by the outputs $projection, $information, and $dimred_information. See examples of output in the section "Example $1".
+Basic information about the number of genes/proteins/others used in each category and statistics about the values extracted by **dim_reduction()** are provided by the outputs $projection, $information, and $dimred_information. See examples of output in the section [Example #1](#dimensional-reduction---PCA).
 
 ### PCA and LDA plots
 In addition to yielding simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category in $information from the output of **dim_reduction()**, we also provide options to plot the PCAs and LDAs and visualise the main axis of variance when > 1 dimension is retained (if the first dimension passes the user-defined variance threshold, the PC1 or LD1 coordinate is used to derive values for each sample and biological category).
