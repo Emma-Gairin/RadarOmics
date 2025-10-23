@@ -248,7 +248,7 @@ radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.
 
 ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
 
-wrap_plots(radars[ordered_list],ncol=4,nrow=2)
+wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
 
@@ -332,43 +332,33 @@ dim_reduction_output = dim_reduction(
   data_input,
   method = "pca")
 
-radars=plot_radar(result, dim_reduction_output,category_list,radar.label.size=3,axis.label.size=2.5)
+radars=plot_radar(result, dim_reduction_output, category_list, axis.label.size=2.5, radar.label.size=3, radar.label.position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
-wrap_plots(radars[unique(result$sample_meta$group)],ncol=5,nrow=3)
+wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_pca.png)
+
 On this plot, we clearly see that developmental stage (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
 
-We now test method = **"lda"** with _lda_focus = substance_.
+In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
+
+We now test method = **"lda"** with _lda_focus = substance_concentration_.
 ```r
 dim_reduction_output = dim_reduction(
   data_input,
   method = "lda",
-  lda_focus = "substance")
+  lda_focus = "substance_concentration",
+  threshold=0.8,
+  lda_threshold = 0.8)
 
-radars=plot_radar(result, dim_reduction_output,category_list,radar.label.size=3,axis.label.size=2.5)
+radars=plot_radar(result, dim_reduction_output, category_list, axis.label.size=2.5, radar.label.size=3, radar.label.position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
-wrap_plots(radars[unique(result$sample_meta$group)],ncol=5,nrow=3)
+wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
+![Radar plot for all samples](example2/all_samples_lda_08_08_substance_concentration.png)
 
-
-
-
-
-
-
-## Important notes
-RadarOmics comes with three main options:
-- dimensional reduction based on expression scaling and averaging (method = "scale") - best for cases with few genes per category or consistent, positively correlated expression patterns.
-- Principal Component Analyses (PCAs) (method = "pca") - unsupervised, unbiased dimensional reduction aiming to maximise the variance across all samples.
-- a combination of PCA and Linear Discriminant Analyses (LDAs) (method = "lda") - can be tailored to maximise the variance between sample groups/treatments of interest.
-
-As a first approach, we recommend using PCAs (method = "pca"). We provide an example of pipeline using a simple developmental timeseries with 7 developmental stages.
-In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles. We provide an example pipeline using a complex developmental timeseries with 3 developmental stages and an exposure to 4 different combinations of doses and chemicals.
-
----- three levels: choose how to derive distance between samples (eg. group), how to drive lda, what gets presented on final radar plot.
-
+In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern the biological processes modified by each treatment, and at which hour post fertilisation they are affected.
