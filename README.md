@@ -99,7 +99,7 @@ library(RadarOmics)
 We are supplying:
 - a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
-- gene list with two columns: genes and their categories (here, various biological categories, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
+- gene list with two columns: genes and their categories (here, various biological categories, _e.g.,_ glycolysis, Krebs cycle, phototransduction). This gene list is derived from a manually curated database ([Herrera et al., 2025](https://doi.org/10.1002/jez.b.23299)].
 
 ```r
 # import data
@@ -229,6 +229,7 @@ Using **plot_radar()** will plot the value extracted for each sample and biologi
 plot_radar(data_input, dim_reduction_output)
 ```
 ![Radar plot for stage 1](example1/stage_1_raw.png)
+*Figure 3: Radar plot for stage 1 of the _A. ocellaris_ dataset obtained with method = **"pca"**, without manually arranging the order of the biological categories around the radar.*
 
 #
 The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
@@ -246,6 +247,7 @@ category_list=as.data.frame(category_list)
 plot_radar(data_input, dim_reduction_output, category_list = category_list)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
+*Figure 4: Radar plot for stage 1 of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
 
 #
 Users can also modify the size of the labels, control the order of each group, and display radar plots together.
@@ -257,6 +259,7 @@ ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
+*Figure 5: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
 
 #
 
@@ -271,6 +274,7 @@ radars = plot_radar(data_input, dim_reduction_output, category_list, axis_label_
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
 ![Radar plots for each stage](example1/all_samples_scale.png)
+*Figure 6: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"scale"**.*
 
 ---
 ## Example #2 - method = "lda"
@@ -279,6 +283,8 @@ Here we go through an example pipeline using method = "lda".
 We use the RNAseq data from the 3-time point developmental series under control (DMSO) and exposure treatments (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)). There are 45 samples in total (3 samples per stage x 3 stages x (1 control + 4 treatments)).
 
 In this experiment, hour post fertilisation has a major footprint on gene expression profiles. Here, we run the pipeline with method = **"pca"** - and see that the values on the radar plot are strongly related to hour post fertilisation. Then, we use method = **"lda"** to extract the effect of the exposure treatments and their concentrations on various biological categories.
+
+The biological categories are those defined for zebrafish in a manually curated database ([Herrera et al., 2025](https://doi.org/10.1002/jez.b.23299)].
 
 ```r
 # load the package
@@ -344,8 +350,11 @@ unique(result$sample_meta$group) # to control the order of the groups
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_pca.png)
+*Figure 7: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
 
 On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
+
+###
 
 We can modify the function call by adding the argument _focus = "substance_concentration"_ which will use substance + concentration rather than groups to determine the main axis of variance when > 1 PC is retained.
 ```r
@@ -361,10 +370,13 @@ unique(result$sample_meta$group) # to control the order of the groups
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_pca_substance_concentration.png)
+*Figure 8: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
+
+###
 
 As an alternative to modifying the sample projection axes on the PCAs, in the case of complex and nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
 
-We now test method = **"lda"** with _lda_focus = "substance_concentration"_, keeing the default _focus = "group"_. If the variance explained by PC1 > 80% of the total variance, the PC1 coordinate of each sample is retained. If not, a LDA is generated and the coordinates of each sample along the top LD dimensions representing at least 80% of the variance are used.
+We thus test method = **"lda"** with _lda_focus = "substance_concentration"_, keeing the default _focus = "group"_. If the variance explained by PC1 > 80% of the total variance, the PC1 coordinate of each sample is retained. If not, a LDA is generated and the coordinates of each sample along the top LD dimensions representing at least 80% of the variance are used.
 
 Using a high threshold for PCA variance allows to retain most of the inter-sample variance before feeding the coordinates to LDA. Users can test multiple thresholds and sets of _focus_ and _lda_focus_ and decide which are best suited for their dataset.
 
@@ -383,6 +395,7 @@ unique(result$sample_meta$group) # to control the order of the groups
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_lda_08_08_substance_concentration.png)
+*Figure 9: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern to what extent biological processes are modified by each treatment, across the different time points.
 
@@ -399,6 +412,7 @@ category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label
 wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nrow=1)
 ```
 ![radar based on substance + concentration grouping rather than all groups](example2/substance_concentration_radar.png)
+*Figure 10: Radar plot for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 ---
 ## Data inspection
@@ -419,15 +433,21 @@ plots$cholesterol # LD1 met the threshold
 plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of the main axis of variance across groups of samples.
 ```
 ![PC1 and 2 for vision](example2/pca_vision.png)
+*Figure 11: PC1 and 2 obtained from the vision-related genes for all samples.*
 *Here we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.*
-#
+
+###
 ![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
+*Figure 12: LD1 and 2 obtained from the glycolysis-related genes for all samples.*
+
 *Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments.*
-#
+###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
+*Figure 13: LD1 and 2 obtained from the cholesterol synthesis-related genes for all samples.*
+
 *Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.*
-
+###
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
+*Figure 14: LD1 and 2 obtained from the thyroid-related genes for all samples.*
+
 *This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.* 
-
-
