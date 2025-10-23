@@ -82,8 +82,8 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ---
 ## Implementation
 
-## Example #1 - method = "pca"
-Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
+## Example #1 - method = "pca" and method = "scale" 
+Here we go through an example pipeline using method = **"pca"** and method = **"scale"** from **dim_reduction()** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)). There are 21 samples in total (3 samples per stage x 7 stages).
 
@@ -257,6 +257,18 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 
 #
 We recommend exporting the output as a PDF with **ggsave("radar.pdf")** and manually editing the plots using vector graphics software (we use [Inkscape](https://inkscape.org/)) to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._) and obtain publication-quality visuals (see Figure 1 above).
+
+Below, we show the output using method = **"scale"**. For most biological categories, the results look similar to the radars obtained with method = **"pca"** - which is to be expected as the values extracted for each sample were closely linearly correlated to the mean expression level of the sample for each biological category.
+```r
+dim_reduction_output = dim_reduction(
+  data_input,
+  method = "scale")
+
+radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1, radar.label.size = 1)
+
+wrap_plots(radars[ordered_list], ncol=4, nrow=2)
+```
+![Radar plots for each stage](example1/all_stages_scale.png)
 
 ---
 ## Example #2 - method = "lda"
