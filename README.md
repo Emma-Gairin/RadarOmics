@@ -379,12 +379,8 @@ plot_radar(data_input, dim_reduction_output)
 
 The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
 ```r
-category_list_names = c(
-  "appetite","glycolysis","lactic","krebs","betaoxi",
-                        "cholesterol","fatty","digestion","gastrointestinal",
-                        "corticoids",
-                        "thyroid","ossification","vision",
-                        "pigmentation","melanophore","iridophore","xanthophore")
+category_list_names =c("glycolysis","betaoxi","krebs","appetite","cholesterol","fatty","digestion","gastrointestinal",
+                        "corticoids","thyroid","ossification","vision")
 category_list=cbind(category_list_names,c(1:length(category_list_names)))
 colnames(category_list)=c("category","order")
 category_list=as.data.frame(category_list)
