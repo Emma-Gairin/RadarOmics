@@ -26,11 +26,11 @@ The three main functions of the package are:
 - method = **"pca"**,
 - method = **"lda"**
 
-**plot()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
+**plot_radar()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples (default grouping is the "group" column of the sample information data frame, unless otherwise specified using _radar_grouping_). The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
 
-Users can mix-and-match methods and manually create the table to feed into **plot()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot()**.
+Users can mix-and-match methods and manually create the table to feed into **plot_radar()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot_radar()**.
 
-While we provide a few options for text size and colour coding as part of **plot**, we recommend exporting the output of **plot()** as a PDF with **ggsave("radar.pdf")** and manually editing the radars using vector graphics software to obtain publication-quality visuals (we use [Inkscape](https://inkscape.org/)). For instance, colour shading can be added as a background to highlight biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._).
+While we provide a few options for text size and colour coding as part of **plot**, we recommend exporting the output of **plot_radar()** as a PDF with **ggsave("radar.pdf")** and manually editing the radars using vector graphics software to obtain publication-quality visuals (we use [Inkscape](https://inkscape.org/)). For instance, colour shading can be added as a background to highlight biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._).
 
 
 ---
@@ -303,7 +303,7 @@ head(data_input$expr[,1:4])
 
 *Note that samples are columns, genes are rows.*
 
-- Sample information with columns "sample", "group", and other information. One radar plot per "group" will be generated.
+- Sample information with columns "sample", "group", and other information. One radar plot per "group" (unless other grouping is specified using _radar_grouping_ in **plot_radar()**) will be generated.
 ```r
 head(data_input$sample_meta)
 ```
@@ -391,6 +391,16 @@ Note that the values extracted by **dim_reduction()** do not necessarily reflect
 We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
 
 ---
+Note that users can customise the grouping of the samples on radar plots using the argument _radar_grouping_ in **plot_radar()**
+```r
+radars=plot_radar(result, dim_reduction_output,radar_grouping = "substance_concentration",
+category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label_position = "top")
+
+wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nrow=1)
+```
+![radar based on substance + concentration grouping rather than all groups](example2/substance_concentration_radar.png)
+
+---
 ## Data inspection
 
 In addition to simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category, we also provide options to plot the output of **dim_reduction()**.
@@ -420,13 +430,4 @@ plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
 *This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.* 
 
----
-Lastly, users can customise the grouping of the samples on radar plots using the argument _radar_grouping_ in **plot_radar()**
-```r
-radars=plot_radar(result, dim_reduction_output,radar_grouping = "substance_concentration",
-category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label_position = "top")
-
-wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nrow=1)
-```
-![radar based on substance + concentration grouping rather than all groups](example2/substance_concentration_radar.png)
 
