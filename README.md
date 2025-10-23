@@ -67,7 +67,7 @@ We provide various data inspection solutions when using method = **"pca"** or **
 - __$dimred_information__, outputs from __dim_reduction()__, provide the coordinates of the samples for each PCA and LDA generated. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**,
 - plotting of PCAs and LDAs for each biological category,
 - plotting of values extracted for each sample and biological category, and statistical testing to detect significant differences across groups of samples.
-- 
+  
 Find examples of data inspection outputs [here](#data-inspection).
 
 
