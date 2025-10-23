@@ -253,39 +253,27 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ![Radar plots for each stage](example1/all_stages.png)
 
 #
-We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots using vector graphics software (we use [Inkscape](https://inkscape.org/)) to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
-![Radar plots for each stage](example1/all_stages_manualedit.png)
+We recommend exporting the output as a PDF with **ggsave("radar.pdf")** and manually editing the plots using vector graphics software (we use [Inkscape](https://inkscape.org/)) to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._) and obtain publication-quality visuals (see Figure 1 above).
 
 ---
 ## Example #2 - method = "lda"
-Here we go through an example pipeline using method = "lda" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
+Here we go through an example pipeline using method = "lda".
 
-We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure treatments (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)). There are 45 samples in total (3 samples per stage x 3 stages x (1 control + 4 treatments)).
+We use the RNAseq data from the 3-time point developmental series under control (DMSO) and exposure treatments (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)). There are 45 samples in total (3 samples per stage x 3 stages x (1 control + 4 treatments)).
 
-In this experiment, the developmental stage of each sample has a major footprint on gene expression profiles. Here, we run the pipeline with method = **"pca"** - and see that the values on the radar plot are strongly related to developmental stage. Then, we use method = **"lda"** to extract the effect of the exposure treatments on various biological categories and disentangle it from the major footprint of development.
+In this experiment, hour post fertilisation has a major footprint on gene expression profiles. Here, we run the pipeline with method = **"pca"** - and see that the values on the radar plot are strongly related to hour post fertilisation. Then, we use method = **"lda"** to extract the effect of the exposure treatments and their concentrations on various biological categories.
 
-### Load the package
 ```r
 # load the package
 library(RadarOmics)
-```
 
-### Import the data
-We are supplying:
-- a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
-- sample information with multiple columns: samples, hours post fertilisation, substance, concentration, and a combination of substance + concentration, substance + hours post fertilisation
-- gene list with two columns: genes and their categories (here, various biological categories, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
-
-```r
 # import data
 data_input = import_data(expr_path = "vsd_zebrafish.csv", sample_meta_path = "sampleinfo_zebrafish.csv", gene_meta_path = "genelist_zebrafish.csv")
 ```
-- Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
+Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
 ```r
 head(data_input$expr[,1:4])
 ```
-
-
 
 |                   | 10_DMSO_Kontrolle2_96h_Eppi-12_Index-B5| 11_DMSO_Kontrolle3_96h_Eppi-13_Index-C5| 12_DMSO_Kontrolle4_96h_Eppi-14_Index-D5| 19_DMSO_Kontrolle3_36h_Eppi-28_Index-C6|
 |:------------------|---------------------------------------:|---------------------------------------:|---------------------------------------:|---------------------------------------:|
@@ -298,7 +286,7 @@ head(data_input$expr[,1:4])
 
 *Note that samples are columns, genes are rows.*
 
-- Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
+- Sample information with columns "sample", "group", and other information. One radar plot per "group" will be generated.
 ```r
 head(data_input$sample_meta)
 ```
@@ -340,7 +328,7 @@ wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_pca.png)
 
-On this plot, we clearly see that developmental stage (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
+On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
 
 In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
 
@@ -361,10 +349,15 @@ wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_lda_08_08_substance_concentration.png)
 
-In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern the biological processes modified by each treatment, and at which hour post fertilisation they are affected.
-Note that the values extracted by **dim_reduction()** do not necessarily reflect the overall gene expression level (higher _vs._ lower) but rather show how distant samples are from each other in the multidimensional space. We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
+In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern to what extent biological processes are modified by each treatment, across the different time points.
+
+Note that the values extracted by **dim_reduction()** do not necessarily reflect the overall gene expression level (_i.e.,_ higher _vs._ lower) but rather show how distant samples are from each other in the multidimensional space.
+
+We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
 
 ---
 ## Data inspection
+
+Using the same dataset from zebrafish, we can check multiple variables.
 
 
