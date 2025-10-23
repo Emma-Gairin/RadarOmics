@@ -19,6 +19,7 @@ The three main functions of the package are:
 - method = **"lda"**
 
 **plot()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
+
 Users can mix-and-match methods and manually create the table to feed into **plot()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot()**.
 
 ---
