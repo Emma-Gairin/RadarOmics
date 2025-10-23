@@ -1,4 +1,4 @@
-# RadarOmics
+<img width="97" height="30" alt="image" src="https://github.com/user-attachments/assets/51db96d1-7a22-45f8-8298-a1d17c8ca5f5" /># RadarOmics
 
 RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction** and visualising the output across samples, treatments, and biological processes with **radar plots**.
 It is designed to handle **complex experimental designs** with >2 treatments, and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar tabular datasets.
@@ -49,7 +49,7 @@ We provide various data inspection solutions when using method = **"pca"** or **
 
 ## Installation
 
-You can install the development version directly from GitHub.
+The development version can be directly installed from GitHub using **remotes::install_github()**.
 
 ```r
 # Install remotes if not already installed
@@ -61,7 +61,7 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 
 ## Implementation and example of use
 
-### method = "pca"
+### Example #1 - method = "pca"
 Here we go through an example pipeline using method = "pca" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
 We use the RNAseq data from the 7-stage developmental series of the false clownfish _Amphiprion ocellaris_ (from [Roux et al. (2023)](https://doi.org/10.1016/j.celrep.2023.112661)).
 
@@ -214,13 +214,183 @@ plot_radar(data_input, dim_reduction_output, category_list)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
 
-You can also modify the size of the labels, control the order of each group, and display radar plots together
+Users can also modify the size of the labels, control the order of each group, and display radar plots together
 ```r
 radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
 ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
 wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
+
+We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
+![Radar plots for each stage](example1/all_stages_manualedit.png)
+
+
+
+### Example #2 - method = "lda"
+Here we go through an example pipeline using method = "lda" based on **RadarOmics** to summarise the gene expression profile, for a pre-defined set of biological categories, of samples from different groups.
+We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure conditions (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)).
+
+#### Load the package
+```r
+# load the package
+library(RadarOmics)
+```
+
+#### Import the data
+We are supplying:
+- a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
+- sample information with multiple columns: samples, hours post fertilisation, substance, concentration, and a combination of substance + concentration, substance + hours post fertilisation
+- gene list with two columns: genes and their categories (here, various biological categories, _e.g.,_ glycolysis, Krebs cycle, phototransduction)
+
+```r
+# import data
+data_input = import_data(expr_path = "vsd_zebrafish.csv", sample_meta_path = "sampleinfo_zebrafish.csv", gene_meta_path = "genelist_zebrafish.csv")
+```
+Here is what the data should look like.
+- Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
+```r
+head(data_input$expr[,1:10])
+```
+|               | SRR7610156| SRR7610157| SRR7610162| SRR7610144| SRR7610145| SRR7610163| SRR7610146| SRR7610147| SRR7610148| SRR7610149|
+|:--------------|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
+|YP_001054867.1 |   13.99266|   14.36672|   14.34720|   14.11891|   14.44253|   14.08794|   14.27059|   14.18767|   14.59782|   15.71519|
+|YP_001054868.1 |   13.57260|   13.89591|   13.76110|   13.66079|   13.99851|   13.51833|   13.67022|   13.61725|   14.24787|   15.25302|
+|YP_001054869.1 |   18.23788|   18.97548|   18.62184|   18.31808|   18.79498|   18.51865|   18.40833|   18.70388|   18.56178|   19.28712|
+|YP_001054870.1 |   15.80561|   16.85047|   16.49806|   16.33397|   16.62497|   16.48044|   16.17988|   16.61900|   16.64477|   17.49150|
+|YP_001054871.1 |   10.60595|   11.21210|   11.32445|   11.69303|   11.67610|   11.26584|   11.17176|   11.72576|   11.77252|   12.31938|
+|YP_001054872.1 |   15.80708|   16.16411|   15.73523|   16.09713|   16.08820|   15.68903|   16.00612|   16.11608|   16.22958|   17.62626|
+
+*Note that samples are columns, genes are rows.*
+
+- Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
+```r
+head(data_input$sample_meta)
+```
+|sample     |group |
+|:----------|:-----|
+|SRR7610156 |s1    |
+|SRR7610157 |s1    |
+|SRR7610162 |s1    |
+|SRR7610144 |s2    |
+|SRR7610145 |s2    |
+|SRR7610163 |s2    |
+
+- Gene information with columns "gene" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
+```r
+data_input$gene_meta
+```
+|gene           |category |
+|:--------------|:--------|
+|XP_023142913.1 |appetite |
+|XP_023142914.1 |appetite |
+|XP_023120868.1 |appetite |
+...
+|XP_054861428.1 |vision   |
+|XP_054861429.1 |vision   |
+|XP_023135802.2 |vision   |
+
+#### Dimensional reduction
+Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
+```r
+dim_reduction_output = dim_reduction(
+  data_input,
+  method = "pca")
+```
+
+**dim_reduction()** yields multiple objects.
+By using scaling, PCA, or LDA, it obtains a value between 0 and 1 for each sample.
+$projection provides, for each sample and biological category, the two furthest groups (e.g., stages 1 and 6 here), 
+```r
+head(dim_reduction_output$projection)
+```
+|sample     |category |furthest_groups |   distance| normalised_distance|group |
+|:----------|:--------|:---------------|----------:|-------------------:|:-----|
+|SRR7610144 |appetite |s1-s6           | -2.8395655|           0.7192360|s2    |
+|SRR7610145 |appetite |s1-s6           | -2.8303468|           0.7186562|s2    |
+|SRR7610146 |appetite |s1-s6           | -2.8207618|           0.7180534|s3    |
+|SRR7610147 |appetite |s1-s6           | -2.6803610|           0.7092227|s3    |
+...
+|SRR7610166 |vision   |s5-s1           | -4.127260|            0.1275470|s7    |
+|SRR7610167 |vision   |s5-s1           | -3.394484|            0.1799185|s6    |
+|SRR7610168 |vision   |s5-s1           | -5.911884|            0.0000000|s5    |
+|SRR7610169 |vision   |s5-s1           | -3.772787|            0.1528812|s6    |
+|SRR7610170 |vision   |s5-s1           | -4.073592|            0.1313827|s6    |
+
+$information provides the category, number of variables (genes here) in the category also found in the counts table, the number of PCA dimensions retained and the variance they explain (default: threshold = 0.5 - so all sum_variance_kept_pcs > 0.5), and the correlation between the extracted value for each sample and the average gene expression of all genes in the category (default: spearman correlation test). 
+```r
+head(dim_reduction_output$information)
+```
+|category         | n_variables|method | num_pcs| sum_variance_kept_pcs| expr_pca_correlation| expr_pca_correlation_pvalue|
+|:----------------|-----------:|:------|-------:|---------------------:|--------------------:|---------------------------:|
+|appetite         |          80|PCA    |       3|             0.5578087|            0.4324675|                   0.0515594|
+|digestion        |         121|PCA    |       2|             0.5502907|            0.9844156|                   0.0000045|
+|gastrointestinal |          17|PCA    |       2|             0.6869954|            0.9740260|                   0.0000048|
+|corticoids       |          28|PCA    |       3|             0.5676356|            0.3935065|                   0.0785951|
+|thyroid          |          31|PCA    |       3|             0.5859959|            0.5142857|                   0.0184021|
+|betaoxi          |          14|PCA    |       1|             0.6837123|            0.9337662|                   0.0000050|
+
+$pca_information provides key details for plotting PCA outputs for each category and visualising the main axis of variance (only for the first two PCs)
+```r
+head(dim_reduction_output$pca_information)
+```
+|category         |method | num_pcs|       pc1|       pc2| centroid| maxvariancedirection|
+|:----------------|:------|-------:|---------:|---------:|--------:|--------------------:|
+|appetite         |PCA    |       3| 0.2365357| 0.1713829| -6.3e-17|            0.7167241|
+|appetite         |PCA    |       3| 0.2365357| 0.1713829|  1.0e-15|           -0.6971527|
+|appetite         |PCA    |       3| 0.2365357| 0.1713829| -1.2e-16|            0.0168694|
+|digestion        |PCA    |       2| 0.4037782| 0.1465124|  3.2e-16|           -0.9881273|
+|digestion        |PCA    |       2| 0.4037782| 0.1465124|  3.8e-16|           -0.1536375|
+|gastrointestinal |PCA    |       2| 0.4675435| 0.2194519|  1.8e-16|           -0.9765832|
+
+$pca provides the sample coordinates for the PCAs performed for each set of genes. Here is the result for the first 10 PCs of the appetite genes.
+```r
+head(dim_reduction_output$pca$appetite[,1"10])
+```
+|           |        PC1|      PC2|        PC3|        PC4|        PC5|        PC6|        PC7|        PC8|        PC9|       PC10|
+|:----------|----------:|--------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
+|SRR7610156 | -5.0416294| 3.781966|  1.4746764|  1.9508387|  0.1837337| -0.2140692| -0.4073693| -2.3561947|  1.2355917|  0.7849125|
+|SRR7610157 | -7.0713019| 3.208837|  0.1010005|  0.3927382| -1.5593034| -2.0210512|  0.1321762|  1.0031456|  3.2866671| -1.2795689|
+|SRR7610162 | -0.0442157| 3.485894|  1.1252763|  1.2029134|  1.2576794|  1.8854425| -0.7047708| -0.4350283| -1.5139857|  0.5091929|
+|SRR7610144 | -2.0167031| 1.988757| -0.4551666| -0.5278917|  0.4099790|  1.2982684|  0.8531442|  0.0507996|  0.8293554| -2.5758929|
+|SRR7610145 | -0.8675218| 3.211298|  1.7897778|  1.9636571|  1.7966160|  1.1435161|  1.6665057| -1.7197282|  1.2747393|  2.6163786|
+|SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
+
+#### Plotting
+Using **plot_radar()** will plot the value extracted for each sample and biological category.
+```r
+plot_radar(data_input, dim_reduction_output)
+```
+![Radar plot for stage 1](example1/stage_1_raw.png)
+
+The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
+```r
+category_list_names = c(
+  "appetite","glycolysis","lactic","krebs","betaoxi",
+                        "cholesterol","fatty","digestion","gastrointestinal",
+                        "corticoids",
+                        "thyroid","ossification","vision",
+                        "pigmentation","melanophore","iridophore","xanthophore")
+category_list=cbind(category_list_names,c(1:length(category_list_names)))
+colnames(category_list)=c("category","order")
+category_list=as.data.frame(category_list)
+
+
+plot_radar(data_input, dim_reduction_output, category_list)
+```
+![Radar plot for stage 1](example1/stage_1.png)
+
+Users can also modify the size of the labels, control the order of each group, and display radar plots together
+```r
+radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
+ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
+wrap_plots(radars[ordered_list],ncol=4,nrow=2)
+```
+![Radar plots for each stage](example1/all_stages.png)
+
+We recommend exporting the output as a PDF (ggsave("radar.pdf",height=10,width=10)) and manually editing the plots to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._). Here is an example:
+![Radar plots for each stage](example1/all_stages_manualedit.png)
+
 
 
 
