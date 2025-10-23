@@ -188,7 +188,18 @@ head(dim_reduction_output$pca$appetite[,1"10])
 |SRR7610145 | -0.8675218| 3.211298|  1.7897778|  1.9636571|  1.7966160|  1.1435161|  1.6665057| -1.7197282|  1.2747393|  2.6163786|
 |SRR7610163 | -2.3259845| 3.260200|  0.5103722|  1.7582506| -0.4610619|  0.4800184| -0.6355526| -0.0900312|  0.1237668| -1.4047689|
 
+#### Plotting
+```r
+plot_radar(data_input,dim_reduction_output)
+```
+![Radar plot for stage 1](example1/stage_1.png)
 
+You can order and display plots together
+```r
+ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
+wrap_plots(radars[ordered_list],ncol=3,nrow=3)
+```
+![Radar plots for each stage](example1/all_stages.png)
 
 
 
