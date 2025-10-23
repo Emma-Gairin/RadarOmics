@@ -8,6 +8,8 @@ RadarOmics summarises the expression profiles of genes or other molecules within
 
 Prior to using the package, three data frames must be prepared: 1) a count matrix normalised according to the preferred dimensional reduction method, e.g., variance-stabilising transformation of gene counts prior to running Principal Component Analysis; 2) sample information including the name of the samples and their corresponding group; 3) biological information with the gene/protein/etc. identifiers and their corresponding user-defined categories based on *e.g.,* manually curated lists, Gene Ontology terms, KEGG pathways. See examples of dataset structure below.
 
+The three main functions of the package are:
+#
 **import_data()** is used to upload these three data frames into the package.
 
 **dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological process (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological process. There are three options of dimensional reduction:
