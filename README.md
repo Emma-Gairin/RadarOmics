@@ -43,7 +43,7 @@ Users can mix-and-match methods and manually create the table to feed into **plo
 ### Visual package description
 For a given biological category, after running a PCA or LDA and selecting the top dimensions, one value is retained per sample (example with 2 PC dimensions):
  ![Extracting a value for each sample using PCA](images/method.png)
-*Figure 2: Methodological sketch describing steps from __dim_reduction()__*
+*Figure 2: Methodological sketch describing steps from __dim_reduction()__*.
 
 ***
 ### Recommendations
