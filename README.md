@@ -417,7 +417,7 @@ wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nro
 ---
 ## Data inspection
 
-In addition to simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category, we also provide options to plot the output of **dim_reduction()**.
+In addition to yielding simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category in $information from the output of **dim_reduction()**, we also provide options to plot the PCAs and LDAs and visualise the main axis of variance when > 1 dimension is retained (if the first dimension passes the user-defined variance threshold, the PC1 or LD1 coordinate is used to derive values for each sample and biological category).
 
 Still using the dataset from zebrafish, we use **plot_dimension()** to visualise the first two dimensions of the dimensional reduction approach chosen (here, PCA if the variance explained by PC1 is >0.8, if not, LDA) and the main axis of variance (when more than 1 LD is retained, if not the LD1 coordinate is used by **dim_reduction()** to extract the values to plot on the radars for each sample and biological category).
 
