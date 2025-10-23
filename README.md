@@ -128,7 +128,7 @@ data_input$gene_meta
 |XP_054861429.1 |vision   |
 |XP_023135802.2 |vision   |
 
-*Note that the package needs a column named "category".
+*Note that the package needs a column named "category".*
 #
 #### Dimensional reduction
 Once the dataset is uploaded, we can run the PCA and extract reduced coordinates from each sample and each biological category based on top PC dimensions representing e.g., 50 % of variance (default _threshold = 0.5_).
