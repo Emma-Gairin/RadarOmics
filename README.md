@@ -11,14 +11,14 @@ Prior to using the package, three data frames must be prepared: 1) a count matri
 ---
 The three main functions of the package are:
 
-**import_data()** is used to upload these three data frames into the package.
+**import_data()** - used to upload these three data frames into the package.
 
-**dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological category (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological category. There are three options of dimensional reduction:
+**dim_reduction()** - performs dimensional reduction based on the subsetted counts matrix for each biological category (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological category. There are three options of dimensional reduction:
 - method = **"scale"**,
 - method = **"pca"**,
 - method = **"lda"**
 
-**plot()** is used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
+**plot()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples. The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
 Users can mix-and-match methods and manually create the table to feed into **plot()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot()**.
 
 ---
