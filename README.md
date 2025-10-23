@@ -44,7 +44,9 @@ While we provide a few options for text size and colour coding as part of **plot
 
 ***
 ### Visual package description
-For a given biological category, after running a PCA or LDA and selecting the top dimensions, one value is retained per sample (example with 2 PC dimensions):
+For a given biological category, after running a PCA or LDA and selecting the top dimensions, one value is retained per sample. If a single dimension is necessary to meet a user-defined threshold of variance, the value is derived from the coordinate of each sample along the first dimension.
+
+If more than 1 dimension is necessary, the samples are projected along the main axis of variance across the groups of samples. The method is illustrated here with 2 PC dimensions:
  ![Extracting a value for each sample using PCA](images/method.png)
 *Figure 2: Methodological sketch describing steps from __dim_reduction()__*.
 
@@ -248,7 +250,7 @@ plot_radar(data_input, dim_reduction_output, category_list)
 #
 Users can also modify the size of the labels, control the order of each group, and display radar plots together.
 ```r
-radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1, radar.label.size = 1)
+radars = plot_radar(data_input, dim_reduction_output, category_list, axis_label_size = 1, radar_label_size = 1)
 
 ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
 
@@ -257,7 +259,6 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ![Radar plots for each stage](example1/all_stages.png)
 
 #
-We recommend exporting the output as a PDF with **ggsave("radar.pdf")** and manually editing the plots using vector graphics software (we use [Inkscape](https://inkscape.org/)) to _e.g.,_ add colour shading to biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._) and obtain publication-quality visuals (see Figure 1 above).
 
 Below, we show the output using method = **"scale"**. For some biological categories, the results look similar to those on the radars obtained with method = **"pca"** - which is to be expected when the values extracted for each sample are closely linearly correlated to the mean expression in the sample (see $information output from __dim_reduction()__).
 ```r
@@ -265,7 +266,7 @@ dim_reduction_output = dim_reduction(
   data_input,
   method = "scale")
 
-radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1, radar.label.size = 1)
+radars = plot_radar(data_input, dim_reduction_output, category_list, axis_label_size = 1, radar_label_size = 1)
 
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
@@ -336,7 +337,7 @@ dim_reduction_output = dim_reduction(
   data_input,
   method = "pca")
 
-radars=plot_radar(result, dim_reduction_output, category_list, axis.label.size=2.5, radar.label.size=3, radar.label.position = "top")
+radars=plot_radar(result, dim_reduction_output, category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
@@ -348,7 +349,10 @@ On this plot, we see that hour post fertilisation (organised by row) exerts a ma
 
 In the case of complex, nested experimental treatments, the combination of PCA + LDA (method = "lda") can be used to better extract the footprint of a given treatment on expression profiles.
 
-We now test method = **"lda"** with _lda_focus = substance_concentration_.
+We now test method = **"lda"** with _lda_focus = substance_concentration_. If the variance explained by PC1 > 80% of the total variance, the PC1 coordinate of each sample is retained. If not, a LDA is generated and the coordinates of each sample along the top LD dimensions representing at least 80% of the variance are used.
+
+Using a high threshold for PCA variance allows to retain most of the inter-sample variance before feeding the coordinates to LDA. Users can test multiple thresholds and decide which are best suited for their dataset.
+
 ```r
 dim_reduction_output = dim_reduction(
   data_input,
@@ -357,7 +361,7 @@ dim_reduction_output = dim_reduction(
   threshold=0.8,
   lda_threshold = 0.8)
 
-radars=plot_radar(result, dim_reduction_output, category_list, axis.label.size=2.5, radar.label.size=3, radar.label.position = "top")
+radars=plot_radar(result, dim_reduction_output, category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
@@ -376,6 +380,29 @@ We recommend checking the various outputs of **dim_reduction()** to fully inspec
 
 In addition to simple markers such as the correlation between the PCA/LDA-derived values for each sample and the expression level in each category, we also provide options to plot the output of **dim_reduction()**.
 
-Still using the dataset from zebrafish, 
+Still using the dataset from zebrafish, we use **plot_dimension()** to visualise the first two dimensions of the dimensional reduction approach chosen (here, PCA if the variance explained by PC1 is >0.8, if not, LDA) and the main axis of variance (when more than 1 LD is retained, if not the LD1 coordinate is used by **dim_reduction()** to extract the values to plot on the radars for each sample and biological category).
 
+Example for glycolysis (LD1 was used).
+```r
+plots=plot_dimensions(data_input, dim_reduction_output,
+                      colour="substance_hpf", shape="hpf",
+                      point_size=3, colour_palette = c("skyblue1","skyblue2","skyblue3","orange","orange3","orange4","pink1","pink2","red3"))
 
+plots$vision # PC1 met the threshold
+plots$glycolysis # LD1 met the threshold
+plots$cholesterol # LD1 met the threshold
+plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of the main axis of variance across groups of samples.
+```
+![PC1 and 2 for vision](example2/pca_vision.png)
+*Here we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.*
+#
+![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
+*Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments.*
+#
+![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
+*Here we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.*
+
+![LD1 and 2 for thyroid](example2/lda_thyroid.png)
+*Here we can see the 
+
+# add a level of complexity by allowing the main axis of variance to be drawn through things other than groups before then deriving value per group
