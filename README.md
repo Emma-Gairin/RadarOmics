@@ -252,7 +252,7 @@ Here we go through an example pipeline using method = "lda" based on **RadarOmic
 
 We use the RNAseq data from the 3-stage developmental series under control (DMSO) and exposure treatments (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)). There are 45 samples in total (3 samples per stage x 3 stages x (1 control + 4 treatments)).
 
-In this experiment, the developmental stage of each sample has a major footprint on gene expression profiles. Here, we run the pipeline first with method = **"pca"** and then explore various outputs provided by method = **"lda"** to extract the effect of the exposure treatments on various biological categories.
+In this experiment, the developmental stage of each sample has a major footprint on gene expression profiles. Here, we run the pipeline with method = **"pca"** - and see that the values on the radar plot are strongly related to developmental stage. Then, we use method = **"lda"** to extract the effect of the exposure treatments on various biological categories and disentangle it from the major footprint of development.
 
 ### Load the package
 ```r
