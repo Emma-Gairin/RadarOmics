@@ -408,10 +408,10 @@ Note that the values extracted by **dim_reduction()** do not necessarily reflect
 
 We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
 
-### Plotting - other grouping design
-
-
 ---
+
+### Alternative plot grouping
+
 Note that users can customise the grouping of the samples on radar plots using the argument _radar_grouping_ in **plot_radar()**
 ```r
 radars=plot_radar(result, dim_reduction_output,radar_grouping = "substance_concentration",
