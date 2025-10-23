@@ -112,7 +112,7 @@ head(data_input$sample_meta)
 |SRR7610145 |s2    |
 |SRR7610163 |s2    |
 
-*Note that the package will look for a column named "group" unless otherwise specified as arguments in **dim_reduction()**.
+*Note that the package will look for a column named "group" unless otherwise specified as arguments in **dim_reduction()**.*
 
 Gene information with columns "gene" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
 ```r
