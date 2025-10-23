@@ -443,6 +443,9 @@ plots$glycolysis # LD1 met the threshold
 plots$cholesterol # LD1 met the threshold
 plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of the main axis of variance across groups of samples.
 ```
+Find examples of plots and some comments below.
+
+
 ![PC1 and 2 for vision](example2/pca_vision.png)
 *Figure 11: PC1 and 2 obtained from the vision-related genes.*
 
@@ -452,7 +455,7 @@ Here, we can see the signature of hour post fertilisation on visual genes, and d
 ![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
 *Figure 12: LD1 and 2 obtained from the glycolysis-related genes, with _lda_focus = "substance_concentration"_.*
 
-Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments.
+Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation and better isolate that of treatments on glycolysis-related genes.
 
 ###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
