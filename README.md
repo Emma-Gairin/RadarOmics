@@ -10,6 +10,7 @@ Prior to using the package, three data frames must be prepared: 1) a count matri
 
 ---
 The three main functions of the package are:
+
 **import_data()** is used to upload these three data frames into the package.
 
 **dim_reduction()** performs dimensional reduction based on the subsetted counts matrix for each biological category (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological category. There are three options of dimensional reduction:
