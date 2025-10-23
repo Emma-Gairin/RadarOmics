@@ -64,9 +64,8 @@ In particular, for methods "pca" and "lda" we recommend testing multiple _thresh
 We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
 - __$information__, output from __dim_reduction()__, provides the number of PC and LD dimensions retained for each category
 - __$information__, output from __dim_reduction()__, provides the linear correlation between the projected coordinates from PCAs and LDAs and the average scaled gene expression of each sample for each category (in detail - 0-1 scaling of the expression across samples, average of all genes/proteins/others in biological category for each sample, 0-1 scaling of this value based on most extreme samples). The correlation is is calculated with a user-selected statistical test (_correlation_method_ argument in __dim_reduction()__), such as Pearson or Spearman (default: "spearman"),
-- __$dimred_information__, outputs from __dim_reduction()__, provide the coordinates of the samples for each PCA and LDA generated. PC1/2 or LD1/2, along with the main axis of variance used to derive a value for each sample (only if the number of dimensions retained is > 1), can be plotted using **plot_dimension()**,
-- plotting of PCAs and LDAs for each biological category,
-- plotting of values extracted for each sample and biological category, and statistical testing to detect significant differences across groups of samples.
+- plotting of PCAs and LDAs for each biological category with **plot_dimensions()** using the output __$dimred_information__ from __dim_reduction()__,
+- plotting of values extracted for each sample and biological category, and statistical testing to detect significant differences across groups of samples, with **plot_boxplot()**.
   
 Find examples of data inspection outputs [here](#data-inspection).
 
