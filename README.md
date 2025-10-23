@@ -229,8 +229,10 @@ plot_radar(data_input, dim_reduction_output, category_list)
 #
 Users can also modify the size of the labels, control the order of each group, and display radar plots together.
 ```r
-radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
-ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
+radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1, radar.label.size = 1)
+
+ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
+
 wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
@@ -378,21 +380,27 @@ plot_radar(data_input, dim_reduction_output)
 
 The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
 ```r
-category_list_names =c("glycolysis","betaoxi","krebs","appetite","cholesterol","fatty","digestion","gastrointestinal",
+category_list_names = c("glycolysis","betaoxi","krebs","appetite","cholesterol",
+                        "fatty","digestion","gastrointestinal",
                         "corticoids","thyroid","ossification","vision")
-category_list=cbind(category_list_names,c(1:length(category_list_names)))
-colnames(category_list)=c("category","order")
-category_list=as.data.frame(category_list)
 
+category_list=cbind(category_list_names,c(1:length(category_list_names)))
+
+colnames(category_list)=c("category","order")
+
+category_list=as.data.frame(category_list)
 
 plot_radar(data_input, dim_reduction_output, category_list)
 ```
 ![Radar plot for stage 1](example1/stage_1.png)
 
+#
 Users can also modify the size of the labels, control the order of each group, and display radar plots together.
 ```r
-radars =plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1,radar.label.size = 1)
-ordered_list <- c("s1","s2","s3","s4","s5","s6","s7")
+radars = plot_radar(data_input, dim_reduction_output, category_list, axis.label.size = 1, radar.label.size = 1)
+
+ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
+
 wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 ![Radar plots for each stage](example1/all_stages.png)
