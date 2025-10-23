@@ -43,9 +43,7 @@ Users can mix-and-match methods and manually create the table to feed into **plo
 For a given biological category, after running a PCA or LDA and selecting the top dimensions, one value is retained per sample (example with 2 PC dimensions):
  ![Extracting a value for each sample using PCA](images/method.png)
 *Figure 2: Methodological sketch describing steps from __dim_reduction()__*
-plot_radar() displays the 0-1 values for each sample and each biological category following dimensional reduction.
- ![Summarising the value for each sample using a radar plot](images/method_2.png)
-*Figure 3: Methodological sketch describing steps from **dim_reduction()** and __plot()__*
+
 ***
 ### Recommendations
 - method = **"scale"** is recommended only in the case of biological categories with few genes/proteins/others (< 5 -10) when expression levels are consistent or positively correlated across the category
