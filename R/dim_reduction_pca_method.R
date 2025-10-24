@@ -11,10 +11,10 @@
 #' @param data_input Expression data, sample information, and biological process list uploaded using import_data()
 #' @param threshold threshold of cumulative variance used to identify the number of PCs to keep,
 #' @param focus grouping of samples used to determine the main axis of variance (default = "group")
-#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category.
+#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").
 #' @return A list with:
 #'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
-#'   - information: data frame with category, number of variables (genes/proteins/others), method used (here, "PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+#'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
 #'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1 and PC2, centroid, and slope of main axis of variance.
 #' @export
 pca_method = function(data_input,threshold,focus,correlation_method){
