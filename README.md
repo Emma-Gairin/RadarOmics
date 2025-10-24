@@ -1,7 +1,7 @@
 # RadarOmics
 
 RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction** and visualising the output across samples, treatments, and biological processes with **radar plots**.
-It is designed to handle **complex experimental designs** with >2 treatments, and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar tabular datasets.
+It is designed to handle **complex experimental designs** with >3 treatments (ideally 5 or more), and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar tabular datasets.
 
 We provide examples of outputs with simple datasets in [**Implementation**](#implementation).
 
