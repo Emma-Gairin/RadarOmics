@@ -1,18 +1,21 @@
-#' For each gene category,calculation of distance between samples based on top dimensions from Principal Component Analyses
+#' For each biological category, extraction of a single value per sample based on top dimensions from Principal Component Analyses
 #'
-#' Perform PCA on the expression level of genes in a given gene category,
-#' identify the number of PCs corresponding to a certain threshold of variance,
-#' identify the axis of maximum variance between the average coordinates of each group,
+#' Perform PCA on the counts matrix of genes/proteins/others from a biological category.
+#' identify the number of PCs corresponding to a user-defined threshold of variance,
+#' if PC1 meets the threshold, extract the PC1 coordinate of each sample.
+#' If not, identify the main axis of variance between the average PC coordinates of each group (or other user-defined sample grouping scheme),
 #' project the samples onto this axis in the multidimensional space,
-#' determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups.
+#' determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups,
+#' scale sample values from 0 to 1, setting 0 to be the on the side of lower values.
 #'
-#' @param expr Gene expression matrix (genes as rownames,samples as column names,cell fill as gene expression level). This gene expression matrix should be normalised (e.g.,variance-stabilised).
-#' @param sample_meta Sample metadata (one row per sample. column names of this table should include "sample","group". within the sample column,the names should match the column names of the expression matrix)
-#' @param gene_meta Gene metadata (one row per gene. column names of this table should include "gene","category". within the gene column,the names should feature within the row names of the expression matrix)
-#' @param threshold threshold of cumulative variance used to identify the number of PCs to keep.
+#' @param data_input Expression data, sample information, and biological process list uploaded using import_data()
+#' @param threshold threshold of cumulative variance used to identify the number of PCs to keep,
+#' @param focus grouping of samples used to determine the main axis of variance (default = "group")
+#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category.
 #' @return A list with:
-#'   - projection: data frame with distance of each sample along a multidimensional line linking the most extreme samples,category,and furthest group pair.
-#'   - information: data frame with category,number of PCs kept,sum of variance kept,and number of genes considered. Distances obtained for the PCA
+#'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
+#'   - information: data frame with category, number of variables (genes/proteins/others), method used (here, "PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+#'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1 and PC2, centroid, and slope of main axis of variance.
 #' @export
 pca_method = function(data_input,threshold,focus,correlation_method){
   expr = data_input$expr
@@ -133,7 +136,6 @@ pca_method = function(data_input,threshold,focus,correlation_method){
 
 
 
-      flipped = FALSE
       if (avg_diff < 0){
         coordinate_mainaxis$distance2 = -coordinate_mainaxis$distance
 
@@ -143,7 +145,6 @@ pca_method = function(data_input,threshold,focus,correlation_method){
 
         coordinate_mainaxis$normalised_distance = (coordinate_mainaxis$distance2 - min_val)/ (max_val - min_val)
 
-        flipped = TRUE
       }
 
       if (avg_diff >= 0){
@@ -158,14 +159,14 @@ pca_method = function(data_input,threshold,focus,correlation_method){
       }
       # Correlation between normalized coordinate and average gene expression per sample in category
 
-      sub_expr_01 <- t(apply(filtered_expr, 1, function(x) {
+      sub_expr_01 = t(apply(filtered_expr, 1, function(x) {
         (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
       }))
 
-      avg_expr <- colMeans(sub_expr_01, na.rm = TRUE)
+      avg_expr = colMeans(sub_expr_01, na.rm = TRUE)
 
       # Min-max normalization (0-1)
-      norm_expr <- (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
+      norm_expr = (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
 
       avg_expr_per_sample = norm_expr
       avg_expr_per_sample = avg_expr_per_sample[coordinate_mainaxis$sample]
@@ -173,7 +174,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
       corr_val = correlation$estimate
       p_value = correlation$p.value
 
-      # Save summary info including correlation and flipped status
+      # Save summary information
       information = rbind(
         information,
         data.frame(
@@ -181,11 +182,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
           n_variables = n_variables,
           method="PCA",
           num_pcs = num_pcs,
-         # centroid = centroid,
-        #  maxvariancedirection = maxvariancedirection,
           sum_variance_kept_pcs = sum_var_kept,
-       #   pc1 = pc1,
-        #  pc2 = pc2,
           expr_pca_correlation = corr_val,
           expr_pca_correlation_pvalue = p_value,
           stringsAsFactors = FALSE
@@ -199,9 +196,9 @@ pca_method = function(data_input,threshold,focus,correlation_method){
                                          method="PCA",
                                          num_pcs = num_pcs,
                                          pc1 = pc1,
-                                   pc2 = pc2,
-                                   centroid = centroid,
-                                   maxvariancedirection = maxvariancedirection))
+                                         pc2 = pc2,
+                                         centroid = centroid,
+                                         maxvariancedirection = maxvariancedirection))
       rownames(dimred_information) = NULL
 
       projection = rbind(projection,
@@ -214,7 +211,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
 
     }
   }
-  projection <- projection %>%
+  projection = projection %>%
     dplyr::left_join(sample_meta[, c("sample", "group")], by = "sample")
 
   list(projection = projection,
