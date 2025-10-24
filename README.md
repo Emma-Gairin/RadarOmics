@@ -477,4 +477,4 @@ boxplot = plot_boxplot(data_input, dim_reduction_output, stat_choice = "nonparam
 boxplot$vision
 ```
 ![Boxplot for vision](example1/boxplot_vision.png)
-*Figure 14: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision".
+*Figure 14: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision", with non-parametric significance testing.*
