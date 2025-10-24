@@ -14,11 +14,11 @@
 #' @param lda_threshold threshold of cumulative variance used to identify the number of LDs to keep,
 #' @param focus grouping of samples used to determine the main axis of variance (default = "group")
 #' @param lda_focus grouping of samples used to perform LDA analysis (default = "group")
-#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category.
+#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").
 #' @return A list with:
 #'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
-#'   - information: data frame with category, number of variables (genes/proteins/others), method used (here, "PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
-#'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1 and PC2, centroid, and slope of main axis of variance.
+#'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+#'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1, PC2, LD1, and LD2, centroid, and slope of main axis of variance.
 #' @export
 lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correlation_method){
   expr = data_input$expr
