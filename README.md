@@ -44,7 +44,7 @@ The three main functions of the package are:
 
 Users can mix-and-match methods and manually create the table to feed into **plot_radar()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot_radar()**.
 
-While we provide a few options for text size and colour coding as part of **plot**, we recommend exporting the output of **plot_radar()** as a PDF with **ggsave("radar.pdf")** and manually editing the radars using vector graphics software to obtain publication-quality visuals (we use [Inkscape](https://inkscape.org/)). For instance, colour shading can be added as a background to highlight biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._).
+While we provide a few options for text size and colour coding as part of **plot_radar()**, we recommend exporting the output of **plot_radar()** as a PDF with **ggsave("radar.pdf")** and manually editing the radars using vector graphics software to obtain publication-quality visuals (we use [Inkscape](https://inkscape.org/)). For instance, colour shading can be added as a background to highlight biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._).
 
 
 ---
