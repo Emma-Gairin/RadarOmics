@@ -10,19 +10,31 @@
 #' @examples
 #' plot_list=plot_radar(data_input,dim_reduction_output,category_list=my_category_list)
 
-plot_radar=function(data_input,dim_reduction_output,category_list=NULL,colour=NULL) {
+plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",category_list=NA,colour=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2) {
   # Check required packages
   if (!requireNamespace("ggradar",quietly=TRUE)) stop("Package 'ggradar' is required.",call.=FALSE)
   if (!requireNamespace("dplyr",quietly=TRUE)) stop("Package 'dplyr' is required.",call.=FALSE)
   if (!requireNamespace("tidyr",quietly=TRUE)) stop("Package 'tidyr' is required.",call.=FALSE)
   if (!requireNamespace("ggplot2",quietly=TRUE)) stop("Package 'ggplot2' is required.",call.=FALSE)
 
+# if(length(category_list)==0){
+#   category_list = cbind(unique(data_input$gene_meta$category),rev(c(1:length(unique(data_input$gene_meta$category)))))
+#   colnames(category_list)=c("category","order")
+#   category_list=as.data.frame(category_list)
+# }
   projection=dim_reduction_output$projection
+  projection = merge(projection,
+                     data_input$sample_meta[ , !(names(data_input$sample_meta) %in% intersect(names(projection), names(data_input$sample_meta)[-which(names(data_input$sample_meta)=="sample")]))],
+                     by="sample")
+
   plot_list=list()
-  list_groups=unique(projection$group)
+  list_target=unique(projection[[radar_grouping]])
+
+  if(radar_label_position == "top"){radar_label_position = 1.8}
+  if(radar_label_position == "center"){radar_label_position = 0}
 
   # If category_list not provided,default to order in data_input$gene_meta
-  if (is.null(category_list)) {
+  if (length(category_list)==1) {
     categories=unique(data_input$gene_meta$category)
     category_list=data.frame(
       category=categories,
@@ -32,16 +44,16 @@ plot_radar=function(data_input,dim_reduction_output,category_list=NULL,colour=NU
     # ensure order column is numeric
     category_list$order=as.numeric(category_list$order)
   }
-  for (group in list_groups) {
-    radar_group=projection %>%
-      dplyr::filter(group == !!group) %>%
+  for (target in list_target) {
+    radar_target=projection %>%
+      dplyr::filter(!!sym(radar_grouping) == !!target) %>%
       dplyr::select(sample,category,normalised_distance)
 
-    reshaped_radar=radar_group %>%
+    reshaped_radar=radar_target %>%
       tidyr::pivot_wider(names_from=category,values_from=normalised_distance)
 
     nsample_per_group=nrow(reshaped_radar)
-    reshaped_radar2=rbind(reshaped_radar,c(group,colMeans(reshaped_radar[,-1])))
+    reshaped_radar2=rbind(reshaped_radar,c(sample = target,colMeans(reshaped_radar[,-1])))
 
     meanradar=rbind(rep(0,ncol(reshaped_radar2)),
                       rep(1,ncol(reshaped_radar2)),
@@ -51,7 +63,7 @@ plot_radar=function(data_input,dim_reduction_output,category_list=NULL,colour=NU
     meanradar[-1]=lapply(meanradar[-1],function(x) as.numeric(as.character(x)))
 
     # Set sample factor levels
-    desired_order=c("0","1",reshaped_radar$sample,group)
+    desired_order=c("0","1",reshaped_radar$sample,target)
     meanradar$sample=factor(meanradar$sample,levels=desired_order)
 
     # Custom colors
@@ -75,18 +87,22 @@ plot_radar=function(data_input,dim_reduction_output,category_list=NULL,colour=NU
     meanradar_organised=meanradar[,c("sample",colnames_ordering)]
 
     # Generate radar plot
-    radar_plot=ggradar(meanradar_organised,
+    radar_plot=suppressMessages(ggradar(meanradar_organised,
                          group.colours=custom_colors,
                          group.line.width=1,
                          group.point.size=0,
                          grid.line.width=0.5,
                          grid.mid=0,
-                         axis.label.size=2.5,
+                         axis.label.size=axis_label_size,
                          grid.label.size=0,
                          legend.position="NONE") +
-      annotate("text",x=0,y=0,label=group,size=6,fontface="bold")
+      xlim(-width, width) +   # increase upper limit to create space
+      ylim(min(-height,-radar_label_position), max(height,radar_label_position)) +   # increase upper limit to create space
+      annotate("text", x = 0, y = radar_label_position, label = target,
+               size = radar_label_size, fontface = "bold"))
+      #annotate("text",x=0,y=1.5,label=group,size=radar_label_size,fontface="bold")
 
-    plot_list[[group]]=radar_plot
+    plot_list[[target]]=radar_plot
   }
 
   return(plot_list)
