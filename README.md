@@ -469,5 +469,10 @@ Here, we can see the value of moving from PCA to LDA to minimise the effect of h
 This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.
 
 ## Boxplots of values yielded by **dim_reduction()** and statistical testing
-The values extracted for each sample can be plotted on boxplots with  **plot_boxplot()**, which also displays statistical test results (aa, ab, bc, etc.). These boxplots can be used as criteria for refining the choice of _focus_, _lda_focus_, _threshold_, and _lda_threshold_ to use as part of **dim_reduction()**.
+The values extracted for each sample can be plotted on boxplots with  **plot_boxplot()**, which also optionally displays statistical test results. As default, no test is performed. There are test options using _stat_choice_ with "non-parametric" (Kruskal followed by Dunn test with Benjamini-Hochberg correction) or "parametric" (Anova followed by Tukey's HSD test) with significance thresholds of adjusted p < 0.05. These boxplots can be used as criteria for refining the choice of _focus_, _lda_focus_, _threshold_, and _lda_threshold_ to use as part of **dim_reduction()**.
 
+Example of boxplot for vision-related gene expression from the developmental dataset explored in **Example #1**.
+```r
+boxplot = plot_boxplot(data_input, dim_reduction_output, stat_choice = "nonparametric")
+boxplot$vision
+```
