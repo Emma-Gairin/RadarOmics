@@ -473,8 +473,8 @@ The values extracted for each sample can be plotted on boxplots with  **plot_box
 
 Example of boxplot for vision-related gene expression from the developmental dataset explored in **Example #1**.
 ```r
-boxplot = plot_boxplot(data_input, dim_reduction_output, stat_choice = "nonparametric")
+boxplot = plot_boxplot(data_input, dim_reduction_output, stat_choice = "parametric")
 boxplot$vision
 ```
 ![Boxplot for vision](example1/boxplot_vision.png)
-*Figure 14: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision", with non-parametric significance testing.*
+*Figure 14: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision", with parametric significance testing.*
