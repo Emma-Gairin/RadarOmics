@@ -14,7 +14,7 @@
 #'   - projection: data frame with distance of each sample along a multidimensional line linking the most extreme samples,category,and furthest group pair.
 #'   - information: data frame with category,number of PCs kept,sum of variance kept,and number of genes considered. Distances obtained for the PCA
 #' @export
-lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
+lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correlation_method){
   expr = data_input$expr
   gene_meta = data_input$gene_meta
   sample_meta = data_input$sample_meta[which(data_input$sample_meta$sample%in%colnames(expr)),]
@@ -35,11 +35,19 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
     category = character(),
     num_pcs = integer(),
     sum_variance_kept = numeric(),
-    n_genes = integer(),
+    n_variables = integer(),
     expr_pca_correlation = numeric(),
-    flipped = logical(),
     stringsAsFactors = FALSE
   )
+  dimred_information = data.frame(    category = character(),
+                                   method= character(),
+                                   num_pcs = integer(),
+                                   pc1 = integer(),
+                                   pc2 = integer(),
+                                   ld1 = integer(),
+                                   ld2 = integer(),
+                                   centroid = integer(),
+                                   maxvariancedirection = integer())
   pca = list()
   lda = list()
   # for each gene category,
@@ -48,9 +56,9 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
     genes_in_cat = gene_meta$gene[gene_meta$category == cat]
     filtered_expr = expr[rownames(expr) %in% genes_in_cat,,drop = FALSE]
     # calculate how many genes we retrieve
-    n_genes = nrow(filtered_expr)
+    n_variables = nrow(filtered_expr)
     # for very low number of genes,we recommend not to run the PCA and to use scaled expression instead
-    if (n_genes > 4){
+    if (n_variables > 4){
       # PCA on transposed matrix with samples as rows and genes as columns
       filtered_expr = filtered_expr[apply(filtered_expr, 1, sd) != 0,]
 
@@ -97,6 +105,8 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
         sum_var_kept_lds = NA
         centroid = NA
         maxvariancedirection=NA
+        ld1 = NA
+        ld2 = NA
       } else{
         method = "LDA"
 
@@ -121,7 +131,8 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
         # Number of LDs to keep
         num_lds = min(which(cumulative_variance > lda_threshold))
         sum_var_kept_lds = sum(proportion_variance[1:num_lds])
-
+        ld1 = proportion_variance[1]
+        ld2 = proportion_variance[2]
         # Mean coordinate per group for all LDs kept
         mean_group = aggregate(as.formula(paste(". ~", focus)),prep_mean_group[,c(paste0("LD",1:num_lds),focus)],mean)
 
@@ -189,9 +200,18 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
 
       }
       # Correlation between normalized coordinate and average gene expression per sample in category
-      avg_expr_per_sample = colMeans(filtered_expr)
+      sub_expr_01 <- t(apply(filtered_expr, 1, function(x) {
+        (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+      }))
+
+      avg_expr <- colMeans(sub_expr_01, na.rm = TRUE)
+
+      # Min-max normalization (0-1)
+      norm_expr <- (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
+
+      avg_expr_per_sample = norm_expr
       avg_expr_per_sample = avg_expr_per_sample[coordinate_mainaxis$sample]
-      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_expr_per_sample,use = "complete.obs",method="spearman"))
+      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_expr_per_sample,use = "complete.obs",method=correlation_method))
       corr_val = correlation$estimate
       p_value = correlation$p.value
 
@@ -199,24 +219,38 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
       information = rbind(
         information,
         data.frame(
-          category = cat, # problem here
+          category = cat,
+          n_variables = n_variables,
           method = method,
           num_pcs = num_pcs,
           num_lds = num_lds,
-          centroid = centroid,
-          maxvariancedirection = maxvariancedirection,
+        #  centroid = centroid,
+        #  maxvariancedirection = maxvariancedirection,
           sum_variance_kept_pcs = sum_var_kept_pcs,
-          pc1 = pc1,
-          pc2 = pc2,
+        #  pc1 = pc1,
+        #  pc2 = pc2,
           sum_variance_kept_lds = sum_var_kept_lds,
-          n_genes = n_genes,
-          expr_correlation_spearman_rho = corr_val,
-          expr_correlation_pvalue = p_value,
-          flipped = flipped,
+        expr_pca_correlation = corr_val,
+        expr_pca_correlation_pvalue = p_value,
           stringsAsFactors = FALSE
         )
       )
       rownames(information) = NULL
+
+
+      dimred_information = rbind(dimred_information,
+                              data.frame(category = cat,
+                                         method=method,
+                                         num_pcs = num_pcs,
+                                         num_lds = num_lds,
+                                         pc1 = pc1,
+                                         pc2 = pc2,
+                                         ld1 = ld1,
+                                         ld2 = ld2,
+                                         centroid = centroid,
+                                         maxvariancedirection = maxvariancedirection))
+      rownames(dimred_information) = NULL
+
       projection = rbind(projection,
                          data.frame(sample = coordinate_mainaxis$sample,
                                     category = cat,
@@ -233,6 +267,7 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus){
 
   list(projection = projection,
        information = information,
+       dimred_information = dimred_information,
        pca = pca,
        lda = lda)
 }
