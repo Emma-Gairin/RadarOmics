@@ -14,7 +14,7 @@
 #'   - projection: data frame with distance of each sample along a multidimensional line linking the most extreme samples,category,and furthest group pair.
 #'   - information: data frame with category,number of PCs kept,sum of variance kept,and number of genes considered. Distances obtained for the PCA
 #' @export
-pca_method = function(data_input,threshold,focus){
+pca_method = function(data_input,threshold,focus,correlation_method){
   expr = data_input$expr
   gene_meta = data_input$gene_meta
   sample_meta = data_input$sample_meta
@@ -33,23 +33,31 @@ pca_method = function(data_input,threshold,focus){
   # some extra information about the run -- number of Principal Components considered based on user choice of variance threshold
   information = data.frame(
     category = character(),
+    method= character(),
     num_pcs = integer(),
     sum_variance_kept = numeric(),
-    n_genes = integer(),
+    n_variables = integer(),
     expr_pca_correlation = numeric(),
     flipped = logical(),
     stringsAsFactors = FALSE
   )
   pca = list()
+  dimred_information = data.frame(    category = character(),
+                                   method= character(),
+                                   num_pcs = integer(),
+                                   pc1 = integer(),
+                               pc2 = integer(),
+                               centroid = integer(),
+                               maxvariancedirection = integer())
   # for each gene category,
   for (cat in catlist){
     # extract the rows with genes belonging to the category
     genes_in_cat = gene_meta$gene[gene_meta$category == cat]
     filtered_expr = expr[rownames(expr) %in% genes_in_cat,,drop = FALSE]
     # calculate how many genes we retrieve
-    n_genes = nrow(filtered_expr)
+    n_variables = nrow(filtered_expr)
     # for very low number of genes,we recommend not to run the PCA and to use scaled expression instead
-    if (n_genes > 4){
+    if (n_variables > 4){
       # PCA on transposed matrix with samples as rows and genes as columns
       filtered_expr = filtered_expr[apply(filtered_expr, 1, sd) != 0,]
 
@@ -149,9 +157,19 @@ pca_method = function(data_input,threshold,focus){
 
       }
       # Correlation between normalized coordinate and average gene expression per sample in category
-      avg_expr_per_sample = colMeans(filtered_expr)
+
+      sub_expr_01 <- t(apply(filtered_expr, 1, function(x) {
+        (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+      }))
+
+      avg_expr <- colMeans(sub_expr_01, na.rm = TRUE)
+
+      # Min-max normalization (0-1)
+      norm_expr <- (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
+
+      avg_expr_per_sample = norm_expr
       avg_expr_per_sample = avg_expr_per_sample[coordinate_mainaxis$sample]
-      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_expr_per_sample,use = "complete.obs",method="spearman"))
+      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_expr_per_sample,use = "complete.obs",method=correlation_method))
       corr_val = correlation$estimate
       p_value = correlation$p.value
 
@@ -160,21 +178,32 @@ pca_method = function(data_input,threshold,focus){
         information,
         data.frame(
           category = cat,
+          n_variables = n_variables,
           method="PCA",
           num_pcs = num_pcs,
-          centroid = centroid,
-          maxvariancedirection = maxvariancedirection,
+         # centroid = centroid,
+        #  maxvariancedirection = maxvariancedirection,
           sum_variance_kept_pcs = sum_var_kept,
-          pc1 = pc1,
-          pc2 = pc2,
-          n_genes = n_genes,
-          expr_pca_correlation_spearman_rho = corr_val,
+       #   pc1 = pc1,
+        #  pc2 = pc2,
+          expr_pca_correlation = corr_val,
           expr_pca_correlation_pvalue = p_value,
-          flipped = flipped,
           stringsAsFactors = FALSE
         )
       )
+
       rownames(information) = NULL
+
+      dimred_information = rbind(dimred_information,
+                              data.frame(category = cat,
+                                         method="PCA",
+                                         num_pcs = num_pcs,
+                                         pc1 = pc1,
+                                   pc2 = pc2,
+                                   centroid = centroid,
+                                   maxvariancedirection = maxvariancedirection))
+      rownames(dimred_information) = NULL
+
       projection = rbind(projection,
                          data.frame(sample = coordinate_mainaxis$sample,
                                     category = cat,
@@ -190,5 +219,6 @@ pca_method = function(data_input,threshold,focus){
 
   list(projection = projection,
        information = information,
+       dimred_information = dimred_information,
        pca=pca)
 }
