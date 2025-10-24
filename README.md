@@ -38,7 +38,7 @@ The three main functions of the package are:
 **dim_reduction()** - performs dimensional reduction based on the subsetted counts matrix for each biological category (_i.e,._ keeping only rows corresponding to genes/proteins/others of interest) and yields a single value per sample and per biological category. There are three options of dimensional reduction:
 - method = **"scale"**,
 - method = **"pca"**,
-- method = **"lda"**
+- method = **"lda"**.
 
 **plot_radar()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples (default grouping is the "group" column of the sample information data frame, unless otherwise specified using _radar_grouping_). The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
 
