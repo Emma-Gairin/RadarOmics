@@ -444,7 +444,6 @@ plots = plot_dimensions(data_input, dim_reduction_output,
                       point_size=3, colour_palette = c("skyblue1","skyblue2","skyblue3","orange","orange3","orange4","pink1","pink2","red3"))
 
 plots$vision # PC1 met the threshold
-plots$glycolysis # LD1 met the threshold
 plots$cholesterol # LD1 met the threshold
 plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of the main axis of variance across groups of samples.
 ```
@@ -457,20 +456,14 @@ Find examples of plots and some comments below.
 Here, we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
 
 ###
-![LD1 and 2 for glycolysis](example2/lda_glycolysis.png)
-*Figure 12: LD1 and 2 obtained from the glycolysis-related genes, with _lda_focus = "substance_concentration"_.*
-
-Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation and better isolate that of treatments on glycolysis-related genes.
-
-###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
-*Figure 13: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
+*Figure 12: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.
 
 ###
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
-*Figure 14: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
+*Figure 13: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
 
 This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.
 
