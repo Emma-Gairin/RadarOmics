@@ -425,7 +425,8 @@ wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nro
 ```
 ![radar based on substance + concentration grouping rather than all groups](example2/substance_concentration_radar.png)
 *Figure 10: Radar plot for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
-In this case, samples from different hours post fertilisation are grouped onto the same radar plot - and as hour post fertilisation exerts a major influence on the data structure, the average values for most radars are ~0.5, leading to near-circle visualisations.
+In this case, samples from different hours post fertilisation are grouped onto the same radar plot - and as hour post fertilisation exerts a major influence on the data structure, the average values for most radars are ~0.5, leading to circle-like patterns with little signal across the radars.
+#
 ---
 ## Data inspection
 
