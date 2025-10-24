@@ -476,3 +476,5 @@ Example of boxplot for vision-related gene expression from the developmental dat
 boxplot = plot_boxplot(data_input, dim_reduction_output, stat_choice = "nonparametric")
 boxplot$vision
 ```
+![Boxplot for vision](example1/boxplot_vision.png)
+*Figure 14: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision".
