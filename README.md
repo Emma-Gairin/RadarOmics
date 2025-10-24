@@ -350,7 +350,10 @@ dim_reduction_output = dim_reduction(
   data_input,
   method = "pca")
 
-radars=plot_radar(result, dim_reduction_output, category_list = category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
+radars = plot_radar(result, dim_reduction_output,
+                    category_list = category_list,
+                    axis_label_size=2.5, radar_label_size=3,
+                    radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
@@ -371,7 +374,10 @@ dim_reduction_output = dim_reduction(
   method = "pca",
   focus = "substance_concentration")
 
-radars=plot_radar(result, dim_reduction_output, category_list = category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
+radars = plot_radar(result, dim_reduction_output,
+                    category_list = category_list,
+                    axis_label_size=2.5, radar_label_size=3,
+                    radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
@@ -397,7 +403,10 @@ dim_reduction_output = dim_reduction(
   threshold=0.8,
   lda_threshold = 0.8)
 
-radars=plot_radar(result, dim_reduction_output, category_list = category_list, axis_label_size=2.5, radar_label_size=3, radar_label_position = "top")
+radars = plot_radar(result, dim_reduction_output,
+                    category_list = category_list,
+                    axis_label_size=2.5, radar_label_size=3,
+                    radar_label_position = "top")
 
 unique(result$sample_meta$group) # to control the order of the groups
 
