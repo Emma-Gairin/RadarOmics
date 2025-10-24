@@ -26,18 +26,22 @@ scale_method <- function(data_input) {
                                    furthest_groups = character(),
                                    stringsAsFactors = FALSE)
 
-  information <- data.frame(category = character(), n_genes = integer(), stringsAsFactors = FALSE)
+  information <- data.frame(category = character(), n_variables = integer(), stringsAsFactors = FALSE)
 
   for (cat in catlist) {
     genes_in_cat <- gene_meta$gene[gene_meta$category == cat]
     genes_in_cat <- intersect(genes_in_cat, rownames(expr))
-    n_genes <- length(genes_in_cat)
-    information <- rbind(information, data.frame(category = cat, n_genes = n_genes, stringsAsFactors = FALSE))
+    n_variables <- length(genes_in_cat)
+    information <- rbind(information, data.frame(category = cat, n_variables = n_variables, stringsAsFactors = FALSE))
 
-    if (n_genes > 0) {
+    if (n_variables > 0) {
       sub_expr <- expr[genes_in_cat, , drop = FALSE]
 
-      avg_expr <- colMeans(sub_expr, na.rm = TRUE)
+      sub_expr_01 <- t(apply(sub_expr, 1, function(x) {
+        (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+      }))
+
+      avg_expr <- colMeans(sub_expr_01, na.rm = TRUE)
 
       # Min-max normalization (0-1)
       norm_expr <- (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
