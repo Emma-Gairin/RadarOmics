@@ -101,16 +101,16 @@ library(RadarOmics)
 
 ### Import the data
 We are supplying:
-- a variance-stabilisation transformed count table (vsd) obtained using DESEq2 with genes as rows, samples as columns
+- a variance-stabilisation transformed count table (vst) obtained using DESEq2 with genes as rows, samples as columns
 - sample information with two columns: samples and their grouping (here, developmental stage, from stage 1 to stage 7)
 - gene list with two columns: genes and their categories (here, various biological categories, _e.g.,_ glycolysis, Krebs cycle, phototransduction). This gene list is derived from a manually curated database ([Herrera et al., 2025](https://doi.org/10.1002/jez.b.23299)].
 
 ```r
 # import data
-data_input = import_data(expr_path = "vsd_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
+data_input = import_data(expr_path = "vst_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
 ```
 #
-Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
+Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
 head(data_input$expr[,1:10])
 ```
@@ -296,9 +296,9 @@ The biological categories are those defined for zebrafish in a manually curated 
 library(RadarOmics)
 
 # import data
-data_input = import_data(expr_path = "vsd_zebrafish.csv", sample_meta_path = "sampleinfo_zebrafish.csv", gene_meta_path = "genelist_zebrafish.csv")
+data_input = import_data(expr_path = "vst_zebrafish.csv", sample_meta_path = "sampleinfo_zebrafish.csv", gene_meta_path = "genelist_zebrafish.csv")
 ```
-Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VSD normalisation with DESEq2.
+Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
 head(data_input$expr[,1:4])
 ```
