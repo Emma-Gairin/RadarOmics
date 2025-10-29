@@ -268,7 +268,7 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ### Colour customisation
 We provide options to modify the colours of each sample plotted on the radars (for visual result inspection, for instance), as well as of the averaged line of all samples on each radar.
 
-For sample-specific colours, a dataframe with columns "sample" and "colour" is required. Here, we give an example for colouring each sample on the plot in red, orange, or blue in a repeated pattern.
+For sample-specific colours, a dataframe with columns "sample" and "colour" is required. Here, we give an example for colouring each sample on the plot in red, orange, or blue in a repeated pattern. The argument _colour_sample_ is used.
 ```r
 colour_sample = cbind(result$sample_meta$sample,rep(c("red3","orange2","skyblue3"),7))
 colour_sample = as.data.frame(colour_sample)
@@ -292,7 +292,7 @@ wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ![Radar plots for each stage, coloured by sample](example1/all_stages_colour_sample.png)
 *Figure 6: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per sample, black for average line.*
 
-If users wish to modify the colour of the average line on the radar plot (default: black), a dataframe with 2 columns - one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour" - is required.
+If users wish to modify the colour of the average line on the radar plot (default: black), a dataframe with 2 columns - one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour" - is required. The argument _colour_average_ is used.
 ```r
 colour_average = cbind(ordered_list,c("red4","orange4","yellow4","green4","blue4","purple4","pink4"))
 colour_average = as.data.frame(colour_average)
@@ -313,6 +313,13 @@ radars = plot_radar(data_input, test2, category_list = category_list, axis_label
 ![Radar plots for each stage, coloured by stage](example1/all_stages_colour_average.png)
 *Figure 7: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line.*
 
+Labels can be moved to the top of the radars using _radar_label_position_ (default: middle).
+```r
+radars = plot_radar(data_input, test2, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average, radar_label_position = "top")
+```
+![Radar plots for each stage, coloured by stage](example1/all_stages_colour_average.png)
+*Figure 8: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line. Labels above rather than in the middle of the plot*
+
 ### Dimensional reduction and plotting - scale
 
 
@@ -327,7 +334,7 @@ radars = plot_radar(data_input, dim_reduction_output, category_list = category_l
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
 ![Radar plots for each stage](example1/all_samples_scale.png)
-*Figure 8: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"scale"**.*
+*Figure 9: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"scale"**.*
 
 ---
 ## Example #2 - method = "lda"
@@ -408,7 +415,7 @@ unique(result$sample_meta$group) # to control the order of the groups
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_pca.png)
-*Figure 9: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
+*Figure 10: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
 
 On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
 
@@ -432,7 +439,7 @@ unique(result$sample_meta$group) # to control the order of the groups
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_pca_substance_concentration.png)
-*Figure 10: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
+*Figure 11: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
 
 ###
 ### Dimensional reduction and plotting - LDA
@@ -461,7 +468,7 @@ unique(result$sample_meta$group) # to control the order of the groups
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar plot for all samples](example2/all_samples_lda_08_08_substance_concentration.png)
-*Figure 11: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
+*Figure 12: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern to what extent biological processes are modified by each treatment, across the different time points.
 
@@ -481,7 +488,7 @@ category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label
 wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nrow=1)
 ```
 ![radar based on substance + concentration grouping rather than all groups](example2/substance_concentration_radar.png)
-*Figure 12: Radar plot for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
+*Figure 13: Radar plot for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this case, samples from different hours post fertilisation are grouped onto the same radar plot - and as hour post fertilisation exerts a major influence on the data structure, the average values for most radars are ~0.5, leading to circle-like patterns with little signal across the radars.
 
@@ -510,19 +517,19 @@ Find examples of plots and some comments below.
 
 
 ![PC1 and 2 for vision](example2/pca_vision.png)
-*Figure 13: PC1 and 2 obtained from the vision-related genes.*
+*Figure 14: PC1 and 2 obtained from the vision-related genes.*
 
 Here, we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
 
 ###
 ![LD1 and 2 for cholesterol](example2/lda_cholesterol.png)
-*Figure 14: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
+*Figure 15: LD1 and 2 obtained from the cholesterol synthesis-related genes, with _lda_focus = "substance_concentration"_.*
 
 Here, we can see the value of moving from PCA to LDA to minimise the effect of hour post fertilisation on profiling and better isolate that of treatments, particularly the effect of Sorafenib on cholesterol synthesis-related genes at 36 and 96 hours.
 
 ###
 ![LD1 and 2 for thyroid](example2/lda_thyroid.png)
-*Figure 15: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
+*Figure 16: LD1 and 2 obtained from the thyroid-related genes, with _lda_focus = "substance_concentration"_.*
 
 This is a case where using _focus = "group"_ leads the main axis of variance to represent hour post fertilisation more than treatment, as the groups are defined based on the combination of hour post fertilisation + treatment + concentration. Using a different _focus_ that does not include hour post fertilisation may lead to better disentangling of the effect of treatment.
 
@@ -535,4 +542,4 @@ boxplot = plot_boxplot(data_input, dim_reduction_output, stat_choice = "parametr
 boxplot$vision
 ```
 ![Boxplot for vision](example1/boxplot_vision.png)
-*Figure 16: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision", with parametric significance testing.*
+*Figure 17: Boxplot of values extracted by **dim_reduction()** with method = **"pca"** for the category "vision", with parametric significance testing.*
