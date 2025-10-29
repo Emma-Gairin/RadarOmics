@@ -282,11 +282,12 @@ colnames(colour_sample)=c("sample","colour")
 |SRR7610164 |red3     |
 |SRR7610165 |orange2  |
 |SRR7610166 |skyblue3 |
-*You can of course define one colour per sample instead of using a repeated pattern.*
 ```r
 radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_sample = colour_sample)
 wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
+*Note that you can define one colour per sample instead of using a repeated pattern as we did here.*
+
 ![Radar plots for each stage, coloured by sample](example1/all_stages_colour_sample.png)
 *Figure 6: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per sample, black for average line.*
 
