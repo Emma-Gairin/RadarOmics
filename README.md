@@ -267,7 +267,7 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 
 We provide options to modify the colours of each sample plotted on the radars (for visual result inspection, for instance), as well as of the averaged line of all samples on each radar.
 
-For sample-specific colours, a dataframe with columns "sample" and "colour" is required. Here, we give an example for colouring each sample on the plot in red, orange, or blue.
+For sample-specific colours, a dataframe with columns "sample" and "colour" is required. Here, we give an example for colouring each sample on the plot in red, orange, or blue in a repeated pattern.
 ```r
 colour_sample = cbind(result$sample_meta$sample,rep(c("red3","orange2","skyblue3"),7))
 colour_sample = as.data.frame(colour_sample)
@@ -291,7 +291,7 @@ wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ![Radar plots for each stage, coloured by sample](example1/all_stages_colour_sample.png)
 *Figure 6: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per sample, black for average line.*
 
-For radar-specific colours for the average line, a dataframe with 2 columns, one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour", is required. Here, we give an example for colouring each stage on the plot.
+If users wish to modify the colour of the average line on the radar plot (default: black), a dataframe with 2 columns - one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour" - is required.
 ```r
 colour_average = cbind(ordered_list,c("red4","orange4","yellow4","green4","blue4","purple4","pink4"))
 colour_average = as.data.frame(colour_average)
