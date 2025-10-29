@@ -287,7 +287,7 @@ colnames(colour_sample)=c("sample","colour")
 radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_sample = colour_sample)
 wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
-![Radar plots for each stage, coloured by sample](example1/all_stages_colour_samples.png)
+![Radar plots for each stage, coloured by sample](example1/all_stages_colour_sample.png)
 *Figure 6: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per sample, black for average line.*
 
 For radar-specific colours for the average line, a dataframe with 2 columns, one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour", is required. Here, we give an example for colouring each stage on the plot.
