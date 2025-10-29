@@ -40,7 +40,7 @@ The three main functions of the package are:
 - method = **"pca"**,
 - method = **"lda"**.
 
-**plot_radar()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples (default grouping is the "group" column of the sample information data frame, unless otherwise specified using _radar_grouping_). The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user.
+**plot_radar()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each gene category. One radar plot is produced for each group of samples (default grouping is the "group" column of the sample information data frame, unless otherwise specified using _radar_grouping_). The order of categories in the radar plot follows the order of gene categories in the biological information file unless a different order is specified by the user. Users can modify the colour of each sample using the argument _colour_sample_ and/or the colour of the average line of each radar using _colour_average_ (see [example #1 radar customisation](#colour-customisation)).
 
 Users can mix-and-match methods and manually create the table to feed into **plot_radar()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq counts with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot_radar()**.
 
@@ -265,6 +265,7 @@ wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ![Radar plots for each stage](example1/all_stages.png)
 *Figure 5: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
 
+### Colour customisation
 We provide options to modify the colours of each sample plotted on the radars (for visual result inspection, for instance), as well as of the averaged line of all samples on each radar.
 
 For sample-specific colours, a dataframe with columns "sample" and "colour" is required. Here, we give an example for colouring each sample on the plot in red, orange, or blue in a repeated pattern.
