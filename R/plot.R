@@ -10,7 +10,7 @@
 #' @examples
 #' plot_list=plot_radar(data_input,dim_reduction_output,category_list=my_category_list)
 
-plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",category_list=NA,colour=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2) {
+plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2) {
   # Check required packages
   if (!requireNamespace("ggradar",quietly=TRUE)) stop("Package 'ggradar' is required.",call.=FALSE)
   if (!requireNamespace("dplyr",quietly=TRUE)) stop("Package 'dplyr' is required.",call.=FALSE)
@@ -68,14 +68,19 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",categ
 
     # Custom colors
 
-    if(length(colour)==0){
+    if(length(colour_sample)==0){
       custom_colors=c("transparent","transparent",rep("#d6d6d6",nsample_per_group),"black")
+      if(length(colour_average)>0){
+        custom_colors=c("transparent","transparent",rep("#d6d6d6",nsample_per_group),colour_average$colour[which(colour_average[[radar_grouping]]==target)])
+      }
 
     }
-    if(length(colour)>0){
-      meanradar_colour = merge(meanradar,colour,by="sample")
-      custom_colors=c("transparent","transparent",meanradar_colour$colour)
-
+    if(length(colour_sample)>0){
+      meanradar_colour = merge(meanradar,colour_sample,by="sample")
+      custom_colors=c("transparent","transparent",meanradar_colour$colour,"black")
+      if(length(colour_average)>0){
+        custom_colors=c("transparent","transparent",meanradar_colour$colour,colour_average$colour[which(colour_average[[radar_grouping]]==target)])
+      }
     }
 
     names(custom_colors)=desired_order
