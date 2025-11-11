@@ -1,3 +1,6 @@
+#' Dimensional reduction based on PCAs.
+#'
+#' To be used as part of dim_reduction().
 #' For each biological category, extraction of a single value per sample based on top dimensions from Principal Component Analyses
 #'
 #' Perform PCA on the counts matrix of genes/proteins/others from a biological category.

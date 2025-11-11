@@ -1,4 +1,6 @@
-#' Dimensional reduction of expression counts using 0-1 scaled expression levels, PCA, or LDA
+#' Dimensional reduction
+#' 
+#' Dimensional reduction of expression counts using 0-1 scaled expression levels, PCA, or LDA.
 #'
 #' For each category of variables (e.g., group of genes related to a given biological process), reduces the dimensionality across variables to a single value for each sample.
 #'

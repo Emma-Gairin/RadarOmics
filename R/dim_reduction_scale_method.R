@@ -1,4 +1,6 @@
-#' Normalized Average Expression by Gene Category with group Furthest groups Summary
+#' Dimensional reduction based on 0-1 scaling.
+#'
+#' To be used as part of dim_reduction().
 #'
 #' For each gene category, computes average expression per sample,
 #' normalizes to 0-1 range across samples,

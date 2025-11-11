@@ -1,4 +1,6 @@
-#' Print PCA/LDA plots and if 2 dimensions are retained, display main axis onto which each sample is projected.
+#' PCA/LDA plots
+#'
+#' Produce PCA/LDA plots for PC1/2 or LD1/2. If 2+ dimensions are required to meet the variance threshold used in dim_reduction(), display main axis onto which each sample is projected.
 #'
 #' @param data_input Expression data, sample information, and gene list uploaded using import_data()
 #' @param dim_reduction_output Output from dim_reduction()

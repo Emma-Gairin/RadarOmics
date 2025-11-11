@@ -2,20 +2,20 @@
 % Please edit documentation in R/import_data.R
 \name{import_data}
 \alias{import_data}
-\title{Import sequencing data, sample metadata, and gene list}
+\title{Import expression data, sample metadata, and gene list}
 \usage{
 import_data(expr_path, sample_meta_path, gene_meta_path)
 }
 \arguments{
-\item{expr_path}{File path to gene expression matrix (genes as rownames, samples as column names, cell fill as gene expression level). This gene expression matrix should be normalised (e.g., variance-stabilised).}
+\item{expr_path}{File path to expression matrix (genes/proteins/others as rownames, samples as column names, cell fill as expression level). For RNAseq, we recommend normalising the gene expression matrix (e.g., VST normalisation with DESeq2).}
 
-\item{sample_meta_path}{File path to sample metadata (one row per sample. column names of this table should include "sample", "treatment". within the sample column, the names should match the column names of the expression matrix)}
+\item{sample_meta_path}{File path to sample metadata (one row per sample. column names of this table should include "sample", "group". Sample names should match the column names of the expression matrix; samples that are absent from this sample information table will not be included in the analysis.}
 
-\item{gene_meta_path}{File path to gene metadata (one row per gene. column names of this table should include "gene", "category". within the gene column, the names should feature within the row names of the expression matrix)}
+\item{gene_meta_path}{File path to gene (or protein, etc) metadata (one row per gene. column names of this table should include "gene", "category". within the gene column, the names should feature within the row names of the expression matrix)}
 }
 \value{
-A named list with elements: `expr`, `sample_meta`, and `gene_meta`.
+A named list with elements: \code{expr}, \code{sample_meta}, and \code{gene_meta}.
 }
 \description{
-Import sequencing data, sample metadata, and gene list
+Import expression data, sample metadata, and gene list
 }

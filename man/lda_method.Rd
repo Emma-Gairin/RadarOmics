@@ -2,28 +2,48 @@
 % Please edit documentation in R/dim_reduction_lda_method.R
 \name{lda_method}
 \alias{lda_method}
-\title{For each gene category,calculation of distance between samples based on top dimensions from Principal Component Analyses}
+\title{Dimensional reduction based on LDAs.}
 \usage{
-lda_method(data_input, threshold, lda_threshold, focus, lda_focus)
+lda_method(
+  data_input,
+  threshold,
+  lda_threshold,
+  focus,
+  lda_focus,
+  correlation_method
+)
 }
 \arguments{
-\item{threshold}{threshold of cumulative variance used to identify the number of PCs to keep.}
+\item{data_input}{Expression data, sample information, and biological process list uploaded using import_data()}
 
-\item{expr}{Gene expression matrix (genes as rownames,samples as column names,cell fill as gene expression level). This gene expression matrix should be normalised (e.g.,variance-stabilised).}
+\item{threshold}{threshold of cumulative variance used to identify the number of PCs to keep,}
 
-\item{sample_meta}{Sample metadata (one row per sample. column names of this table should include "sample","group". within the sample column,the names should match the column names of the expression matrix)}
+\item{lda_threshold}{threshold of cumulative variance used to identify the number of LDs to keep,}
 
-\item{gene_meta}{Gene metadata (one row per gene. column names of this table should include "gene","category". within the gene column,the names should feature within the row names of the expression matrix)}
+\item{focus}{grouping of samples used to determine the main axis of variance (default = "group")}
+
+\item{lda_focus}{grouping of samples used to perform LDA analysis (default = "group")}
+
+\item{correlation_method}{statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").}
 }
 \value{
 A list with:
-  - projection: data frame with distance of each sample along a multidimensional line linking the most extreme samples,category,and furthest group pair.
-  - information: data frame with category,number of PCs kept,sum of variance kept,and number of genes considered. Distances obtained for the PCA
+\itemize{
+\item projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
+\item information: data frame with category, number of variables (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+\item dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1, PC2, LD1, and LD2, centroid, and slope of main axis of variance.
+}
 }
 \description{
-Perform PCA on the expression level of genes in a given gene category,
-identify the number of PCs corresponding to a certain threshold of variance,
-identify the axis of maximum variance between the average coordinates of each group,
+To be used as part of dim_reduction().
+}
+\details{
+Perform PCA on the counts matrix of genes/proteins/others from a biological category.
+identify the number of PCs corresponding to a user-defined threshold of variance,
+if PC1 meets the threshold, extract the PC1 coordinate of each sample.
+If not, perform LDA to drive clustering of samples based on user-defined lda_focus (default = "group").
+Identify the main axis of variance between the average LD coordinates of each group (or other user-defined sample grouping scheme, based on focus (default = "group")),
 project the samples onto this axis in the multidimensional space,
-determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups.
+determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups,
+scale sample values from 0 to 1, setting 0 to be the on the side of lower values.
 }

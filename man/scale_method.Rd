@@ -2,23 +2,24 @@
 % Please edit documentation in R/dim_reduction_scale_method.R
 \name{scale_method}
 \alias{scale_method}
-\title{Normalized Average Expression by Gene Category with group Furthest groups Summary}
+\title{Dimensional reduction based on 0-1 scaling.}
 \usage{
 scale_method(data_input)
 }
 \arguments{
-\item{expr}{Gene expression matrix (genes x samples).}
-
-\item{gene_meta}{Data frame with gene metadata, must have columns: gene (matching rownames(expr)) and category.}
-
-\item{sample_meta}{Data frame with sample metadata, must have columns: sample (matching colnames(expr)) and group.}
+\item{data_input}{Expression data, sample information, and biological process list uploaded using import_data()}
 }
 \value{
 A list with:
-  - projection: data frame with sample, normalised_distance (normalized avg expr), category, furthest_groups.
-  - information: data frame with number of genes per category.
+\itemize{
+\item projection: data frame with sample, normalised_distance (normalized avg expr), category, furthest_groups.
+\item information: data frame with number of genes per category.
+}
 }
 \description{
+To be used as part of dim_reduction().
+}
+\details{
 For each gene category, computes average expression per sample,
 normalizes to 0-1 range across samples,
 calculates mean normalized expression per group,

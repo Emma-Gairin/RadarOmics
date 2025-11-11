@@ -1,4 +1,6 @@
-#' For each biological category, extraction of a single value per sample based on top dimensions from Principal Component Analyses
+#' Dimensional reduction based on LDAs.
+#'
+#' To be used as part of dim_reduction().
 #'
 #' Perform PCA on the counts matrix of genes/proteins/others from a biological category.
 #' identify the number of PCs corresponding to a user-defined threshold of variance,

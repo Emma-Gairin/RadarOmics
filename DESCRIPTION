@@ -19,3 +19,4 @@ Imports:
     FSA,
     multcompView,
     wesanderson
+RoxygenNote: 7.3.2

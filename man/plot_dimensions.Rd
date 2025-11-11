@@ -2,9 +2,18 @@
 % Please edit documentation in R/plot_dimensions.R
 \name{plot_dimensions}
 \alias{plot_dimensions}
-\title{Print PCA/LDA plots and if <3 dimensions are retained, display main axis onto which each sample is projected.}
+\title{PCA/LDA plots}
 \usage{
-plot_dimensions(data_input, dim_reduction_output, colour = "group", shape = NA)
+plot_dimensions(
+  data_input,
+  dim_reduction_output,
+  colour = "group",
+  shape = "",
+  point_size = 3,
+  colour_palette = c(wes_palette("AsteroidCity1"), wes_palette("Chevalier1"),
+    wes_palette("Darjeeling2"), wes_palette("Darjeeling1"),
+    wes_palette("GrandBudapest1"), wes_palette("Moonrise3"), wes_palette("Moonrise2"))
+)
 }
 \arguments{
 \item{data_input}{Expression data, sample information, and gene list uploaded using import_data()}
@@ -14,10 +23,14 @@ plot_dimensions(data_input, dim_reduction_output, colour = "group", shape = NA)
 \item{colour}{Define colour of plotted data points based on column name from the sample information matrix (default = "group")}
 
 \item{shape}{Define shape of plotted data points based on column name from the sample information matrix (default = NA)}
+
+\item{point_size}{Define size of plotted data points (default = 3)}
+
+\item{colour_palette}{Define colour palette (default: a mix of palettes from the "wesanderson" package)}
 }
 \value{
-A list of plots displaying the coordinates of each sample for each biological category
+A list of plots displaying the PC1/PC2 or LD1/LD2 coordinates of each sample for each biological category and main axis of variance when 2 dimensions are retained by dim_reduction(). One plot per category.
 }
 \description{
-Print PCA/LDA plots and if <3 dimensions are retained, display main axis onto which each sample is projected.
+Produce PCA/LDA plots for PC1/2 or LD1/2. If 2+ dimensions are required to meet the variance threshold used in dim_reduction(), display main axis onto which each sample is projected.
 }
