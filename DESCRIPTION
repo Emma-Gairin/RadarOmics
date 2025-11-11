@@ -14,4 +14,8 @@ Imports:
     ggplot2,
     patchwork,
     MASS,
-    ggradar
+    ggradar,
+    dunn.test,
+    FSA,
+    multcompView,
+    wesanderson
