@@ -107,7 +107,7 @@ We are supplying:
 
 ```r
 # import data
-data_input = import_data(expr_path = "vst_ocellaris.csv", sample_meta_path = "sampleinfo_ocellaris.csv", gene_meta_path = "genelist_ocellaris.csv")
+data_input = import_data(expr_path = "example1/vst_ocellaris.csv", sample_meta_path = "example1/sampleinfo_ocellaris.csv", gene_meta_path = "example1/genelist_ocellaris.csv")
 ```
 #
 Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
@@ -351,7 +351,7 @@ The biological categories are those defined for zebrafish in a manually curated 
 library(RadarOmics)
 
 # import data
-data_input = import_data(expr_path = "vst_zebrafish.csv", sample_meta_path = "sampleinfo_zebrafish.csv", gene_meta_path = "genelist_zebrafish.csv")
+data_input = import_data(expr_path = "example2/vst_zebrafish.csv", sample_meta_path = "example2/sampleinfo_zebrafish.csv", gene_meta_path = "example2/genelist_zebrafish.csv")
 ```
 Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
