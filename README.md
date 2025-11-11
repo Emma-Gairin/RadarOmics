@@ -1,7 +1,7 @@
 # RadarOmics
 
-RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction** and visualising the output across samples, treatments, and biological processes with **radar plots**.
-It is designed to handle **complex experimental designs** with >3 treatments (ideally 5 or more), and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar tabular datasets.
+RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction**. This provides key metrics for data analyses, that can be visualised with **radar plots** to summarise shifts in biological processes across samples and treatments.
+It is designed to handle **complex experimental designs** with >3 treatments (ideally 5 or more), and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein expression, or similar multivariate tabular datasets.
 
 We provide examples of outputs with simple datasets in [**Implementation**](#implementation).
 
@@ -28,7 +28,7 @@ remotes::install_github("Emma-Gairin/RadarOmics", auth_token = "ghp_z8CbcDry9WGy
 ## Detailed description
 RadarOmics summarises the expression profiles of genes or other molecules within predefined biological categories using dimensional reduction analysis and radar plot visualisations.
 
-Prior to using the package, three data frames must be prepared in CSV (Comma delimited) format: 1) a count matrix normalised according to the preferred dimensional reduction method, e.g., variance-stabilising transformation of gene counts prior to running Principal Component Analysis; 2) sample information including the name of the samples and their corresponding group; 3) biological information with the gene/protein/etc. identifiers and their corresponding user-defined categories based on *e.g.,* manually curated lists, Gene Ontology terms, KEGG pathways. See examples of dataset structure [below](#implementation).
+Prior to using the package, three data frames must be prepared in CSV (Comma delimited) format: 1) a count matrix (for RNASEQ, we recommend VST normalisation of gene counts); 2) sample information including the name of the samples and their corresponding group; 3) biological information with the gene/protein/etc. identifiers and their corresponding user-defined categories based on *e.g.,* manually curated lists, Gene Ontology terms, KEGG pathways. See examples of dataset structure [below](#implementation).
 
 ---
 The three main functions of the package are:
