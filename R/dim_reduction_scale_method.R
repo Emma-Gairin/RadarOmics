@@ -13,7 +13,8 @@
 #'   - projection: data frame with sample, normalised_distance (normalized avg expr), category, furthest_groups.
 #'   - information: data frame with number of genes per category.
 #' @export
-scale_method <- function(data_input) {
+
+scale_method <- function(data_input,focus="group") {
   # Align rows and columns
   expr = data_input$expr
   gene_meta = data_input$gene_meta
@@ -21,7 +22,9 @@ scale_method <- function(data_input) {
   expr <- expr[intersect(gene_meta$gene, rownames(expr)), intersect(sample_meta$sample, colnames(expr)), drop = FALSE]
 
   catlist <- unique(gene_meta$category)
-
+  if(length(which(colnames(sample_meta)%in%focus))==0){
+    stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
+  }
   projection <- data.frame(sample = character(),
                                    normalised_distance = numeric(),
                                    category = character(),
@@ -56,7 +59,7 @@ scale_method <- function(data_input) {
       )
 
       # Merge with group info
-      df_samples <- merge(df_samples, sample_meta[, c("sample", "group")], by = "sample")
+      df_samples <- merge(df_samples, sample_meta[, c("sample", focus)], by = "sample")
 
       # Compute mean normalized expression per group
       group_means <- aggregate(normalised_distance ~ group, df_samples, mean)
@@ -77,7 +80,7 @@ scale_method <- function(data_input) {
     }
   }
   projection <- projection %>%
-    dplyr::left_join(sample_meta[, c("sample", "group")], by = "sample")
+    dplyr::left_join(sample_meta[, c("sample", focus)], by = "sample")
 
 
   list(
