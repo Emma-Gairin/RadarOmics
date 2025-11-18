@@ -12,7 +12,7 @@
 #'
 #' @param data_input Expression data, sample information, and biological process list uploaded using import_data()
 #' @param method Choice of scale, pca, or lda
-#' @param threshold when using method = "pca" or "lda", threshold of cumulative variance used to identify the number of PCs to keep,
+#' @param pca_threshold when using method = "pca" or "lda", threshold of cumulative variance used to identify the number of PCs to keep,
 #' @param lda_threshold when using method = "lda", threshold of cumulative variance used to identify the number of LDs to keep,
 #' @param focus when using method = "pca" or "lda", grouping of samples used to determine the main axis of variance (default = "group")
 #' @param lda_focus when using method = "lda", grouping of samples used to perform LDA analysis (default = "group")
@@ -31,7 +31,7 @@
 #'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
 #'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1, PC2, LD1, and LD2, centroid, and slope of main axis of variance.
 #' @export
-dim_reduction <- function(data_input, method = c("scale","pca","lda"),threshold=0.5,lda_threshold=0.8, focus="group",lda_focus="group",correlation_method="spearman",remove_effect_from=NULL) {
+dim_reduction <- function(data_input, method = c("scale","pca","lda"),pca_threshold=0.5,lda_threshold=0.8, pca_scale = FALSE,focus="group",lda_focus="group",correlation_method="spearman",remove_effect_from=NULL) {
   if (length(method) != 1) {
     stop("Please select exactly one method: 'scale', 'pca', 'lda'. Note that pca and lda will only run for categories with at least 5 variables/genes.")
   }
@@ -70,18 +70,24 @@ dim_reduction <- function(data_input, method = c("scale","pca","lda"),threshold=
 
 
   if (method == "pca") {
+    if(length(which(colnames(sample_meta)%in%focus))==0){
+      stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
+    }
     # run PCA method with threshold
   #  thres_input <- readline(prompt = "Enter variance threshold for PCA (e.g., 0.5 to select all dimensions which added together account to at least of 50% of the total variance): ")
   #  thres <- as.numeric(thres_input)
   #  if (is.na(thres) || thres <= 0 || thres > 1) {
   #    stop("Invalid threshold. Please enter a numeric value between 0 and 1.")
   #  }
-    res <- pca_method(data_input2,threshold,focus,correlation_method)
+    res <- pca_method(data_input2,pca_threshold,focus,correlation_method,pca_scale)
   } else if (method == "scale") {
     # run normalized average expression method with min_avg_expr filter
     res <- scale_method(data_input2)
   } else if (method =="lda"){
-    res <- lda_method(data_input2, threshold, lda_threshold,focus,lda_focus,correlation_method)
+    if(length(which(colnames(sample_meta)%in%focus))==0){
+      stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
+    }
+    res <- lda_method(data_input2, pca_threshold, lda_threshold,focus,lda_focus,correlation_method,pca_scale)
 
   }
 
