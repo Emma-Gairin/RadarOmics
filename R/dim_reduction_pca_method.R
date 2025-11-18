@@ -20,11 +20,11 @@
 #'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
 #'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1 and PC2, centroid, and slope of main axis of variance.
 #' @export
-pca_method = function(data_input,threshold,focus,correlation_method){
+pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scale){
   expr = data_input$expr
   gene_meta = data_input$gene_meta
   sample_meta = data_input$sample_meta
-  gene_list_prep = intersect(rownames(expr),unique(unique(gene_meta$gene)))
+  gene_list_prep = intersect(rownames(expr),unique(gene_meta$gene))
   expr = expr[gene_list_prep,sample_meta$sample,drop = FALSE]
 
   catlist = unique(gene_meta$category)
@@ -67,7 +67,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
       # PCA on transposed matrix with samples as rows and genes as columns
       filtered_expr = filtered_expr[apply(filtered_expr, 1, sd) != 0,]
 
-      sample_pca = prcomp(t(filtered_expr),scale. = TRUE)
+      sample_pca = prcomp(t(filtered_expr),scale. = pca_scale)
 
       prep_mean_group = as.data.frame(sample_pca$x)
       pca[[cat]] = prep_mean_group
@@ -84,7 +84,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
       cumulative_variance = cumsum(proportion_variance)
 
       # Number of PCs to keep
-      num_pcs = min(which(cumulative_variance > threshold))
+      num_pcs = min(which(cumulative_variance > pca_threshold))
       sum_var_kept = sum(proportion_variance[1:num_pcs])
       pc1 = proportion_variance[1]
       pc2 = proportion_variance[2]
@@ -138,9 +138,11 @@ pca_method = function(data_input,threshold,focus,correlation_method){
       avg_diff = mean(avg_expr_group2 - avg_expr_group1)
 
 
+      flipped=FALSE
 
       if (avg_diff < 0){
         coordinate_mainaxis$distance2 = -coordinate_mainaxis$distance
+        flipped=TRUE
 
         # Normalize distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
@@ -152,6 +154,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
 
       if (avg_diff >= 0){
         coordinate_mainaxis$distance2 = coordinate_mainaxis$distance
+        flipped=FALSE
 
         # Normalize distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
@@ -188,6 +191,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
           sum_variance_kept_pcs = sum_var_kept,
           expr_pca_correlation = corr_val,
           expr_pca_correlation_pvalue = p_value,
+          flipped=flipped,
           stringsAsFactors = FALSE
         )
       )
@@ -215,7 +219,7 @@ pca_method = function(data_input,threshold,focus,correlation_method){
     }
   }
   projection = projection %>%
-    dplyr::left_join(sample_meta[, c("sample", "group")], by = "sample")
+    dplyr::left_join(sample_meta[, unique(c("sample", focus))], by = "sample")
 
   list(projection = projection,
        information = information,
