@@ -10,6 +10,7 @@
 #' @param colour_palette Define colour palette (default: a mix of palettes from the "wesanderson" package)
 #' @return A list of plots displaying the PC1/PC2 or LD1/LD2 coordinates of each sample for each biological category and main axis of variance when 2 dimensions are retained by dim_reduction(). One plot per category.
 
+
 plot_dimensions=function(data_input,dim_reduction_output,colour="group",shape="",point_size=3,colour_palette = c(wes_palette("AsteroidCity1"),
                                                                                                     wes_palette("Chevalier1"),wes_palette("Darjeeling2"),
                                                                                                     wes_palette("Darjeeling1"),
