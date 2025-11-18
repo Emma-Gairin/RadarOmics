@@ -22,7 +22,7 @@
 #'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
 #'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1, PC2, LD1, and LD2, centroid, and slope of main axis of variance.
 #' @export
-lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correlation_method){
+lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,correlation_method,pca_scale){
   expr = data_input$expr
   gene_meta = data_input$gene_meta
   sample_meta = data_input$sample_meta[which(data_input$sample_meta$sample%in%colnames(expr)),]
@@ -30,7 +30,9 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correla
   expr = expr[gene_list_prep,sample_meta$sample,drop = FALSE]
 
   catlist = unique(gene_meta$category)
-
+  if(length(which(colnames(sample_meta)%in%focus))==0){
+    stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
+  }
   # preparation of the output of the function
   projection = data.frame(sample = character(),
                           distance = numeric(),
@@ -70,7 +72,7 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correla
       # PCA on transposed matrix with samples as rows and genes as columns
       filtered_expr = filtered_expr[apply(filtered_expr, 1, sd) != 0,]
 
-      sample_pca = prcomp(t(filtered_expr),scale. = TRUE)
+      sample_pca = prcomp(t(filtered_expr),scale. = pca_scale)
 
       prep_mean_group = as.data.frame(sample_pca$x)
       pca[[cat]] = prep_mean_group
@@ -88,7 +90,7 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correla
       cumulative_variance = cumsum(proportion_variance)
 
       # Number of PCs to keep
-      num_pcs = min(which(cumulative_variance > threshold))
+      num_pcs = min(which(cumulative_variance > pca_threshold))
       sum_var_kept_pcs = sum(proportion_variance[1:num_pcs])
       pc1 = proportion_variance[1]
       pc2 = proportion_variance[2]
@@ -182,11 +184,12 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correla
       avg_expr_group2 = rowMeans(expr_group2)
       avg_diff = mean(avg_expr_group2 - avg_expr_group1)
 
+      flipped=FALSE
 
 
       if (avg_diff < 0){
         coordinate_mainaxis$distance2 = -coordinate_mainaxis$distance
-
+        flipped=TRUE
         # Normalize distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
         max_val = max(coordinate_mainaxis$distance2)
@@ -234,6 +237,7 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correla
           sum_variance_kept_lds = sum_var_kept_lds,
         expr_pca_correlation = corr_val,
         expr_pca_correlation_pvalue = p_value,
+        flipped = flipped,
           stringsAsFactors = FALSE
         )
       )
@@ -265,7 +269,7 @@ lda_method = function(data_input,threshold,lda_threshold,focus,lda_focus,correla
     }
   }
   projection <- projection %>%
-    dplyr::left_join(sample_meta[, c("sample", focus,"group")], by = "sample")
+    dplyr::left_join(sample_meta[, unique(c("sample", focus))], by = "sample")
 
   list(projection = projection,
        information = information,
