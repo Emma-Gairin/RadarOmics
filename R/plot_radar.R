@@ -1,3 +1,5 @@
+#' Plot radars
+#'
 #' Plot radar charts following dim_reduction()
 #'
 #' @param data_input Expression data, sample information, and gene list uploaded using import_data()
