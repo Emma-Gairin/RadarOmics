@@ -1,25 +1,16 @@
-#' Plot radars
-#'
 #' Plot radar charts following dim_reduction()
 #'
 #' @param data_input Expression data, sample information, and gene list uploaded using import_data()
 #' @param dim_reduction_output Output from dim_reduction()
-#' @param radar_grouping Define how to group samples together on the radars. Default = "group" from sample information.
 #' @param category_list Optional data frame with columns: 1) category names, 2) order on the radar plot. Default will follow the order of gene categories from input file used in import_data(). You do not have to include all categories originally provided in import_data(), and you can play around with the order in which categories are displayed to manually highlight relationships between biological processes.
-#' @param colour_sample Optional colour scheme choice for the radar of each sample. This must be a dataframe with one "sample" column and one "colour" column. For optimal visualisation quality, we recommend exporting the outputs as PDFs and manually editing the colour scheme and figure design with vector editing software.
-#' @param colour_average Optional colour scheme choice for the average radar of each group of samples. This must be a dataframe with one column corresponding to the sample grouping (name of column must match the argument "radar_grouping" - default = "group") and one "colour" column. For optimal visualisation quality, we recommend exporting the outputs as PDFs and manually editing the colour scheme and figure design with vector editing software.
-#' @param  axis_label_size Modify size of axis label
-#' @param radar_label_size Modify size of radar label / title
-#' @param radar_label_position Define whether the radar label is placed in the centre of the plot (default) or at the top.
-#' @param width Define the horizontal spacing of the plots. Can help to better print the name of the different biological categories around the plot when they are long.
-#' @param height Define the vertical spacing of the plots.
+#' @param colour Optional colour scheme choice for different groups of samples. For optimal visualisation quality, we recommend exporting the outputs as PDFs and manually editing the colour scheme and figure design with vector editing software.
 #' @return A list of `ggradar` plots, one per group of samples.
 #' @export
 #'
 #' @examples
 #' plot_list=plot_radar(data_input,dim_reduction_output,category_list=my_category_list)
 
-plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="centre",width=2,height=2) {
+plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2) {
   # Check required packages
   if (!requireNamespace("ggradar",quietly=TRUE)) stop("Package 'ggradar' is required.",call.=FALSE)
   if (!requireNamespace("dplyr",quietly=TRUE)) stop("Package 'dplyr' is required.",call.=FALSE)
@@ -31,6 +22,9 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",categ
 #   colnames(category_list)=c("category","order")
 #   category_list=as.data.frame(category_list)
 # }
+  if(length(radar_grouping)<1){
+    radar_grouping=colnames(dim_reduction_output$projection)[length(colnames(dim_reduction_output$projection))]
+  }
   projection=dim_reduction_output$projection
   projection = merge(projection,
                      data_input$sample_meta[ , !(names(data_input$sample_meta) %in% intersect(names(projection), names(data_input$sample_meta)[-which(names(data_input$sample_meta)=="sample")]))],
@@ -40,7 +34,7 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",categ
   list_target=unique(projection[[radar_grouping]])
 
   if(radar_label_position == "top"){radar_label_position = 1.8}
-  if(radar_label_position %in% c("center", "centre")){radar_label_position = 0}
+  if(radar_label_position == "center"){radar_label_position = 0}
 
   # If category_list not provided,default to order in data_input$gene_meta
   if (length(category_list)==1) {
@@ -72,6 +66,7 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping="group",categ
     meanradar[-1]=lapply(meanradar[-1],function(x) as.numeric(as.character(x)))
 
     # Set sample factor levels
+    if(as.character(target)%in%c("0","1")){print("Error. Target / group names should not be 0 or 1")}
     desired_order=c("0","1",reshaped_radar$sample,target)
     meanradar$sample=factor(meanradar$sample,levels=desired_order)
 
