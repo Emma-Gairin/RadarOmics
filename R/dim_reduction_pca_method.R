@@ -12,7 +12,7 @@
 #' scale sample values from 0 to 1, setting 0 to be the on the side of lower values.
 #'
 #' @param data_input Expression data, sample information, and biological process list uploaded using import_data()
-#' @param threshold threshold of cumulative variance used to identify the number of PCs to keep,
+#' @param pca_threshold threshold of cumulative variance used to identify the number of PCs to keep,
 #' @param focus grouping of samples used to determine the main axis of variance (default = "group")
 #' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").
 #' @return A list with:
