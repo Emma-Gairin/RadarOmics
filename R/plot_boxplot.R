@@ -12,7 +12,8 @@
 #' @param colour_palette Define colour palette (default: a mix of palettes from the "wesanderson" package).
 #' @return A list of plots displaying the values yielded by dim_reduction() for each sample in each biological category. One plot per category.
 
-plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametric",pvalue_adjustment="bh",pvalue_threshold=0.05,boxplot_grouping="group",boxplot_order = NULL,colour_palette = c(wes_palette("AsteroidCity1"),
+
+plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametric",pvalue_adjustment="bh",pvalue_threshold=0.05,boxplot_focus="group",boxplot_order = NULL,colour_palette = c(wes_palette("AsteroidCity1"),
                                                                                                            wes_palette("Chevalier1"),wes_palette("Darjeeling2"),
                                                                                                                  wes_palette("Darjeeling1"),
                                                                                                                  wes_palette("GrandBudapest1"),wes_palette("Moonrise3"),wes_palette("Moonrise2"))) {
@@ -30,14 +31,14 @@ plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametr
                        data_input$sample_meta[ , !(names(data_input$sample_meta) %in% intersect(names(projection_cat), names(data_input$sample_meta)[-which(names(data_input$sample_meta)=="sample")]))],
                        by="sample")
     if(length(boxplot_order)>0){
-      projection_cat[,which(colnames(projection_cat)%in%boxplot_grouping)] = factor(projection_cat[,which(colnames(projection_cat)%in%boxplot_grouping)],levels = boxplot_order)
+      projection_cat[,which(colnames(projection_cat)%in%boxplot_focus)] = factor(projection_cat[,which(colnames(projection_cat)%in%boxplot_focus)],levels = boxplot_order)
     }
 
     if(stat_choice == "parametric"){
       set.seed(123)
       if (!requireNamespace("multcompView",quietly=TRUE)) stop("Package 'multcompView' is required.",call.=FALSE)
 
-      projection_cat$test = projection_cat[,which(colnames(projection_cat)%in%boxplot_grouping)]
+      projection_cat$test = projection_cat[,which(colnames(projection_cat)%in%boxplot_focus)]
       aov_test = aov(normalised_distance  ~ test, data = projection_cat)
       tukey_test = TukeyHSD(aov_test)
       projection_cat_letters = multcompView::multcompLetters4(aov_test, tukey_test)
@@ -45,23 +46,23 @@ plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametr
       projection_cat_letters$test = rownames(projection_cat_letters)
       projection_cat = merge(projection_cat,projection_cat_letters[,c("test","Letters")],by="test")
       if(length(unique(projection_cat$Letters))==1){
-        boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_grouping),y=normalised_distance,fill = !!sym(boxplot_grouping)))+geom_boxplot()+
-          theme_bw()+xlab(paste0(boxplot_grouping))+ylab("dim_reduction() value")+theme(legend.position = "none")+
+        boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_focus),y=normalised_distance,fill = !!sym(boxplot_focus)))+geom_boxplot()+
+          theme_bw()+xlab(paste0(boxplot_focus))+ylab("dim_reduction() value")+theme(legend.position = "none")+
           scale_fill_manual(values=colour_palette)+labs(title=paste0(cat),subtitle=c(" No significant difference"))
       }
       if(length(unique(projection_cat$Letters))>1){
 
-      boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_grouping),y=normalised_distance,fill = !!sym(boxplot_grouping)))+geom_boxplot()+
-        theme_bw()+xlab(paste0(boxplot_grouping))+ylab("dim_reduction() value")+
+      boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_focus),y=normalised_distance,fill = !!sym(boxplot_focus)))+geom_boxplot()+
+        theme_bw()+xlab(paste0(boxplot_focus))+ylab("dim_reduction() value")+
         scale_fill_manual(values=colour_palette)+ggtitle(paste0(cat))+theme(legend.position = "none")+
-        geom_text(aes(x = !!sym(boxplot_grouping), y = 1.1, label = Letters), size = 3.5)
+        geom_text(aes(x = !!sym(boxplot_focus), y = 1.1, label = Letters), size = 3.5)
       }
       }
     if(stat_choice == "nonparametric"){
       if (!requireNamespace("FSA",quietly=TRUE)) stop("Package 'FSA' is required.",call.=FALSE)
 #      if (!requireNamespace("rcompanion",quietly=TRUE)) stop("Package 'rcompanion' is required.",call.=FALSE)
 
-      projection_cat$test = projection_cat[,which(colnames(projection_cat)%in%boxplot_grouping)]
+      projection_cat$test = projection_cat[,which(colnames(projection_cat)%in%boxplot_focus)]
       kruskal_test = kruskal.test(x=projection_cat$normalised_distance,g = projection_cat$test)
       if(kruskal_test$p.value<pvalue_threshold){
         dunn_test = dunn.test(x=projection_cat$normalised_distance, g=projection_cat$test, method = pvalue_adjustment)
@@ -79,10 +80,10 @@ plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametr
         colnames(projection_cat_letters)=c("Letters","test")
         projection_cat = merge(projection_cat,projection_cat_letters[,c("Letters","test")],by="test")
 
-        boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_grouping),y=normalised_distance,fill = !!sym(boxplot_grouping)))+geom_boxplot()+
-          theme_bw()+xlab(paste0(boxplot_grouping))+ylab("dim_reduction() value")+
+        boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_focus),y=normalised_distance,fill = !!sym(boxplot_focus)))+geom_boxplot()+
+          theme_bw()+xlab(paste0(boxplot_focus))+ylab("dim_reduction() value")+
           scale_fill_manual(values=colour_palette)+ggtitle(paste0(cat))+theme(legend.position = "none")+
-          geom_text(aes(x = !!sym(boxplot_grouping), y = 1.1, label = Letters), size = 3.5)
+          geom_text(aes(x = !!sym(boxplot_focus), y = 1.1, label = Letters), size = 3.5)
 
 
       }
@@ -93,12 +94,12 @@ plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametr
     }
     if(min(length(stat_choice),length(stat_choice2))==0){
 
-      boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_grouping),y=normalised_distance,fill = !!sym(boxplot_grouping)))+geom_boxplot()+
-        theme_bw()+xlab(paste0(boxplot_grouping))+ylab("dim_reduction() value")+theme(legend.position = "none")+
+      boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_focus),y=normalised_distance,fill = !!sym(boxplot_focus)))+geom_boxplot()+
+        theme_bw()+xlab(paste0(boxplot_focus))+ylab("dim_reduction() value")+theme(legend.position = "none")+
         scale_fill_manual(values=colour_palette)+ggtitle(paste0(cat))
       if(length(stat_choice2)==0){
-        boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_grouping),y=normalised_distance,fill = !!sym(boxplot_grouping)))+geom_boxplot()+
-          theme_bw()+xlab(paste0(boxplot_grouping))+ylab("dim_reduction() value")+theme(legend.position = "none")+
+        boxplot = ggplot(projection_cat,aes(x=!!sym(boxplot_focus),y=normalised_distance,fill = !!sym(boxplot_focus)))+geom_boxplot()+
+          theme_bw()+xlab(paste0(boxplot_focus))+ylab("dim_reduction() value")+theme(legend.position = "none")+
           scale_fill_manual(values=colour_palette)+labs(title=paste0(cat),subtitle=c(" No significant difference"))
       }
     }
