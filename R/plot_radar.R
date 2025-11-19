@@ -12,18 +12,35 @@
 #' @examples
 #' plot_list=plot_radar(data_input,dim_reduction_output,category_list=my_category_list)
 
-plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2) {
+plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2,control = NULL, scale_control_to_mean = 0.5) {
   # Check required packages
   if (!requireNamespace("ggradar",quietly=TRUE)) stop("Package 'ggradar' is required.",call.=FALSE)
   if (!requireNamespace("dplyr",quietly=TRUE)) stop("Package 'dplyr' is required.",call.=FALSE)
   if (!requireNamespace("tidyr",quietly=TRUE)) stop("Package 'tidyr' is required.",call.=FALSE)
   if (!requireNamespace("ggplot2",quietly=TRUE)) stop("Package 'ggplot2' is required.",call.=FALSE)
+  if(length(radar_grouping)<1){
+    radar_grouping=colnames(dim_reduction_output$projection)[length(colnames(dim_reduction_output$projection))]
+  }
+  if(length(control)>0){
+    i=0
+    while(i<length(unique(dim_reduction_output$projection$category))){
+      i=i+1
+      catsel = unique(dim_reduction_output$projection$category)[i]
+      dimsel = dim_reduction_output$projection[which(dim_reduction_output$projection$category%in%catsel),]
+      mean_dmso = mean(dimsel$normalised_distance[which(dimsel[[radar_grouping]]==control)])
+      rescaling = max(c(1-mean_dmso),mean_dmso)/(abs(scale_control_to_mean-mean_dmso))
+      dimsel$normalised_distance = dimsel$normalised_distance/rescaling
+      mean_dmso = mean(dimsel$normalised_distance[which(dimsel[[radar_grouping]]==control)])
 
-# if(length(category_list)==0){
-#   category_list = cbind(unique(data_input$gene_meta$category),rev(c(1:length(unique(data_input$gene_meta$category)))))
-#   colnames(category_list)=c("category","order")
-#   category_list=as.data.frame(category_list)
-# }
+      dimsel$normalised_distance = dimsel$normalised_distance + abs(scale_control_to_mean-mean_dmso)-scale_control_to_mean
+      mult = scale_control_to_mean/(max(c(abs(max(dimsel$normalised_distance))),abs(c(min(dimsel$normalised_distance)))))
+      dimsel$normalised_distance = dimsel$normalised_distance*mult + scale_control_to_mean
+
+      dim_reduction_output$projection[which(dim_reduction_output$projection$category%in%catsel),] = dimsel
+    }
+
+  }
+
   if(length(radar_grouping)<1){
     radar_grouping=colnames(dim_reduction_output$projection)[length(colnames(dim_reduction_output$projection))]
   }
