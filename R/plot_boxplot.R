@@ -19,7 +19,7 @@ plot_boxplot=function(data_input,dim_reduction_output,stat_choice = "nonparametr
   # Check required packages
   if (!requireNamespace("dplyr",quietly=TRUE)) stop("Package 'dplyr' is required.",call.=FALSE)
   if (!requireNamespace("tidyr",quietly=TRUE)) stop("Package 'tidyr' is required.",call.=FALSE)
-  if (!requireNamespace("ggplot2::ggplot2",quietly=TRUE)) stop("Package 'ggplot2::ggplot2' is required.",call.=FALSE)
+  if (!requireNamespace("ggplot2",quietly=TRUE)) stop("Package 'ggplot2' is required.",call.=FALSE)
   if (!requireNamespace("wesanderson",quietly=TRUE)) stop("Package 'wesanderson' is required.",call.=FALSE)
   plot_list=list()
 
