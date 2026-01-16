@@ -495,7 +495,7 @@ unique(data_input$sample_meta$group) # to control the order of the groups
 
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar chart for all samples](example2/figures/all_samples_lda_08_08_substance_concentration2.png)
+![Radar chart for all samples](example2/figures/all_samples_lda_08_08_substance_concentration.png)
 *Figure 12: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern to what extent biological processes are modified by each treatment, across the different time points.
