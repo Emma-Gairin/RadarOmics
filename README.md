@@ -369,14 +369,14 @@ Counts data (or other tabular data), normalised for PCA use. For gene expression
 head(data_input$counts[,1:4])
 ```
 
-|                   | 10_DMSO_Kontrolle2_96h_Eppi-12_Index-B5| 11_DMSO_Kontrolle3_96h_Eppi-13_Index-C5| 12_DMSO_Kontrolle4_96h_Eppi-14_Index-D5| 19_DMSO_Kontrolle3_36h_Eppi-28_Index-C6|
-|:------------------|---------------------------------------:|---------------------------------------:|---------------------------------------:|---------------------------------------:|
-|ENSDARG00000000001 |                                     145|                                     336|                                       0|                                     125|
-|ENSDARG00000000002 |                                     719|                                    2285|                                       0|                                     456|
-|ENSDARG00000000018 |                                     918|                                    2787|                                       0|                                    2997|
-|ENSDARG00000000019 |                                    3901|                                   11648|                                       0|                                    4131|
-|ENSDARG00000000068 |                                    1465|                                    4536|                                       0|                                     825|
-|ENSDARG00000000069 |                                    2178|                                    6529|                                       0|                                    4625|
+|                   | X19_DMSO_Kontrolle3_36h_Eppi.28_Index.C6| X20_DMSO_Kontrolle4_36h_Eppi.29_Index.D6| X21_DMSO_Kontrolle5_36h_Eppi.30_Index.E6| X34_DMSO_Kontrolle6_48h_Eppi.51_Index.C8|
+|:------------------|----------------------------------------:|----------------------------------------:|----------------------------------------:|----------------------------------------:|
+|ENSDARG00000000001 |                                      125|                                      112|                                      136|                                      187|
+|ENSDARG00000000002 |                                      456|                                      442|                                      552|                                      674|
+|ENSDARG00000000018 |                                     2997|                                     2304|                                     2769|                                     3263|
+|ENSDARG00000000019 |                                     4131|                                     3708|                                     4499|                                     4350|
+|ENSDARG00000000068 |                                      825|                                      651|                                      799|                                      792|
+|ENSDARG00000000069 |                                     4625|                                     3826|                                     4582|                                     3794|
 
 *Note that samples are columns, genes are rows.*
 
@@ -384,14 +384,14 @@ head(data_input$counts[,1:4])
 ```r
 head(data_input$sample_meta)
 ```
-|sample                                   |group               | time_hpf|substance | concentration|substance_concentration |substance_hpe |
-|:----------------------------------------|:-------------------|--------:|:---------|-------------:|:-----------------------|:-------------|
-|51_DMSO_Kontrolle1_96h_Eppi-76_Index-D10 |96_DMSO_0_72        |       96|DMSO      |           0.0|DMSO_0                  |DMSO_96       |
-|52_DMSO_Kontrolle2_96h_Eppi-77_Index-E10 |96_DMSO_0_72        |       96|DMSO      |           0.0|DMSO_0                  |DMSO_96       |
-|53_DMSO_Kontrolle3_96h_Eppi-78_Index-F10 |96_DMSO_0_72        |       96|DMSO      |           0.0|DMSO_0                  |DMSO_96       |
-|54_Sorafenib_EC50_96h_Eppi-83_Index-G10  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
-|55_Sorafenib_EC50_96h_Eppi-84_Index-H10  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
-|56_Sorafenib_EC50_96h_Eppi-85_Index-A11  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
+|sample                                   |group            | hpf|substance | concentration|substance_concentration |substance_hpf |
+|:----------------------------------------|:----------------|---:|:---------|-------------:|:-----------------------|:-------------|
+|X19_DMSO_Kontrolle3_36h_Eppi.28_Index.C6 |DMSO_36          |  36|DMSO      |           0.0|DMSO_0                  |DMSO_36       |
+|X20_DMSO_Kontrolle4_36h_Eppi.29_Index.D6 |DMSO_36          |  36|DMSO      |           0.0|DMSO_0                  |DMSO_36       |
+|X21_DMSO_Kontrolle5_36h_Eppi.30_Index.E6 |DMSO_36          |  36|DMSO      |           0.0|DMSO_0                  |DMSO_36       |
+|X22_Sorafenib_EC50_36h_Eppi.31_Index.F6  |Sorafenib_36_1.3 |  36|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_36  |
+|X23_Sorafenib_EC50_36h_Eppi.32_Index.G6  |Sorafenib_36_1.3 |  36|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_36  |
+|X25_Sorafenib_EC50_36h_Eppi.34_Index.A7  |Sorafenib_36_1.3 |  36|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_36  |
 
 - Gene information with columns "feature" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar chart.
 ```r
@@ -414,9 +414,10 @@ Once the dataset is uploaded, we first explore the data with method = **"pca"** 
 ```r
 dim_reduction_output = dim_reduction(
   data_input,
-  method = "pca")
+  method = "pca",
+  pca_scale = FALSE)
 
-radars = plot_radar(result, dim_reduction_output,
+radars = plot_radar(data_input, dim_reduction_output,
                     category_list = category_list,
                     axis_label_size=2.5, radar_label_size=3,
                     radar_label_position = "top")
@@ -438,7 +439,8 @@ We can modify the function call by adding the argument _focus = "substance_conce
 dim_reduction_output = dim_reduction(
   data_input,
   method = "pca",
-  focus = "substance_concentration")
+  focus = "substance_concentration",
+  pca_scale = FALSE)
 
 radars = plot_radar(result, dim_reduction_output,
                     category_list = category_list,
