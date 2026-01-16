@@ -192,14 +192,14 @@ $information provides the category, number of features (genes here) in the categ
 ```r
 head(dim_reduction_output$information)
 ```
-|category         |  n_features|method | num_pcs| sum_variance_kept_pcs| counts_pca_correlation| counts_pca_correlation_pvalue|
-|:----------------|-----------:|:------|-------:|---------------------:|----------------------:|-----------------------------:|
-|appetite         |          80|PCA    |       3|             0.5578087|              0.6753247|                     0.0010605|
-|digestion        |         121|PCA    |       2|             0.5502907|              0.9597403|                     0.0000051|
-|gastrointestinal |          17|PCA    |       2|             0.6869954|              0.9883117|                     0.0000044|
-|corticoids       |          28|PCA    |       3|             0.5676356|              0.3610390|                     0.1084280|
-|thyroid          |          31|PCA    |       3|             0.5859959|              0.1116883|                     0.6287796|
-|betaoxi          |          14|PCA    |       1|             0.6837123|              0.9324675|                     0.0000049|
+|category         |  n_features|method | num_pcs| sum_variance_kept_pcs| counts_pca_correlation| counts_pca_correlation_pvalue| flipped|
+|:----------------|-----------:|:------|-------:|---------------------:|----------------------:|-----------------------------:|-------:|
+|appetite         |          80|PCA    |       3|             0.5578087|              0.6753247|                     0.0010605|    TRUE|
+|digestion        |         121|PCA    |       2|             0.5502907|              0.9597403|                     0.0000051|    TRUE|
+|gastrointestinal |          17|PCA    |       2|             0.6869954|              0.9883117|                     0.0000044|    TRUE|
+|corticoids       |          28|PCA    |       3|             0.5676356|              0.3610390|                     0.1084280|   FALSE|
+|thyroid          |          31|PCA    |       3|             0.5859959|              0.1116883|                     0.6287796|   FALSE|
+|betaoxi          |          14|PCA    |       1|             0.6837123|              0.9324675|                     0.0000049|   FALSE|
 
 *In this case, most biological categories show consistent expression across genes (_i.e.,_ genes show overall higher expression in a given sample). An exception is genes in the "thyroid" category here. Thyroid-related gene expression is often complex, and here different samples show different profiles with various genes acting in a complex heterogeneous pattern. Thus, for this biological category, the values extracted from **dim_reduction()** do not directly relate the overall gene expression level.*
 #
