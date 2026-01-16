@@ -544,7 +544,7 @@ plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of
 Find examples of plots and some comments below.
 
 
-![PC1 and 2 for vision](example2/figures/pca_betaoxi.png)
+![PC1 and 2 for vision](example2/figures/pca_vision.png)
 *Figure 14: PC1 and 2 obtained from the vision-related genes.*
 
 Here, we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
