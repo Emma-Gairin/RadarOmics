@@ -359,6 +359,10 @@ library(RadarOmics)
 # import data
 data_input = import_data(counts_path = "example2/vst_zebrafish.csv", sample_meta_path = "example2/sampleinfo_zebrafish.csv", feature_meta_path = "example2/genelist_zebrafish.csv")
 ```
+[1] "3506 features were retrieved in the row names of the counts matrix."
+[1] "45 samples were retrieved in the column names of the counts matrix."
+
+
 Counts data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
 head(data_input$counts[,1:4])
