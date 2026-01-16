@@ -109,6 +109,9 @@ We are supplying:
 # import data
 data_input = import_data(counts_path = "example1/vst_ocellaris.csv", sample_meta_path = "example1/sampleinfo_ocellaris.csv", feature_meta_path = "example1/genelist_ocellaris.csv")
 ```
+[1] "787 features were retrieved in the row names of the counts matrix."
+[1] "21 samples were retrieved in the column names of the counts matrix."
+
 #
 Counts data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
