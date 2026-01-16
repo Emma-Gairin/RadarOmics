@@ -289,7 +289,7 @@ colnames(colour_sample)=c("sample","colour")
 |SRR7610166 |skyblue3 |
 ```r
 radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_sample = colour_sample)
-wrap_plots(radars[ordered_list],ncol=4,nrow=2)
+patchwork::wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 *Note that you can define one colour per sample instead of using a repeated pattern as we did here.*
 
@@ -335,7 +335,7 @@ dim_reduction_output = dim_reduction(
 
 radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 1, radar_label_size = 1)
 
-wrap_plots(radars[ordered_list], ncol=4, nrow=2)
+patchwork::wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
 ![Radar charts for each stage](example1/figures/all_samples_scale.png)
 *Figure 9: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"scale"**.*
@@ -416,7 +416,7 @@ radars = plot_radar(result, dim_reduction_output,
 
 unique(data_input$sample_meta$group) # to control the order of the groups
 
-wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
+patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar chart for all samples](example2/figures/all_samples_pca.png)
 *Figure 10: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
@@ -440,7 +440,9 @@ radars = plot_radar(result, dim_reduction_output,
 
 unique(data_input$sample_meta$group) # to control the order of the groups
 
-wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
+radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_sample = colour_sample)
+patchwork::wrap_plots(radars[ordered_list],ncol=4,nrow=2)
+patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar chart for all samples](example2/figures/all_samples_pca_substance_concentration.png)
 *Figure 11: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
@@ -469,7 +471,7 @@ radars = plot_radar(result, dim_reduction_output,
 
 unique(data_input$sample_meta$group) # to control the order of the groups
 
-wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
+patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar chart for all samples](example2/figures/all_samples_lda_08_08_substance_concentration.png)
 *Figure 12: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
@@ -489,7 +491,7 @@ Note that users can customise the grouping of the samples on radar charts using 
 radars=plot_radar(result, dim_reduction_output,radar_grouping = "substance_concentration",
 category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label_position = "top")
 
-wrap_plots(radars[unique(data_input$sample_meta$substance_concentration)],ncol=5,nrow=1)
+patchwork::wrap_plots(radars[unique(data_input$sample_meta$substance_concentration)],ncol=5,nrow=1)
 ```
 ![radar based on substance + concentration grouping rather than all groups](example2/figures/substance_concentration_radar.png)
 *Figure 13: Radar chart for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
