@@ -443,7 +443,7 @@ radars = plot_radar(data_input, dim_reduction_output,
 
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar chart for all samples](example2/figures/all_samples_pca.png)
+![Radar chart for all samples](example2/figures/all_samples_pca2.png)
 *Figure 10: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
 
 On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
@@ -466,7 +466,7 @@ radars = plot_radar(data_input, dim_reduction_output,
 
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar chart for all samples](example2/figures/all_samples_pca_substance_concentration.png)
+![Radar chart for all samples](example2/figures/all_samples_pca_substance_concentration2.png)
 *Figure 11: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
 
 ###
@@ -495,7 +495,7 @@ unique(data_input$sample_meta$group) # to control the order of the groups
 
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar chart for all samples](example2/figures/all_samples_lda_08_08_substance_concentration.png)
+![Radar chart for all samples](example2/figures/all_samples_lda_08_08_substance_concentration2.png)
 *Figure 12: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern to what extent biological processes are modified by each treatment, across the different time points.
@@ -515,7 +515,7 @@ category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label
 
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$substance_concentration)],ncol=5,nrow=1)
 ```
-![radar based on substance + concentration grouping rather than all groups](example2/figures/substance_concentration_radar.png)
+![radar based on substance + concentration grouping rather than all groups](example2/figures/substance_concentration_radar2.png)
 *Figure 13: Radar chart for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this case, samples from different hours post fertilisation are grouped onto the same radar chart - and as hour post fertilisation exerts a major influence on the data structure, the average values for most radars are ~0.5, leading to circle-like patterns with little signal across the radars.
