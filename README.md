@@ -165,8 +165,7 @@ Once the dataset is uploaded, we can run the PCA and extract reduced coordinates
 ```r
 dim_reduction_output = dim_reduction(
   data_input,
-  method = "pca",
-  pca_scale = TRUE)
+  method = "pca")
 ```
 #
 **dim_reduction()** yields multiple objects.
@@ -414,15 +413,33 @@ Once the dataset is uploaded, we first explore the data with method = **"pca"** 
 ```r
 dim_reduction_output = dim_reduction(
   data_input,
-  method = "pca",
-  pca_scale = FALSE)
+  method = "pca")
+
+
+category_list_names = c("ROS",
+                        "mitochondria",
+                        "endoplasmic_reticulum",
+                        "histone",
+                        "brain_development",
+                        "angiogenesis",
+                        "ossification",
+                        "vision",
+                        "pigmentation",
+                        "thyroid",
+                        "corticoids",
+                        "glycolysis",
+                        "krebs",
+                        "cholesterol")
+
+category_list=cbind(category_list_names,c(1:length(category_list_names)))
+colnames(category_list)=c("category","order")
+category_list=as.data.frame(category_list)
+
 
 radars = plot_radar(data_input, dim_reduction_output,
                     category_list = category_list,
                     axis_label_size=2.5, radar_label_size=3,
                     radar_label_position = "top")
-
-unique(data_input$sample_meta$group) # to control the order of the groups
 
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
@@ -439,18 +456,14 @@ We can modify the function call by adding the argument _focus = "substance_conce
 dim_reduction_output = dim_reduction(
   data_input,
   method = "pca",
-  focus = "substance_concentration",
-  pca_scale = FALSE)
+  focus = "substance_concentration")
 
-radars = plot_radar(result, dim_reduction_output,
+radars = plot_radar(data_input, dim_reduction_output,
+                    radar_grouping = "group",              # radar_grouping allows to produce a plot per group even when using a different focus in dim_reduction
                     category_list = category_list,
                     axis_label_size=2.5, radar_label_size=3,
                     radar_label_position = "top")
 
-unique(data_input$sample_meta$group) # to control the order of the groups
-
-radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_sample = colour_sample)
-patchwork::wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 patchwork::wrap_plots(radars[unique(data_input$sample_meta$group)], ncol=5, nrow=3)
 ```
 ![Radar chart for all samples](example2/figures/all_samples_pca_substance_concentration.png)
@@ -531,7 +544,7 @@ plots$thyroid # LD1 + 2 met the threshold, thus necessitating the calculation of
 Find examples of plots and some comments below.
 
 
-![PC1 and 2 for vision](example2/figures/pca_vision.png)
+![PC1 and 2 for vision](example2/figures/pca_betaoxi.png)
 *Figure 14: PC1 and 2 obtained from the vision-related genes.*
 
 Here, we can see the signature of hour post fertilisation on visual genes, and discern an effect of Sorafenib on vision genes at 96 hours.
