@@ -2,7 +2,7 @@
 #'
 #' Produce PCA/LDA plots for PC1/2 or LD1/2. If 2+ dimensions are required to meet the variance threshold used in dim_reduction(), display main axis onto which each sample is projected.
 #'
-#' @param data_input Expression data, sample information, and gene list uploaded using import_data()
+#' @param data_input Counts data, sample information, and molecular feature list uploaded using import_data()
 #' @param dim_reduction_output Output from dim_reduction()
 #' @param colour Define colour of plotted data points based on column name from the sample information matrix (default = "group")
 #' @param shape Define shape of plotted data points based on column name from the sample information matrix (default = NA)
@@ -40,12 +40,12 @@ plot_dimensions=function(data_input,dim_reduction_output,colour="group",shape=""
       maxvariancedirection = dim_reduction_output$dimred_information$maxvariancedirection[which(dim_reduction_output$dimred_information$category%in%cat)]
       if(length(centroid)==0){
         if(nchar(shape)>0){
-          plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!sym(colour)),shape=factor(!!sym(shape))))+geom_point(size=point_size)+
+          plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!rlang::sym(colour)),shape=factor(!!rlang::sym(shape))))+geom_point(size=point_size)+
             xlab(paste0("PC1 (",round(100*pc1),"%)"))+ylab(paste0("PC2 (",round(100*pc2),"%)"))+
             ggtitle(paste0(cat," | PC retained: ",reduction_dim))+coord_equal()+theme_bw()+scale_colour_manual(values = colour_palette)
         }
         if(nchar(shape)==0){
-          plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!sym(colour))))+geom_point(size=point_size)+
+          plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!rlang::sym(colour))))+geom_point(size=point_size)+
             xlab(paste0("PC1 (",round(100*pc1),"%)"))+ylab(paste0("PC2 (",round(100*pc2),"%)"))+
             ggtitle(paste0(cat," | PC retained: ",reduction_dim))+coord_equal()+theme_bw()+scale_colour_manual(values = colour_palette)
         }
@@ -63,14 +63,14 @@ plot_dimensions=function(data_input,dim_reduction_output,colour="group",shape=""
         intercept=centroid_PC1-slope*centroid_PC1
         centroid_df = data.frame(PC1 = centroid_PC1, PC2 = centroid_PC2)
         if(nchar(shape)>0){
-        plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!sym(colour)),shape=factor(!!sym(shape))))+geom_point(size=point_size)+
+        plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!rlang::sym(colour)),shape=factor(!!rlang::sym(shape))))+geom_point(size=point_size)+
           geom_point(size=point_size) +
             geom_abline(slope = slope, intercept = intercept, color = "black", lwd = 1)+
           xlab(paste0("PC1 (",round(100*pc1),"%)"))+ylab(paste0("PC2 (",round(100*pc2),"%)"))+
           ggtitle(paste0(cat," | PC retained: ",reduction_dim))+coord_equal()+theme_bw()+scale_colour_manual(values = colour_palette)
         }
         if(nchar(shape)==0){
-          plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!sym(colour))))+geom_point(size=point_size)+
+          plot = ggplot(forpca,aes(x=PC1,y=PC2,color=factor(!!rlang::sym(colour))))+geom_point(size=point_size)+
             geom_point(size=point_size) +
             geom_abline(slope = slope, intercept = intercept, color = "black", lwd = 1)+
             xlab(paste0("PC1 (",round(100*pc1),"%)"))+ylab(paste0("PC2 (",round(100*pc2),"%)"))+
@@ -94,14 +94,14 @@ plot_dimensions=function(data_input,dim_reduction_output,colour="group",shape=""
         centroid = dim_reduction_output$dimred_information$centroid[which(dim_reduction_output$dimred_information$category%in%cat)]
         maxvariancedirection = dim_reduction_output$dimred_information$maxvariancedirection[which(dim_reduction_output$dimred_information$category%in%cat)]
           if(nchar(shape)>0){
-            plot = ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!sym(colour)),shape=factor(!!sym(shape))))+geom_point(size=point_size)+
+            plot = ggplot2::ggplot(forlda,ggplot2::aes(x=LD1,y=LD2,color=factor(!!rlang::sym(colour)),shape=factor(!!rlang::sym(shape))))+ggplot2::geom_point(size=point_size)+
               geom_point(size=point_size) +
               xlab(paste0("LD1 (",round(100*ld1),"%)"))+ylab(paste0("LD2 (",round(100*ld2),"%)"))+
               ggtitle(paste0(cat," | LD retained: ",reduction_dim))
 
           if(nchar(shape)==0){
 
-          plot = ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!sym(colour))))+geom_point(size=point_size)+
+          plot = ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!rlang::sym(colour))))+geom_point(size=point_size)+
             geom_point(size=point_size) +
             xlab(paste0("LD1 (",round(100*ld1),"%)"))+ylab(paste0("LD2 (",round(100*ld2),"%)"))+
             ggtitle(paste0(cat," | LD retained: ",reduction_dim))+theme_bw()+scale_colour_manual(values = colour_palette)
@@ -117,7 +117,7 @@ plot_dimensions=function(data_input,dim_reduction_output,colour="group",shape=""
           centroid_df = data.frame(LD1 = centroid_LD1, LD2 = centroid_LD2)
           if(nchar(shape)>0){
 
-          plot = ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!sym(colour)),shape=factor(!!sym(shape))))+geom_point(size=point_size)+
+          plot = ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!rlang::sym(colour)),shape=factor(!!rlang::sym(shape))))+geom_point(size=point_size)+
             geom_point(size=point_size) +
             geom_abline(slope = slope, intercept = intercept, color = "black", lwd = 1)+
             xlab(paste0("LD1 (",round(100*ld1),"%)"))+ylab(paste0("LD2 (",round(100*ld2),"%)"))+
@@ -125,7 +125,7 @@ plot_dimensions=function(data_input,dim_reduction_output,colour="group",shape=""
           ggtitle(paste0(cat," | LD retained: ",reduction_dim))
           }
           if(nchar(shape)==0){
-            plot = ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!sym(colour))))+geom_point(size=point_size)+
+            plot = ggplot2::ggplot(forlda,aes(x=LD1,y=LD2,color=factor(!!rlang::sym(colour))))+geom_point(size=point_size)+
 geom_point(size=point_size) +
               geom_abline(slope = slope, intercept = intercept, color = "black", lwd = 1)+
               ggtitle(paste0(cat))+coord_equal()+theme_bw()+scale_colour_manual(values = colour_palette)+
