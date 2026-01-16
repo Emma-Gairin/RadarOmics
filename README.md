@@ -107,12 +107,12 @@ We are supplying:
 
 ```r
 # import data
-data_input = import_data(expr_path = "example1/vst_ocellaris.csv", sample_meta_path = "example1/sampleinfo_ocellaris.csv", feature_meta_path = "example1/genelist_ocellaris.csv")
+data_input = import_data(counts_path = "example1/vst_ocellaris.csv", sample_meta_path = "example1/sampleinfo_ocellaris.csv", feature_meta_path = "example1/genelist_ocellaris.csv")
 ```
 #
-Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
+Counts data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
-head(data_input$expr[,1:10])
+head(data_input$counts[,1:10])
 ```
 |               | SRR7610156| SRR7610157| SRR7610162| SRR7610144| SRR7610145| SRR7610163| SRR7610146| SRR7610147| SRR7610148| SRR7610149|
 |:--------------|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
@@ -189,14 +189,14 @@ $information provides the category, number of features (genes here) in the categ
 ```r
 head(dim_reduction_output$information)
 ```
-|category         | n_variables|method | num_pcs| sum_variance_kept_pcs| expr_pca_correlation| expr_pca_correlation_pvalue|
-|:----------------|-----------:|:------|-------:|---------------------:|--------------------:|---------------------------:|
-|appetite         |          80|PCA    |       3|             0.5578087|            0.6753247|                   0.0010605|
-|digestion        |         121|PCA    |       2|             0.5502907|            0.9597403|                   0.0000051|
-|gastrointestinal |          17|PCA    |       2|             0.6869954|            0.9883117|                   0.0000044|
-|corticoids       |          28|PCA    |       3|             0.5676356|            0.3610390|                   0.1084280|
-|thyroid          |          31|PCA    |       3|             0.5859959|            0.1116883|                   0.6287796|
-|betaoxi          |          14|PCA    |       1|             0.6837123|            0.9324675|                   0.0000049|
+|category         | n_variables|method | num_pcs| sum_variance_kept_pcs| counts_pca_correlation| counts_pca_correlation_pvalue|
+|:----------------|-----------:|:------|-------:|---------------------:|----------------------:|-----------------------------:|
+|appetite         |          80|PCA    |       3|             0.5578087|              0.6753247|                     0.0010605|
+|digestion        |         121|PCA    |       2|             0.5502907|              0.9597403|                     0.0000051|
+|gastrointestinal |          17|PCA    |       2|             0.6869954|              0.9883117|                     0.0000044|
+|corticoids       |          28|PCA    |       3|             0.5676356|              0.3610390|                     0.1084280|
+|thyroid          |          31|PCA    |       3|             0.5859959|              0.1116883|                     0.6287796|
+|betaoxi          |          14|PCA    |       1|             0.6837123|              0.9324675|                     0.0000049|
 
 *In this case, most biological categories show consistent expression across genes (_i.e.,_ genes show overall higher expression in a given sample). An exception is genes in the "thyroid" category here. Thyroid-related gene expression is often complex, and here different samples show different profiles with various genes acting in a complex heterogeneous pattern. Thus, for this biological category, the values extracted from **dim_reduction()** do not directly relate the overall gene expression level.*
 #
@@ -352,11 +352,11 @@ The biological categories are those defined for zebrafish in a manually curated 
 library(RadarOmics)
 
 # import data
-data_input = import_data(expr_path = "example2/vst_zebrafish.csv", sample_meta_path = "example2/sampleinfo_zebrafish.csv", feature_meta_path = "example2/genelist_zebrafish.csv")
+data_input = import_data(counts_path = "example2/vst_zebrafish.csv", sample_meta_path = "example2/sampleinfo_zebrafish.csv", feature_meta_path = "example2/genelist_zebrafish.csv")
 ```
-Expression data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
+Counts data (or other tabular data), normalised for PCA use. For gene expression data, we recommend VST normalisation with DESEq2.
 ```r
-head(data_input$expr[,1:4])
+head(data_input$counts[,1:4])
 ```
 
 |                   | 10_DMSO_Kontrolle2_96h_Eppi-12_Index-B5| 11_DMSO_Kontrolle3_96h_Eppi-13_Index-C5| 12_DMSO_Kontrolle4_96h_Eppi-14_Index-D5| 19_DMSO_Kontrolle3_36h_Eppi-28_Index-C6|
