@@ -1,13 +1,13 @@
 # RadarOmics
 
-RadarOmics is an R package for summarising **'omics datasets** through **dimensional reduction**. This provides key metrics for data analyses that can be visualised with **radar plots** to summarise shifts in biological processes across samples and treatments.
+RadarOmics is an R package for summarising **omics datasets** through **dimensional reduction**. This provides key metrics for data analyses that can be visualised with **radar charts** to summarise shifts in biological processes across samples and treatments.
 It is designed to handle **complex experimental designs** with >3 treatments (ideally 5 or more), and can handle nested designs (_e.g._, multiple developmental stages and chemical exposure treatments). It works with gene expression, protein abundance, or similar multivariate tabular datasets.
 
 We provide examples of outputs with simple datasets in [**Implementation**](#implementation).
 
  We developed this method as part of a _landscape transcriptomics_ study with a complex design: juvenile and adult fish samples from two developmental stages and 18 field sites ([Gairin et al. (bioRxiv)](https://doi.org/10.1101/2025.08.05.668635)). Here is the final figure obtained with the method.
 
- ![Radar plots from the landscape transcriptomics study](images/example.png)
+ ![Radar charts from the landscape transcriptomics study](images/example.png)
 *Figure 1: Example output of the package - following manual editing on vector graphics software*
 
 ---
@@ -26,7 +26,7 @@ remotes::install_github("Emma-Gairin/RadarOmics")
 
 #
 ## Detailed description
-RadarOmics summarises the expression profiles of genes or other molecules within predefined biological categories using dimensional reduction analysis and radar plot visualisations.
+RadarOmics summarises the expression profiles of genes or other molecules within predefined biological categories using dimensional reduction analysis and radar chart visualisations.
 
 Prior to using the package, three data frames must be prepared in CSV (Comma delimited) format: 1) a normalised count matrix; 2) sample information including the name of the samples and their corresponding group; 3) biological information with the gene/protein/etc. identifiers and their corresponding user-defined categories based on *e.g.,* manually curated lists, Gene Ontology terms, KEGG pathways. See examples of dataset structure [below](#implementation).
 
@@ -40,9 +40,9 @@ The three main functions of the package are:
 - method = **"pca"**,
 - method = **"lda"**.
 
-**plot_radar()**  - used to generate radar plots displaying the values from **dim_reduction** for each sample and each biological category. One radar plot is produced for each group of samples (default grouping is the "group" column of the sample information data frame, unless otherwise specified using _radar_grouping_). The order of categories in the radar plot follows the order of biological categories in the biological information file unless a different order is specified by the user. Users can modify the colour of each sample using the argument _colour_sample_ and/or the colour of the average line of each radar using _colour_average_ (see [example #1 radar customisation](#colour-customisation)).
+**plot_radar()**  - used to generate radar charts displaying the values from **dim_reduction** for each sample and each biological category. One radar chart is produced for each group of samples (default grouping is the "group" column of the sample information data frame, unless otherwise specified using _radar_grouping_). The order of categories in the radar chart follows the order of biological categories in the biological information file unless a different order is specified by the user. Users can modify the colour of each sample using the argument _colour_sample_ and/or the colour of the average line of each radar using _colour_average_ (see [example #1 radar customisation](#colour-customisation)).
 
-Users can mix-and-match methods and manually create the table to feed into **plot_radar()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq expression levels with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radarplot with **plot_radar()**.
+Users can mix-and-match methods and manually create the table to feed into **plot_radar()**, in particular if some biological categories have too few samples to be analysed with method = **"pca"** or **"lda"**. Similarly, users can also run **dim_reduction()** on multiple types of datasets (_e.g.,_ combining RNAseq expression levels with metabolomics or with phenotype information), or add phenotypic information to the **dim_reduction()** output, before visualising the results in the radar chart with **plot_radar()**.
 
 While we provide a few options for text size and colour coding as part of **plot_radar()**, we recommend exporting the output of **plot_radar()** as a PDF with **ggsave("radar.pdf")** or as an SVG and manually editing the radars using vector graphics software to obtain publication-quality visuals (we use [Inkscape](https://inkscape.org/)). For instance, colour shading can be added as a background to highlight biological categories belonging to similar processes (_e.g.,_ highlighting energy metabolism, endocrine processes, _etc._).
 
@@ -73,7 +73,7 @@ If more than 1 dimension is necessary, the samples are projected along the main 
 
 ### Notes
 RadarOmics is intended to facilitate data visualisation across many biological categories and samples, and while offering multiple analytical options, it is best used in combination with other approaches to validate the results.
-In particular, for methods "pca" and "lda" we recommend testing multiple _pca_threshold_ and _lda_threshold_ values, inspecting the output of **dim_reduction()**, producing multiple options of radar plots, and cross-checking results for each biological category with other visualisations (_e.g.,_ heatmaps for each biological category) before making a final choice.
+In particular, for methods "pca" and "lda" we recommend testing multiple _pca_threshold_ and _lda_threshold_ values, inspecting the output of **dim_reduction()**, producing multiple options of radar charts, and cross-checking results for each biological category with other visualisations (_e.g.,_ heatmaps for each biological category) before making a final choice.
 
 We provide various data inspection solutions when using method = **"pca"** or **"lda"**,
 - __$information__, output from __dim_reduction()__, provides the number of PC and LD dimensions retained for each category
@@ -128,7 +128,7 @@ head(data_input$counts[,1:10])
 
 *Note that samples are columns, genes are rows.*
 #
-Sample information with columns "sample" and "group". One radar plot per "group" will be generated.
+Sample information with columns "sample" and "group". One radar chart per "group" will be generated.
 ```r
 head(data_input$sample_meta)
 ```
@@ -143,7 +143,7 @@ head(data_input$sample_meta)
 
 *Note that the package will look for a column named "group" unless otherwise specified as arguments in **dim_reduction()**.*
 #
-Gene information with columns "feature" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
+Gene information with columns "feature" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar chart.
 ```r
 data_input$feature_meta
 ```
@@ -236,11 +236,11 @@ Using **plot_radar()** will plot the value extracted for each sample and biologi
 ```r
 plot_radar(data_input, dim_reduction_output)
 ```
-![Radar plot for stage 1](example1/figures/stage_1_raw.png)
-*Figure 3: Radar plot for stage 1 of the _A. ocellaris_ dataset obtained with method = **"pca"**, without manually arranging the order of the biological categories around the radar.*
+![Radar chart for stage 1](example1/figures/stage_1_raw.png)
+*Figure 3: Radar chart for stage 1 of the _A. ocellaris_ dataset obtained with method = **"pca"**, without manually arranging the order of the biological categories around the radar.*
 
 #
-The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar plot.
+The order of the categories around the plot matches that of the list of biological categories provided to **import_data()**. This can be modified to change the order of the categories or remove some categories from the radar chart.
 ```r
 category_list_names = c("glycolysis","betaoxi","krebs","appetite","cholesterol",
                         "fatty","digestion","gastrointestinal",
@@ -254,11 +254,11 @@ category_list=as.data.frame(category_list)
 
 plot_radar(data_input, dim_reduction_output, category_list = category_list)
 ```
-![Radar plot for stage 1](example1/figures/stage_1.png)
-*Figure 4: Radar plot for stage 1 of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
+![Radar chart for stage 1](example1/figures/stage_1.png)
+*Figure 4: Radar chart for stage 1 of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
 
 #
-Users can also modify the size of the labels, control the order of each group, and display radar plots together.
+Users can also modify the size of the labels, control the order of each group, and display radar charts together.
 ```r
 radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 1, radar_label_size = 1)
 
@@ -266,8 +266,8 @@ ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
 
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
-![Radar plots for each stage](example1/figures/all_stages.png)
-*Figure 5: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
+![Radar charts for each stage](example1/figures/all_stages.png)
+*Figure 5: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
 
 ### Colour customisation
 We provide options to modify the colours of each sample plotted on the radars (for visual result inspection, for instance), as well as of the averaged line of all samples on each radar.
@@ -293,10 +293,10 @@ wrap_plots(radars[ordered_list],ncol=4,nrow=2)
 ```
 *Note that you can define one colour per sample instead of using a repeated pattern as we did here.*
 
-![Radar plots for each stage, coloured by sample](example1/figures/all_stages_colour_sample.png)
-*Figure 6: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per sample, black for average line.*
+![Radar charts for each stage, coloured by sample](example1/figures/all_stages_colour_sample.png)
+*Figure 6: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per sample, black for average line.*
 
-If users wish to modify the colour of the average line on the radar plot (default: black), a dataframe with 2 columns - one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour" - is required. The argument _colour_average_ is used.
+If users wish to modify the colour of the average line on the radar chart (default: black), a dataframe with 2 columns - one matching the argument "grouping" from plot_radar (default = "group"), and one named "colour" - is required. The argument _colour_average_ is used.
 ```r
 colour_average = cbind(ordered_list,c("red4","orange4","yellow4","green4","blue4","purple4","pink4"))
 colour_average = as.data.frame(colour_average)
@@ -314,15 +314,15 @@ colnames(colour_average)=c("group","colour")
 ```r
 radars = plot_radar(data_input, test2, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average)
 ```
-![Radar plots for each stage, coloured by stage](example1/figures/all_stages_colour_average.png)
-*Figure 7: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line.*
+![Radar charts for each stage, coloured by stage](example1/figures/all_stages_colour_average.png)
+*Figure 7: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line.*
 
 Labels can be moved to the top of the radars using _radar_label_position_ (default: middle).
 ```r
 radars = plot_radar(data_input, test2, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average, radar_label_position = "top")
 ```
-![Radar plots for each stage, coloured by stage](example1/figures/all_samples_colour_average_toplabel.png)
-*Figure 8: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line. Labels on "top" rather than in the middle of the plot*
+![Radar charts for each stage, coloured by stage](example1/figures/all_samples_colour_average_toplabel.png)
+*Figure 8: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line. Labels on "top" rather than in the middle of the plot*
 
 ### Dimensional reduction and plotting - scale
 
@@ -337,8 +337,8 @@ radars = plot_radar(data_input, dim_reduction_output, category_list = category_l
 
 wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
-![Radar plots for each stage](example1/figures/all_samples_scale.png)
-*Figure 9: Radar plot for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"scale"**.*
+![Radar charts for each stage](example1/figures/all_samples_scale.png)
+*Figure 9: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"scale"**.*
 
 ---
 ## Example #2 - method = "lda"
@@ -346,7 +346,7 @@ Here we go through an example pipeline using method = "lda".
 
 We use the RNAseq data from the 3-time point developmental series under control (DMSO) and exposure treatments (2 substances at 2 concentrations each: 1.3 uM and 2.4 uM Sorafenib, 25 nM and 50 nM Rotenone) of zebrafish _Danio rerio_ (from [Nöth et al. (2025)](https://doi.org/10.1007/s00204-024-03944-7)). There are 45 samples in total (3 samples per stage x 3 stages x (1 control + 4 treatments)).
 
-In this experiment, hour post fertilisation has a major footprint on gene expression profiles. Here, we run the pipeline with method = **"pca"** - and see that the values on the radar plot are strongly related to hour post fertilisation. Then, we use method = **"lda"** to extract the effect of the exposure treatments and their concentrations on various biological categories.
+In this experiment, hour post fertilisation has a major footprint on gene expression profiles. Here, we run the pipeline with method = **"pca"** - and see that the values on the radar chart are strongly related to hour post fertilisation. Then, we use method = **"lda"** to extract the effect of the exposure treatments and their concentrations on various biological categories.
 
 The biological categories are those defined for zebrafish in a manually curated database ([Herrera et al., 2025](https://doi.org/10.1002/jez.b.23299)].
 
@@ -373,7 +373,7 @@ head(data_input$counts[,1:4])
 
 *Note that samples are columns, genes are rows.*
 
-- Sample information with columns "sample", "group", and other information. One radar plot per "group" (unless other grouping is specified using _radar_grouping_ in **plot_radar()**) will be generated.
+- Sample information with columns "sample", "group", and other information. One radar chart per "group" (unless other grouping is specified using _radar_grouping_ in **plot_radar()**) will be generated.
 ```r
 head(data_input$sample_meta)
 ```
@@ -386,7 +386,7 @@ head(data_input$sample_meta)
 |55_Sorafenib_EC50_96h_Eppi-84_Index-H10  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
 |56_Sorafenib_EC50_96h_Eppi-85_Index-A11  |96_Sorafenib_1.3_72 |       96|Sorafenib |           1.3|Sorafenib_1.3           |Sorafenib_96  |
 
-- Gene information with columns "feature" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar plot.
+- Gene information with columns "feature" and "category". Users can manually reshuffle and filter categories before plotting the output of the package using the radar chart.
 ```r
 data_input$feature_meta
 ```
@@ -418,8 +418,8 @@ unique(result$sample_meta$group) # to control the order of the groups
 
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar plot for all samples](example2/figures/all_samples_pca.png)
-*Figure 10: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
+![Radar chart for all samples](example2/figures/all_samples_pca.png)
+*Figure 10: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all groups.*
 
 On this plot, we see that hour post fertilisation (organised by row) exerts a major influence on biological processes, although some treatment-specific differences (organised by column) are already visible.
 
@@ -442,8 +442,8 @@ unique(result$sample_meta$group) # to control the order of the groups
 
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar plot for all samples](example2/figures/all_samples_pca_substance_concentration.png)
-*Figure 11: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
+![Radar chart for all samples](example2/figures/all_samples_pca_substance_concentration.png)
+*Figure 11: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"pca"**, looking at position of samples along the main axis of variance running through all combinations of "substance_concentration".*
 
 ###
 ### Dimensional reduction and plotting - LDA
@@ -471,20 +471,20 @@ unique(result$sample_meta$group) # to control the order of the groups
 
 wrap_plots(radars[unique(result$sample_meta$group)], ncol=5, nrow=3)
 ```
-![Radar plot for all samples](example2/figures/all_samples_lda_08_08_substance_concentration.png)
-*Figure 12: Radar plot for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
+![Radar chart for all samples](example2/figures/all_samples_lda_08_08_substance_concentration.png)
+*Figure 12: Radar chart for all groups (hour post fertilisation + substance + concentration) of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
 In this instance, forcing the variance to capture the footprint of the substance + concentration allows to better discern to what extent biological processes are modified by each treatment, across the different time points.
 
 Note that the values extracted by **dim_reduction()** do not necessarily reflect the overall gene expression level (_i.e.,_ higher _vs._ lower) but rather show how distant samples are from each other in the multidimensional space.
 
-We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar plots.
+We recommend checking the various outputs of **dim_reduction()** to fully inspect the results and interpret the radar charts.
 
 ---
 
 ### Alternative plot grouping
 
-Note that users can customise the grouping of the samples on radar plots using the argument _radar_grouping_ in **plot_radar()**
+Note that users can customise the grouping of the samples on radar charts using the argument _radar_grouping_ in **plot_radar()**
 ```r
 radars=plot_radar(result, dim_reduction_output,radar_grouping = "substance_concentration",
 category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label_position = "top")
@@ -492,9 +492,9 @@ category_list = category_list,radar_label_size=3,axis_label_size=2.5,radar_label
 wrap_plots(radars[unique(result$sample_meta$substance_concentration)],ncol=5,nrow=1)
 ```
 ![radar based on substance + concentration grouping rather than all groups](example2/figures/substance_concentration_radar.png)
-*Figure 13: Radar plot for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
+*Figure 13: Radar chart for all combinations of + substance + concentration of the _D. rerio_ dataset obtained with method = **"lda"**, looking at position of samples along the main axis of variance running through all groups.*
 
-In this case, samples from different hours post fertilisation are grouped onto the same radar plot - and as hour post fertilisation exerts a major influence on the data structure, the average values for most radars are ~0.5, leading to circle-like patterns with little signal across the radars.
+In this case, samples from different hours post fertilisation are grouped onto the same radar chart - and as hour post fertilisation exerts a major influence on the data structure, the average values for most radars are ~0.5, leading to circle-like patterns with little signal across the radars.
 
 
 ---
