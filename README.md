@@ -5,6 +5,8 @@ It is designed to handle **complex experimental designs** with >3 treatments (id
 
 We provide examples of outputs with simple datasets in [**Implementation**](#implementation).
 
+Find the pre-print about this package here: [Gairin et al. (bioRxiv)](https://doi.org/10.64898/2026.01.14.699593).
+
  We developed this method as part of a _landscape transcriptomics_ study with a complex design: juvenile and adult fish samples from two developmental stages and 18 field sites ([Gairin et al. (bioRxiv)](https://doi.org/10.1101/2025.08.05.668635)). Here is the final figure obtained with the method.
 
  ![Radar charts from the landscape transcriptomics study](images/example.png)
