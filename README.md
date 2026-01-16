@@ -219,7 +219,7 @@ head(dim_reduction_output$dimred_information)
 #
 $pca provides the sample coordinates for the PCAs performed for each set of genes. Here is the result for the first 10 PCs of the appetite genes.
 ```r
-head(dim_reduction_output$pca$appetite[,1"10])
+head(dim_reduction_output$pca$appetite[,1:10])
 ```
 |           |        PC1|      PC2|        PC3|        PC4|        PC5|        PC6|        PC7|        PC8|        PC9|       PC10|
 |:----------|----------:|--------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
