@@ -1,9 +1,9 @@
 Package: RadarOmics
 Type: Package
-Title: Visualise 'omics data with radar plots across large numbers of samples, treatments, and biological processes based on values drawn from multidimensional reduction techniques
+Title: Visualise Omics Data Using Multidimensional Reduction and Radar Charts
 Version: 0.1.0
 Authors@R: person("Emma", "Gairin", email = "emma.gairin@hotmail.fr", role = c("aut", "cre"))
-Description: Use dimensional reduction techniques (scaling, PCA, LDA) to summarise expression profiles across large numbers of samples and treatments for targeted biological processes. Isolate values representing expression profiles and visualise with radar plots. Supports input from normalised gene expression tables or other datasets with similar structures (e.g., gene/protein as rows, samples as columns).
+Description: Dimensional reduction techniques (scaling, PCA, LDA) used to summarise expression profiles across large numbers of samples and treatments for targeted biological processes. Values representing expression profiles visualised with radar charts. Input from normalised gene expression tables or other datasets with similar structures (e.g., gene/protein as rows, samples as columns).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
