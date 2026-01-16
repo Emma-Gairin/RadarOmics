@@ -11,23 +11,23 @@
 #' determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups,
 #' scale sample values from 0 to 1, setting 0 to be the on the side of lower values.
 #'
-#' @param data_input Expression data, sample information, and biological process list uploaded using import_data()
+#' @param data_input Counts data, sample information, and biological process list uploaded using import_data()
 #' @param pca_threshold threshold of cumulative variance used to identify the number of PCs to keep,
 #' @param focus grouping of samples used to determine the main axis of variance (default = "group")
-#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").
+#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled counts in the category (default = "spearman").
 #' @return A list with:
-#'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
-#'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+#'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on counts of most extreme groups.
+#'   - information: data frame with category, number of features (genes/proteins/others), method used ("PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their counts.
 #'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1 and PC2, centroid, and slope of main axis of variance.
 #' @export
 pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scale){
-  expr = data_input$expr
-  gene_meta = data_input$gene_meta
+  counts = data_input$counts
+  feature_meta = data_input$feature_meta
   sample_meta = data_input$sample_meta
-  gene_list_prep = intersect(rownames(expr),unique(gene_meta$gene))
-  expr = expr[gene_list_prep,sample_meta$sample,drop = FALSE]
+  feature_list_prep = intersect(rownames(counts),unique(feature_meta$feature))
+  counts = counts[feature_list_prep,sample_meta$sample,drop = FALSE]
 
-  catlist = unique(gene_meta$category)
+  catlist = unique(feature_meta$category)
 
   # preparation of the output of the function
   projection = data.frame(sample = character(),
@@ -42,32 +42,32 @@ pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scal
     method= character(),
     num_pcs = integer(),
     sum_variance_kept = numeric(),
-    n_variables = integer(),
-    expr_pca_correlation = numeric(),
+    n_features = integer(),
+    counts_pca_correlation = numeric(),
     flipped = logical(),
     stringsAsFactors = FALSE
   )
   pca = list()
-  dimred_information = data.frame(    category = character(),
+  dimred_information = data.frame(category = character(),
                                    method= character(),
                                    num_pcs = integer(),
                                    pc1 = integer(),
                                pc2 = integer(),
                                centroid = integer(),
                                maxvariancedirection = integer())
-  # for each gene category,
+  # for each feature category,
   for (cat in catlist){
-    # extract the rows with genes belonging to the category
-    genes_in_cat = gene_meta$gene[gene_meta$category == cat]
-    filtered_expr = expr[rownames(expr) %in% genes_in_cat,,drop = FALSE]
-    # calculate how many genes we retrieve
-    n_variables = nrow(filtered_expr)
-    # for very low number of genes,we recommend not to run the PCA and to use scaled expression instead
-    if (n_variables > 4){
-      # PCA on transposed matrix with samples as rows and genes as columns
-      filtered_expr = filtered_expr[apply(filtered_expr, 1, sd) != 0,]
+    # extract the rows with features belonging to the category
+    features_in_cat = feature_meta$feature[feature_meta$category == cat]
+    filtered_counts = counts[rownames(counts) %in% features_in_cat,,drop = FALSE]
+    # calculate how many features we retrieve
+    n_features = nrow(filtered_counts)
+    # for very low number of features,we recommend not to run the PCA and to use scaled counts instead
+    if (n_features > 4){
+      # PCA on transposed matrix with samples as rows and features as columns
+      filtered_counts = filtered_counts[apply(filtered_counts, 1, sd) != 0,]
 
-      sample_pca = prcomp(t(filtered_expr),scale. = pca_scale)
+      sample_pca = prcomp(t(filtered_counts),scale. = pca_scale)
 
       prep_mean_group = as.data.frame(sample_pca$x)
       pca[[cat]] = prep_mean_group
@@ -126,16 +126,16 @@ pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scal
         mean_group_dim$focus[which.max(mean_group_dim$distance)]
       )
 
-      # Get average expression in the two furthest groups for genes in category
+      # Get average counts in the two furthest groups for features in category
       group1 = mean_group_dim$focus[which.min(mean_group_dim$distance)]
       group2 = mean_group_dim$focus[which.max(mean_group_dim$distance)]
 
-      expr_group1 = filtered_expr[,sample_meta$sample[sample_meta[,focus] == group1],drop = FALSE]
-      expr_group2 = filtered_expr[,sample_meta$sample[sample_meta[,focus] == group2],drop = FALSE]
+      counts_group1 = filtered_counts[,sample_meta$sample[sample_meta[,focus] == group1],drop = FALSE]
+      counts_group2 = filtered_counts[,sample_meta$sample[sample_meta[,focus] == group2],drop = FALSE]
 
-      avg_expr_group1 = rowMeans(expr_group1)
-      avg_expr_group2 = rowMeans(expr_group2)
-      avg_diff = mean(avg_expr_group2 - avg_expr_group1)
+      avg_counts_group1 = rowMeans(counts_group1)
+      avg_counts_group2 = rowMeans(counts_group2)
+      avg_diff = mean(avg_counts_group2 - avg_counts_group1)
 
 
       flipped=FALSE
@@ -144,7 +144,7 @@ pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scal
         coordinate_mainaxis$distance2 = -coordinate_mainaxis$distance
         flipped=TRUE
 
-        # Normalize distance to 0-1 after flipping if needed
+        # Normalise distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
         max_val = max(coordinate_mainaxis$distance2)
 
@@ -156,27 +156,26 @@ pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scal
         coordinate_mainaxis$distance2 = coordinate_mainaxis$distance
         flipped=FALSE
 
-        # Normalize distance to 0-1 after flipping if needed
+        # Normalise distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
         max_val = max(coordinate_mainaxis$distance2)
 
         coordinate_mainaxis$normalised_distance = (coordinate_mainaxis$distance2 - min_val)/ (max_val - min_val)
 
       }
-      # Correlation between normalized coordinate and average gene expression per sample in category
+      # Correlation between normalised coordinate and average counts per sample in category
 
-      sub_expr_01 = t(apply(filtered_expr, 1, function(x) {
+      sub_counts_01 = t(apply(filtered_counts, 1, function(x) {
         (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
       }))
 
-      avg_expr = colMeans(sub_expr_01, na.rm = TRUE)
+      avg_counts = colMeans(sub_counts_01, na.rm = TRUE)
 
-      # Min-max normalization (0-1)
-      norm_expr = (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
+      # Min-max normalisation (0-1)
+      avg_counts_per_sample = (avg_counts - min(avg_counts)) / (max(avg_counts) - min(avg_counts))
 
-      avg_expr_per_sample = norm_expr
-      avg_expr_per_sample = avg_expr_per_sample[coordinate_mainaxis$sample]
-      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_expr_per_sample,use = "complete.obs",method=correlation_method))
+      avg_counts_per_sample = avg_counts_per_sample[coordinate_mainaxis$sample]
+      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_counts_per_sample,use = "complete.obs",method=correlation_method))
       corr_val = correlation$estimate
       p_value = correlation$p.value
 
@@ -185,12 +184,12 @@ pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scal
         information,
         data.frame(
           category = cat,
-          n_variables = n_variables,
+          n_features = n_features,
           method="PCA",
           num_pcs = num_pcs,
           sum_variance_kept_pcs = sum_var_kept,
-          expr_pca_correlation = corr_val,
-          expr_pca_correlation_pvalue = p_value,
+          counts_pca_correlation = corr_val,
+          counts_pca_correlation_pvalue = p_value,
           flipped=flipped,
           stringsAsFactors = FALSE
         )
@@ -218,8 +217,8 @@ pca_method = function(data_input,pca_threshold,focus,correlation_method,pca_scal
 
     }
   }
-  projection = projection %>%
-    dplyr::left_join(sample_meta[, unique(c("sample", focus))], by = "sample")
+  projection =
+    dplyr::left_join(projection,sample_meta[, unique(c("sample", focus))], by = "sample")
 
   list(projection = projection,
        information = information,
