@@ -8,28 +8,28 @@
 #' If not, perform LDA to drive clustering of samples based on user-defined lda_focus (default = "group").
 #' Identify the main axis of variance between the average LD coordinates of each group (or other user-defined sample grouping scheme, based on focus (default = "group")),
 #' project the samples onto this axis in the multidimensional space,
-#' determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups,
+#' determine which side of the axis is associated with lower values based on average counts in 2 most extreme groups,
 #' scale sample values from 0 to 1, setting 0 to be the on the side of lower values.
 #'
-#' @param data_input Expression data, sample information, and biological process list uploaded using import_data()
+#' @param data_input Counts data, sample information, and biological process list uploaded using import_data()
 #' @param pca_threshold threshold of cumulative variance used to identify the number of PCs to keep,
 #' @param lda_threshold threshold of cumulative variance used to identify the number of LDs to keep,
 #' @param focus grouping of samples used to determine the main axis of variance (default = "group")
 #' @param lda_focus grouping of samples used to perform LDA analysis (default = "group")
-#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").
+#' @param correlation_method statistical test used to determine linear correlation between values extracted for each sample and mean scaled counts in the category (default = "spearman").
 #' @return A list with:
-#'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
-#'   - information: data frame with category, number of variables (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+#'   - projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on counts of most extreme groups.
+#'   - information: data frame with category, number of features (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their counts.
 #'   - dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1, PC2, LD1, and LD2, centroid, and slope of main axis of variance.
 #' @export
 lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,correlation_method,pca_scale){
-  expr = data_input$expr
-  gene_meta = data_input$gene_meta
-  sample_meta = data_input$sample_meta[which(data_input$sample_meta$sample%in%colnames(expr)),]
-  gene_list_prep = intersect(rownames(expr),unique(unique(gene_meta$gene)))
-  expr = expr[gene_list_prep,sample_meta$sample,drop = FALSE]
+  counts = data_input$counts
+  feature_meta = data_input$feature_meta
+  sample_meta = data_input$sample_meta[which(data_input$sample_meta$sample%in%colnames(counts)),]
+  feature_list_prep = intersect(rownames(counts),unique(unique(feature_meta$feature)))
+  counts = counts[feature_list_prep,sample_meta$sample,drop = FALSE]
 
-  catlist = unique(gene_meta$category)
+  catlist = unique(feature_meta$category)
   if(length(which(colnames(sample_meta)%in%focus))==0){
     stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
   }
@@ -45,8 +45,8 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
     category = character(),
     num_pcs = integer(),
     sum_variance_kept = numeric(),
-    n_variables = integer(),
-    expr_pca_correlation = numeric(),
+    n_features = integer(),
+    counts_pca_correlation = numeric(),
     stringsAsFactors = FALSE
   )
   dimred_information = data.frame(    category = character(),
@@ -60,19 +60,19 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
                                    maxvariancedirection = integer())
   pca = list()
   lda = list()
-  # for each gene category,
+  # for each feature category,
   for (cat in catlist){
-    # extract the rows with genes belonging to the category
-    genes_in_cat = gene_meta$gene[gene_meta$category == cat]
-    filtered_expr = expr[rownames(expr) %in% genes_in_cat,,drop = FALSE]
-    # calculate how many genes we retrieve
-    n_variables = nrow(filtered_expr)
-    # for very low number of genes,we recommend not to run the PCA and to use scaled expression instead
-    if (n_variables > 4){
-      # PCA on transposed matrix with samples as rows and genes as columns
-      filtered_expr = filtered_expr[apply(filtered_expr, 1, sd) != 0,]
+    # extract the rows with features belonging to the category
+    features_in_cat = feature_meta$feature[feature_meta$category == cat]
+    filtered_counts = counts[rownames(counts) %in% features_in_cat,,drop = FALSE]
+    # calculate how many features we retrieve
+    n_features = nrow(filtered_counts)
+    # for very low number of features,we recommend not to run the PCA and to use scaled counts instead
+    if (n_features > 4){
+      # PCA on transposed matrix with samples as rows and features as columns
+      filtered_counts = filtered_counts[apply(filtered_counts, 1, sd) != 0,]
 
-      sample_pca = prcomp(t(filtered_expr),scale. = pca_scale)
+      sample_pca = prcomp(t(filtered_counts),scale. = pca_scale)
 
       prep_mean_group = as.data.frame(sample_pca$x)
       pca[[cat]] = prep_mean_group
@@ -173,16 +173,16 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
         "-",
         mean_group_dim$group[which.max(mean_group_dim$distance)]
       )
-      # Get average expression in the two furthest groups for genes in category
+      # Get average counts in the two furthest groups for features in category
       group1 = mean_group_dim$group[which.min(mean_group_dim$distance)]
       group2 = mean_group_dim$group[which.max(mean_group_dim$distance)]
 
-      expr_group1 = filtered_expr[,sample_meta$sample[sample_meta[[focus]] == group1],drop = FALSE]
-      expr_group2 = filtered_expr[,sample_meta$sample[sample_meta[[focus]] == group2],drop = FALSE]
+      counts_group1 = filtered_counts[,sample_meta$sample[sample_meta[[focus]] == group1],drop = FALSE]
+      counts_group2 = filtered_counts[,sample_meta$sample[sample_meta[[focus]] == group2],drop = FALSE]
 
-      avg_expr_group1 = rowMeans(expr_group1)
-      avg_expr_group2 = rowMeans(expr_group2)
-      avg_diff = mean(avg_expr_group2 - avg_expr_group1)
+      avg_counts_group1 = rowMeans(counts_group1)
+      avg_counts_group2 = rowMeans(counts_group2)
+      avg_diff = mean(avg_counts_group2 - avg_counts_group1)
 
       flipped=FALSE
 
@@ -190,7 +190,7 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
       if (avg_diff < 0){
         coordinate_mainaxis$distance2 = -coordinate_mainaxis$distance
         flipped=TRUE
-        # Normalize distance to 0-1 after flipping if needed
+        # Normalise distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
         max_val = max(coordinate_mainaxis$distance2)
 
@@ -201,26 +201,26 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
       if (avg_diff >= 0){
         coordinate_mainaxis$distance2 = coordinate_mainaxis$distance
 
-        # Normalize distance to 0-1 after flipping if needed
+        # Normalise distance to 0-1 after flipping if needed
         min_val = min(coordinate_mainaxis$distance2)
         max_val = max(coordinate_mainaxis$distance2)
 
         coordinate_mainaxis$normalised_distance = (coordinate_mainaxis$distance2 - min_val)/ (max_val - min_val)
 
       }
-      # Correlation between normalized coordinate and average gene expression per sample in category
-      sub_expr_01 <- t(apply(filtered_expr, 1, function(x) {
+      # Correlation between normalised coordinate and average counts per sample in category
+      sub_counts_01 <- t(apply(filtered_counts, 1, function(x) {
         (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
       }))
 
-      avg_expr <- colMeans(sub_expr_01, na.rm = TRUE)
+      avg_counts <- colMeans(sub_counts_01, na.rm = TRUE)
 
-      # Min-max normalization (0-1)
-      norm_expr <- (avg_expr - min(avg_expr)) / (max(avg_expr) - min(avg_expr))
+      # Min-max normalisation (0-1)
+      norm_counts <- (avg_counts - min(avg_counts)) / (max(avg_counts) - min(avg_counts))
 
-      avg_expr_per_sample = norm_expr
-      avg_expr_per_sample = avg_expr_per_sample[coordinate_mainaxis$sample]
-      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_expr_per_sample,use = "complete.obs",method=correlation_method))
+      avg_counts_per_sample = norm_counts
+      avg_counts_per_sample = avg_counts_per_sample[coordinate_mainaxis$sample]
+      correlation = suppressWarnings(cor.test(coordinate_mainaxis$normalised_distance,avg_counts_per_sample,use = "complete.obs",method=correlation_method))
       corr_val = correlation$estimate
       p_value = correlation$p.value
 
@@ -229,14 +229,14 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
         information,
         data.frame(
           category = cat,
-          n_variables = n_variables,
+          n_features = n_features,
           method = method,
           num_pcs = num_pcs,
           num_lds = num_lds,
           sum_variance_kept_pcs = sum_var_kept_pcs,
           sum_variance_kept_lds = sum_var_kept_lds,
-        expr_pca_correlation = corr_val,
-        expr_pca_correlation_pvalue = p_value,
+        counts_pca_correlation = corr_val,
+        counts_pca_correlation_pvalue = p_value,
         flipped = flipped,
           stringsAsFactors = FALSE
         )
@@ -268,8 +268,8 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
 
     }
   }
-  projection <- projection %>%
-    dplyr::left_join(sample_meta[, unique(c("sample", focus))], by = "sample")
+  projection <-
+    dplyr::left_join(projection,sample_meta[, unique(c("sample", focus))], by = "sample")
 
   list(projection = projection,
        information = information,
