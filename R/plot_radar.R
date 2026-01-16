@@ -2,39 +2,48 @@
 #'
 #' Plot radar charts following dim_reduction()
 #'
-#' @param data_input Expression data, sample information, and gene list uploaded using import_data()
+#' @param data_input Counts data, sample information, and molecular feature list uploaded using import_data()
 #' @param dim_reduction_output Output from dim_reduction()
-#' @param category_list Optional data frame with columns: 1) category names, 2) order on the radar plot. Default will follow the order of gene categories from input file used in import_data(). You do not have to include all categories originally provided in import_data(), and you can play around with the order in which categories are displayed to manually highlight relationships between biological processes.
-#' @param colour Optional colour scheme choice for different groups of samples. For optimal visualisation quality, we recommend exporting the outputs as PDFs and manually editing the colour scheme and figure design with vector editing software.
+#' @param radar_grouping Defines how to group samples together on each plot (i.e., one plot per sample grouping). Default: "group" unless a different focus was used in dim_reduction() (previous step).
+#' @param category_list Optional data frame with columns: 1) category names, 2) order on the radar plot. Default will follow the order of biological categories from input file used in import_data(). You do not have to include all categories originally provided in import_data(), and you can play around with the order in which categories are displayed to manually highlight relationships between biological processes.
+#' @param colour_sample Optional colour scheme choice for the radar of each sample. Must be a data frame with columns sample and colour.
+#' @param colour_average Optional colour scheme choice for the average radar for each group of samples. Must be a data frame with columns group and colour.
+#' @param axis_label_size Size of text label for each axis (i.e., biological category names)
+#' @param radar_label_size Size of plot label (i.e., sample group name)
+#' @param radar_label_position Position of plot label (center or top).
+#' @param width Adds extra white space on the left and right of the plot (can be modified to allow more space between plots when passing the output of this function through patchwork::wrap_plots()).
+#' @param height Adds extra white space on the top and bottom of the plot (can be modified to allow more space between plots when passing the output of this function through patchwork::wrap_plots()).
+#' @param control_group Default = no control group. If a control group is present, use this to anchor the radar values relative to the mean radar of the control group (with the mean radar set to default 0.5 using scale_control_group_to).
+#' @param scale_control_group_to Only used when a control_group is defined, with default = 0.5. Will rescale the average radar for the control group to a value of 0.5 and display the distance of all other samples and groups relative to this value.
 #' @return A list of `ggradar` plots, one per group of samples.
 #' @export
 #'
 #' @examples
 #' plot_list=plot_radar(data_input,dim_reduction_output,category_list=my_category_list)
 
-plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2,control = NULL, scale_control_to_mean = 0.5) {
+plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category_list=NA,colour_sample=NULL,colour_average=NULL,axis_label_size=1,radar_label_size=4,radar_label_position="center",width=2,height=2,control_group = NULL, scale_control_group_to = 0.5) {
   # Check required packages
   if (!requireNamespace("ggradar",quietly=TRUE)) stop("Package 'ggradar' is required.",call.=FALSE)
   if (!requireNamespace("dplyr",quietly=TRUE)) stop("Package 'dplyr' is required.",call.=FALSE)
   if (!requireNamespace("tidyr",quietly=TRUE)) stop("Package 'tidyr' is required.",call.=FALSE)
   if (!requireNamespace("ggplot2",quietly=TRUE)) stop("Package 'ggplot2' is required.",call.=FALSE)
+
   if(length(radar_grouping)<1){
     radar_grouping=colnames(dim_reduction_output$projection)[length(colnames(dim_reduction_output$projection))]
   }
-  if(length(control)>0){
-    i=0
-    while(i<length(unique(dim_reduction_output$projection$category))){
-      i=i+1
-      catsel = unique(dim_reduction_output$projection$category)[i]
-      dimsel = dim_reduction_output$projection[which(dim_reduction_output$projection$category%in%catsel),]
-      mean_dmso = mean(dimsel$normalised_distance[which(dimsel[[radar_grouping]]==control)])
-      rescaling = max(c(1-mean_dmso),mean_dmso)/(abs(scale_control_to_mean-mean_dmso))
-      dimsel$normalised_distance = dimsel$normalised_distance/rescaling
-      mean_dmso = mean(dimsel$normalised_distance[which(dimsel[[radar_grouping]]==control)])
 
-      dimsel$normalised_distance = dimsel$normalised_distance + abs(scale_control_to_mean-mean_dmso)-scale_control_to_mean
-      mult = scale_control_to_mean/(max(c(abs(max(dimsel$normalised_distance))),abs(c(min(dimsel$normalised_distance)))))
-      dimsel$normalised_distance = dimsel$normalised_distance*mult + scale_control_to_mean
+  if(length(control_group)>0){
+    for(catsel in unique(dim_reduction_output$projection$category)){
+
+      dimsel = dim_reduction_output$projection[which(dim_reduction_output$projection$category%in%catsel),]
+      mean_control = mean(dimsel$normalised_distance[which(dimsel[[radar_grouping]]==control_group)])
+      rescaling = max(c(1-mean_control),mean_control)/(abs(scale_control_group_to-mean_control))
+      dimsel$normalised_distance = dimsel$normalised_distance/rescaling
+      mean_control = mean(dimsel$normalised_distance[which(dimsel[[radar_grouping]]==control_group)])
+
+      dimsel$normalised_distance = dimsel$normalised_distance + abs(scale_control_group_to-mean_control)-scale_control_group_to
+      mult = scale_control_group_to/(max(c(abs(max(dimsel$normalised_distance))),abs(c(min(dimsel$normalised_distance)))))
+      dimsel$normalised_distance = dimsel$normalised_distance*mult + scale_control_group_to
 
       dim_reduction_output$projection[which(dim_reduction_output$projection$category%in%catsel),] = dimsel
     }
@@ -53,11 +62,11 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category
   list_target=unique(projection[[radar_grouping]])
 
   if(radar_label_position == "top"){radar_label_position = 1.8}
-  if(radar_label_position == "center"){radar_label_position = 0}
+  if(radar_label_position%in%c("center","centre")){radar_label_position = 0}
 
-  # If category_list not provided,default to order in data_input$gene_meta
+  # If category_list not provided,default to order in data_input$feature_meta
   if (length(category_list)==1) {
-    categories=unique(data_input$gene_meta$category)
+    categories=unique(data_input$feature_meta$category)
     category_list=data.frame(
       category=categories,
       order=seq_along(categories)
@@ -67,12 +76,20 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category
     category_list$order=as.numeric(category_list$order)
   }
   for (target in list_target) {
-    radar_target=projection %>%
-      dplyr::filter(!!sym(radar_grouping) == !!target) %>%
-      dplyr::select(sample,category,normalised_distance)
+    radar_target <- dplyr::select(
+      dplyr::filter(
+        projection,
+        .data[[radar_grouping]] == target
+      ),
+      sample, category, normalised_distance
+    )
 
-    reshaped_radar=radar_target %>%
-      tidyr::pivot_wider(names_from=category,values_from=normalised_distance)
+
+    reshaped_radar <- tidyr::pivot_wider(
+      radar_target,
+      names_from = category,
+      values_from = normalised_distance
+    )
 
     nsample_per_group=nrow(reshaped_radar)
     reshaped_radar2=rbind(reshaped_radar,c(sample = target,colMeans(reshaped_radar[,-1])))
@@ -115,20 +132,20 @@ plot_radar=function(data_input,dim_reduction_output,radar_grouping=NULL,category
     meanradar_organised=meanradar[,c("sample",colnames_ordering)]
 
     # Generate radar plot
-    radar_plot=suppressMessages(ggradar(meanradar_organised,
+    radar_plot=suppressMessages(suppressWarnings(ggradar::ggradar(meanradar_organised,
                          group.colours=custom_colors,
                          group.line.width=1,
                          group.point.size=0,
                          grid.line.width=0.5,
                          grid.mid=0,
-                         axis.label.size=axis_label_size,
+                         axis.label.size=as.numeric(axis_label_size),
                          grid.label.size=0,
                          legend.position="NONE") +
-      xlim(-width, width) +   # increase upper limit to create space
-      ylim(min(-height,-radar_label_position), max(height,radar_label_position)) +   # increase upper limit to create space
-      annotate("text", x = 0, y = radar_label_position, label = target,
-               size = radar_label_size, fontface = "bold"))
-      #annotate("text",x=0,y=1.5,label=group,size=radar_label_size,fontface="bold")
+      ggplot2::xlim(-width, width) +   # increase upper limit to create space
+      ggplot2::ylim(min(-height,-radar_label_position), max(height,radar_label_position)) +   # increase upper limit to create space
+      ggplot2::annotate("text", x = 0, y = radar_label_position, label = target,
+               size = as.numeric(radar_label_size), fontface = "bold")))
+
 
     plot_list[[target]]=radar_plot
   }
