@@ -312,14 +312,14 @@ colnames(colour_average)=c("group","colour")
 |s6    |purple4 |
 |s7    |pink4   |
 ```r
-radars = plot_radar(data_input, test2, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average)
+radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average)
 ```
 ![Radar charts for each stage, coloured by stage](example1/figures/all_stages_colour_average.png)
 *Figure 7: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line.*
 
 Labels can be moved to the top of the radars using _radar_label_position_ (default: middle).
 ```r
-radars = plot_radar(data_input, test2, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average, radar_label_position = "top")
+radars = plot_radar(data_input, dim_reduction_output, category_list = category_list, axis_label_size = 2, radar_label_size = 4, width=1.8, height=1.33, colour_average = colour_average, radar_label_position = "top")
 ```
 ![Radar charts for each stage, coloured by stage](example1/figures/all_samples_colour_average_toplabel.png)
 *Figure 8: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**, one colour per stage for the average line. Labels on "top" rather than in the middle of the plot*
