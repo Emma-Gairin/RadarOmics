@@ -6,17 +6,18 @@
 \usage{
 lda_method(
   data_input,
-  threshold,
+  pca_threshold,
   lda_threshold,
   focus,
   lda_focus,
-  correlation_method
+  correlation_method,
+  pca_scale
 )
 }
 \arguments{
-\item{data_input}{Expression data, sample information, and biological process list uploaded using import_data()}
+\item{data_input}{Counts data, sample information, and biological process list uploaded using import_data()}
 
-\item{threshold}{threshold of cumulative variance used to identify the number of PCs to keep,}
+\item{pca_threshold}{threshold of cumulative variance used to identify the number of PCs to keep,}
 
 \item{lda_threshold}{threshold of cumulative variance used to identify the number of LDs to keep,}
 
@@ -24,13 +25,13 @@ lda_method(
 
 \item{lda_focus}{grouping of samples used to perform LDA analysis (default = "group")}
 
-\item{correlation_method}{statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").}
+\item{correlation_method}{statistical test used to determine linear correlation between values extracted for each sample and mean scaled counts in the category (default = "spearman").}
 }
 \value{
 A list with:
 \itemize{
-\item projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
-\item information: data frame with category, number of variables (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+\item projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on counts of most extreme groups.
+\item information: data frame with category, number of features (genes/proteins/others), method used ("PCA" or "LDA"), number of PCs and LDs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their counts.
 \item dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1, PC2, LD1, and LD2, centroid, and slope of main axis of variance.
 }
 }
@@ -44,6 +45,6 @@ if PC1 meets the threshold, extract the PC1 coordinate of each sample.
 If not, perform LDA to drive clustering of samples based on user-defined lda_focus (default = "group").
 Identify the main axis of variance between the average LD coordinates of each group (or other user-defined sample grouping scheme, based on focus (default = "group")),
 project the samples onto this axis in the multidimensional space,
-determine which side of the axis is associated with lower values based on average gene expression in 2 most extreme groups,
+determine which side of the axis is associated with lower values based on average counts in 2 most extreme groups,
 scale sample values from 0 to 1, setting 0 to be the on the side of lower values.
 }

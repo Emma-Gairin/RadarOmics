@@ -16,7 +16,7 @@ plot_dimensions(
 )
 }
 \arguments{
-\item{data_input}{Expression data, sample information, and gene list uploaded using import_data()}
+\item{data_input}{Counts data, sample information, and molecular feature list uploaded using import_data()}
 
 \item{dim_reduction_output}{Output from dim_reduction()}
 

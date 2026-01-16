@@ -10,7 +10,7 @@ plot_boxplot(
   stat_choice = "nonparametric",
   pvalue_adjustment = "bh",
   pvalue_threshold = 0.05,
-  boxplot_grouping = "group",
+  boxplot_focus = "group",
   boxplot_order = NULL,
   colour_palette = c(wes_palette("AsteroidCity1"), wes_palette("Chevalier1"),
     wes_palette("Darjeeling2"), wes_palette("Darjeeling1"),
@@ -18,7 +18,7 @@ plot_boxplot(
 )
 }
 \arguments{
-\item{data_input}{Expression data, sample information, and gene list uploaded using import_data()}
+\item{data_input}{Counts data, sample information, and biological feature list uploaded using import_data()}
 
 \item{dim_reduction_output}{Output from dim_reduction()}
 
@@ -28,11 +28,11 @@ plot_boxplot(
 
 \item{pvalue_threshold}{Choice of p-value significance threshold (default = 0.05)}
 
-\item{boxplot_grouping}{Choice of sample grouping for boxplot visualisation and statistical testing. Default = "group" from data_input$sample_meta.}
-
 \item{boxplot_order}{Manual modification of the order of the groups of boxplots. Must be provided as a vector, e.g., boxplot_order = c("s1","s2",...).}
 
 \item{colour_palette}{Define colour palette (default: a mix of palettes from the "wesanderson" package).}
+
+\item{boxplot_grouping}{Choice of sample grouping for boxplot visualisation and statistical testing. Default = "group" from data_input$sample_meta.}
 }
 \value{
 A list of plots displaying the values yielded by dim_reduction() for each sample in each biological category. One plot per category.

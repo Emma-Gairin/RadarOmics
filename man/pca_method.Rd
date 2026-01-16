@@ -4,22 +4,22 @@
 \alias{pca_method}
 \title{Dimensional reduction based on PCAs.}
 \usage{
-pca_method(data_input, threshold, focus, correlation_method)
+pca_method(data_input, pca_threshold, focus, correlation_method, pca_scale)
 }
 \arguments{
-\item{data_input}{Expression data, sample information, and biological process list uploaded using import_data()}
+\item{data_input}{Counts data, sample information, and biological process list uploaded using import_data()}
 
-\item{threshold}{threshold of cumulative variance used to identify the number of PCs to keep,}
+\item{pca_threshold}{threshold of cumulative variance used to identify the number of PCs to keep,}
 
 \item{focus}{grouping of samples used to determine the main axis of variance (default = "group")}
 
-\item{correlation_method}{statistical test used to determine linear correlation between values extracted for each sample and mean scaled gene expression in the category (default = "spearman").}
+\item{correlation_method}{statistical test used to determine linear correlation between values extracted for each sample and mean scaled counts in the category (default = "spearman").}
 }
 \value{
 A list with:
 \itemize{
-\item projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on expression level of most extreme groups.
-\item information: data frame with category, number of variables (genes/proteins/others), method used ("PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their expression levels.
+\item projection: data frame with sample, biological category, furthest sample groups based on the top PC dimensions retained, distance of each sample along a multidimensional line linking the most extreme samples, 0-1 scaled distance with direction based on counts of most extreme groups.
+\item information: data frame with category, number of features (genes/proteins/others), method used ("PCA"), number of PCs kept, sum of variance kept, correlation between values extracted for samples in that biological category and their counts.
 \item dimred_information: data frame with information needed for plot_dimensions(): biological category, number of PCs retained, percentage of variance described by PC1 and PC2, centroid, and slope of main axis of variance.
 }
 }

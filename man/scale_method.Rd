@@ -4,25 +4,25 @@
 \alias{scale_method}
 \title{Dimensional reduction based on 0-1 scaling.}
 \usage{
-scale_method(data_input)
+scale_method(data_input, focus = "group")
 }
 \arguments{
-\item{data_input}{Expression data, sample information, and biological process list uploaded using import_data()}
+\item{data_input}{Counts data, sample information, and biological process list uploaded using import_data()}
 }
 \value{
 A list with:
 \itemize{
-\item projection: data frame with sample, normalised_distance (normalized avg expr), category, furthest_groups.
-\item information: data frame with number of genes per category.
+\item projection: data frame with sample, normalised_distance, category, furthest_groups.
+\item information: data frame with number of features per category.
 }
 }
 \description{
 To be used as part of dim_reduction().
 }
 \details{
-For each gene category, computes average expression per sample,
+For each biological category, computes average expression per sample,
 normalizes to 0-1 range across samples,
-calculates mean normalized expression per group,
-identifies furthest groups by min and max mean expression,
+calculates mean normalized counts per group,
+identifies furthest groups by min and max mean counts,
 returns per-sample values and metadata in PCA-like output format.
 }

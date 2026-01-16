@@ -7,39 +7,45 @@
 plot_radar(
   data_input,
   dim_reduction_output,
-  radar_grouping = "group",
+  radar_grouping = NULL,
   category_list = NA,
   colour_sample = NULL,
   colour_average = NULL,
   axis_label_size = 1,
   radar_label_size = 4,
-  radar_label_position = "centre",
+  radar_label_position = "center",
   width = 2,
-  height = 2
+  height = 2,
+  control_group = NULL,
+  scale_control_group_to = 0.5
 )
 }
 \arguments{
-\item{data_input}{Expression data, sample information, and gene list uploaded using import_data()}
+\item{data_input}{Counts data, sample information, and molecular feature list uploaded using import_data()}
 
 \item{dim_reduction_output}{Output from dim_reduction()}
 
-\item{radar_grouping}{Define how to group samples together on the radars. Default = "group" from sample information.}
+\item{radar_grouping}{Defines how to group samples together on each plot (i.e., one plot per sample grouping). Default: "group" unless a different focus was used in dim_reduction() (previous step).}
 
-\item{category_list}{Optional data frame with columns: 1) category names, 2) order on the radar plot. Default will follow the order of gene categories from input file used in import_data(). You do not have to include all categories originally provided in import_data(), and you can play around with the order in which categories are displayed to manually highlight relationships between biological processes.}
+\item{category_list}{Optional data frame with columns: 1) category names, 2) order on the radar plot. Default will follow the order of biological categories from input file used in import_data(). You do not have to include all categories originally provided in import_data(), and you can play around with the order in which categories are displayed to manually highlight relationships between biological processes.}
 
-\item{colour_sample}{Optional colour scheme choice for the radar of each sample. This must be a dataframe with one "sample" column and one "colour" column. For optimal visualisation quality, we recommend exporting the outputs as PDFs and manually editing the colour scheme and figure design with vector editing software.}
+\item{colour_sample}{Optional colour scheme choice for the radar of each sample. Must be a data frame with columns sample and colour.}
 
-\item{colour_average}{Optional colour scheme choice for the average radar of each group of samples. This must be a dataframe with one column corresponding to the sample grouping (name of column must match the argument "radar_grouping" - default = "group") and one "colour" column. For optimal visualisation quality, we recommend exporting the outputs as PDFs and manually editing the colour scheme and figure design with vector editing software.}
+\item{colour_average}{Optional colour scheme choice for the average radar for each group of samples. Must be a data frame with columns group and colour.}
 
-\item{axis_label_size}{Modify size of axis label}
+\item{axis_label_size}{Size of text label for each axis (i.e., biological category names)}
 
-\item{radar_label_size}{Modify size of radar label / title}
+\item{radar_label_size}{Size of plot label (i.e., sample group name)}
 
-\item{radar_label_position}{Define whether the radar label is placed in the centre of the plot (default) or at the top.}
+\item{radar_label_position}{Position of plot label (center or top).}
 
-\item{width}{Define the horizontal spacing of the plots. Can help to better print the name of the different biological categories around the plot when they are long.}
+\item{width}{Adds extra white space on the left and right of the plot (can be modified to allow more space between plots when passing the output of this function through patchwork::wrap_plots()).}
 
-\item{height}{Define the vertical spacing of the plots.}
+\item{height}{Adds extra white space on the top and bottom of the plot (can be modified to allow more space between plots when passing the output of this function through patchwork::wrap_plots()).}
+
+\item{control_group}{Default = no control group. If a control group is present, use this to anchor the radar values relative to the mean radar of the control group (with the mean radar set to default 0.5 using scale_control_group_to).}
+
+\item{scale_control_group_to}{Only used when a control_group is defined, with default = 0.5. Will rescale the average radar for the control group to a value of 0.5 and display the distance of all other samples and groups relative to this value.}
 }
 \value{
 A list of \code{ggradar} plots, one per group of samples.
