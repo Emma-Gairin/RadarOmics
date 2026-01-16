@@ -264,7 +264,7 @@ radars = plot_radar(data_input, dim_reduction_output, category_list = category_l
 
 ordered_list = c("s1","s2","s3","s4","s5","s6","s7")
 
-wrap_plots(radars[ordered_list], ncol=4, nrow=2)
+patchwork::wrap_plots(radars[ordered_list], ncol=4, nrow=2)
 ```
 ![Radar charts for each stage](example1/figures/all_stages.png)
 *Figure 5: Radar chart for all 7 stages of the _A. ocellaris_ dataset obtained with method = **"pca"**.*
