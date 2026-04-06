@@ -81,7 +81,10 @@ dim_reduction <- function(data_input, method = c("scale","pca","lda"),pca_thresh
     res <- scale_method(data_input2)
   } else if (method =="lda"){
     if(length(which(colnames(sample_meta)%in%focus))==0){
-      stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
+      stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus='' to specify a different column.")
+    }
+        if(length(which(colnames(sample_meta)%in%lda_focus))==0){
+      stop("lda_focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument lda_focus='' to specify a different column.")
     }
     res <- lda_method(data_input2, pca_threshold, lda_threshold,focus,lda_focus,correlation_method,pca_scale)
 
