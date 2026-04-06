@@ -74,7 +74,7 @@ dim_reduction <- function(data_input, method = c("scale","pca","lda"),pca_thresh
 
   if (method == "pca") {
     if(length(which(colnames(sample_meta)%in%focus))==0){
-      stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus.")
+      stop("focus (default: group) column not found in sample information table. Make sure to have a column named group or use argument focus='' to specify a different column.")
     }
     res <- pca_method(data_input2,pca_threshold,focus,correlation_method,pca_scale)
   } else if (method == "scale") {
