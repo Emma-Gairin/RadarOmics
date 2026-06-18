@@ -121,7 +121,8 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
         method = "LDA"
         # checking for PC coordinates that are constant within each group due to strong batch effects.
         pcares = sample_pca$x[,1:num_pcs]
-        
+        focus_lda=factor(sample_meta[[lda_focus]])
+
         constantpc = apply(pcares,2,function(col){any(tapply(col,focus_lda,function(x) var(x, na.rm = TRUE)) < 1e-8)})
         
         if (any(constantpc)) {
@@ -133,7 +134,6 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
           )
                     pcares = pcares[, !constantpc, drop = FALSE]
           }
-        focus_lda=factor(sample_meta[[lda_focus]])
 
         sample_lda = MASS::lda(pcares,grouping = focus_lda)
 
