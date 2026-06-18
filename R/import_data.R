@@ -11,7 +11,7 @@ import_data <- function(counts_path, sample_meta_path, feature_meta_path) {
   feature_meta <- read.csv(feature_meta_path)
   print(paste0(length(intersect(rownames(counts),feature_meta$feature))," features were retrieved in the row names of the counts matrix."))
   if(length(intersect(rownames(counts),feature_meta$feature))==0){
-    stop("No molecular feature from the biological information match the rownames of the counts matrix. \n Make sure that that the first column of your counts matrix CSV file corresponds to the first column of the table containing the molecular feature names/IDs and respective categories. The column has to be named 'feature'.)
+    stop("No molecular feature from the biological information match the rownames of the counts matrix. \n Make sure that that the first column of your counts matrix CSV file corresponds to the first column of the table containing the molecular feature names/IDs and respective categories. The column has to be named 'feature'.")
   }
   print(paste0(length(intersect(colnames(counts),sample_meta$sample))," samples were retrieved in the column names of the counts matrix."))
 
