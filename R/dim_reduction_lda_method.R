@@ -96,6 +96,7 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
       pc2 = proportion_variance[2]
       # Mean coordinate per group for all PCs kept
       mean_group = aggregate(as.formula(paste(". ~", focus)),prep_mean_group[,c(paste0("PC",1:num_pcs),focus)],mean)
+        focus_lda=factor(sample_meta[[lda_focus]])
 
 
       # Function to project sample coordinates onto main axis of variance
@@ -121,7 +122,6 @@ lda_method = function(data_input,pca_threshold,lda_threshold,focus,lda_focus,cor
         method = "LDA"
         # checking for PC coordinates that are constant within each group due to strong batch effects.
         pcares = sample_pca$x[,1:num_pcs]
-        focus_lda=factor(sample_meta[[lda_focus]])
 
         constantpc = apply(pcares,2,function(col){any(tapply(col,focus_lda,function(x) var(x, na.rm = TRUE)) < 1e-8)})
         
